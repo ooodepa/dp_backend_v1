@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+
+  prod-mysql:
+    container_name: prod-mysql
+    image: mysql:8.0
+    restart: always
+    volumes:
+      - ./temp/mysql/var/lib/mysql:/var/lib/mysql
+    ports:
+      - 22223:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASS}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASS}
+
+  prod-phpmyadmin:
+    container_name: prod-phpmyadmin
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - 22222:80
+    environment:
+      PMA_HOST: prod-mysql
+      #PMA_ARBITRARY: 1 # показывать поле "Server" для ввода хоста

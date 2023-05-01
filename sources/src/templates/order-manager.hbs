@@ -1,0 +1,117 @@
+<style>
+  .content {
+    width: 466px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    border: 1px solid #06c;
+    border-radius: 8px;
+    padding: 16px;
+    color: #24292f;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  table {
+    width: 100%;
+  }
+
+  .candidate__key {
+    font-weight: bold;
+  }
+
+  .items__table {
+    border: 1px solid black;
+    border-collapse: collapse;
+  }
+
+  .items__td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 2px;
+  }
+
+  .items__cost {
+    text-align: right;
+  }
+
+  .items__totalSum {
+    font-weight: bold;
+    text-align: right;
+  }
+
+  .footer__text {
+    text-align: center;
+    color: grey;
+  }
+</style>
+
+<div class='content'>
+
+  <table>
+    <tr>
+      <td class="candidate__key">УНП:</td>
+      <td>{{dp_candidate_unp}}</td>
+    </tr>
+    <tr>
+      <td class="candidate__key">Краткое наименование юридического лица:</td>
+      <td>{{dp_candidate_shortNameLegalEntity}}</td>
+    </tr>
+    <tr>
+      <td class="candidate__key">Наименование юридического лица:</td>
+      <td>{{dp_candidate_nameLegalEntity}}</td>
+    </tr>
+    <tr>
+      <td class="candidate__key">Адрес:</td>
+      <td>{{dp_candidate_address}}</td>
+    </tr>
+    <tr>
+      <td class="candidate__key">Телефон приемной:</td>
+      <td>{{dp_candidate_receptionPhone}}</td>
+    </tr>
+    <tr>
+      <td class="candidate__key">Фамилия:</td>
+      <td>{{dp_candidate_lastName}}</td>
+    </tr>
+    <tr>
+      <td class="candidate__key">Имя:</td>
+      <td>{{dp_candidate_firstName}}</td>
+    </tr>
+    <tr>
+      <td class="candidate__key">Отчество:</td>
+      <td>{{dp_candidate_middleName}}</td>
+    </tr>
+  </table>
+
+  <table class="items__table">
+    <caption><b>Таблица - Заявка</b></caption>
+    <thead>
+      <tr>
+        <th class="items__td">Картинка</th>
+        <th class="items__td">Наименование - Модель</th>
+        <th class="items__td">Количество</th>
+        <th class="items__td">Цена, BYN (без НДС)</th>
+        <th class="items__td">Цена, BYN (с НДС)</th>
+        <th class="items__td">Сумма, BYN (c НДС)</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each dp_items_orderItems}}
+      <tr>
+        <td class="items__td"><img width="48" src="{{this.dp_photoUrl}}" /></td>
+        <td class="items__td">{{this.dp_model}}</td>
+        <td class="items__td items__cost">{{this.dp_count}}</td>
+        <td class="items__td items__cost">{{this.dp_costNoNds}}</td>
+        <td class="items__td items__cost">{{this.dp_costNds}}</td>
+        <td class="items__td items__cost">{{this.dp_sum}}</td>
+      </tr>
+      {{/each}}
+      <tr>
+        <td class="items__td items__totalSum" colspan="6">Итого: BYN {{this.dp_items_totalSum}}</td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>
+
+<p class="footer__text">Заявка номенклатуры</p>
+
+<p class="footer__text">{{dp_org}}</p>

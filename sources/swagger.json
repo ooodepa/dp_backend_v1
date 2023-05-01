@@ -1,0 +1,6377 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/api/v1/users": {
+      "post": {
+        "operationId": "UsersController_createUser",
+        "summary": "Регистрация пользователя",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Пользователь зарегистрирован и пользователю пришло на почту ссылка подтверждения.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateUserResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Логин занят другим пользователем. \n\nE-mail занят другим пользователем. \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Транзация не совершена, так как не удалось отправить письмо с ссылкой активации на почту. \n\nЧто-то пошло не так на сервере. \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_users",
+          "any"
+        ]
+      },
+      "get": {
+        "operationId": "UsersController_findOne",
+        "summary": "Получить информацию о профиле",
+        "parameters": [],
+        "responses": {
+          "401": {
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Получили информацию о пользователе",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetUserDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_users",
+          "any"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/api/v1/users/activate-account/{token}": {
+      "get": {
+        "operationId": "UsersController_activateAccount",
+        "summary": "Активация аккаунта",
+        "parameters": [
+          {
+            "name": "token",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Пользователь подтвердил зарегистрированный аккаунт.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ссылка не действительна, так как прошло 24 часа (токен просрочен). \n\nСсылка не действительна, так как токен поддельный (токен не прошел проверку валидности). \n\nСсылка не действительна, так как токен не зарегстрирован в БД (токен прошел проверку, но его нет в БД). \n\nСсылка не действительна, так как аккаунт был активирован. \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Не совершено обновление статуса пользователя. \n\nЧто-то пошло не так на сервере. \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_users",
+          "any"
+        ]
+      }
+    },
+    "/api/v1/users/change-email": {
+      "patch": {
+        "operationId": "UsersController_updateEmail",
+        "summary": "Запрос на смену электронной почты на новую электронную почту",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeEmailDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Заявка отправлена на новую почту и предупреждение отправлено на старую почту.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Новая почта совпадает с текущей.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Cлишком много запросов о смене электроной почты за не прошедшие 3 часа.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Транзация не совершена, так как нет таблицы в БД (не сохранения запись о смене старой электронной почты на новую). \n\nТранзация не совершена, так как не отправлено письмо на новую и старую почту. \n\nЧто-то пошло не так на сервере. \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_users",
+          "user"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/api/v1/users/change-email/{token}/confirm": {
+      "get": {
+        "operationId": "UsersController_confirmChangeEmail",
+        "summary": "Подтверждаем смену на новую электронную почту",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Электронная почта изменена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ссылка не действительна, так как прошло 3 часа (токен просрочен). \n\nСсылка не действительна, так как токен подделан (токен не прошел валидацию). \n\nСсылка не действительна, так как токена не зарегистрирован в БД. \n\nСсылка не действительна, так как почта была сменена, либо заявка на смену почты была отклонена. \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Транзация не совернеша (заявка не отмечена закрытой, пользователю не поменял email на новый). \n\nЧто-то пошло не так на сервере. \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_users",
+          "any"
+        ]
+      }
+    },
+    "/api/v1/users/change-email/{token}/delete": {
+      "get": {
+        "operationId": "UsersController_deleteChangeEmail",
+        "summary": "Отменяем смену на новую электронную почту",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Заявка на смену электронной почты отменена.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Cсылка не действительна, так как прошло 3 часа (токен просрочен). \n\nCсылка не действительна, так как токен подделан (токен не прошел валидацию). \n\nСсылка не действительна, так как токен не зарегистрирован в БД. \n\nСсылка не действительна, так как почта была сменена, либо заявка на смену почты была отклонена. \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_users",
+          "any"
+        ]
+      }
+    },
+    "/api/v1/users/forget-password": {
+      "post": {
+        "operationId": "UsersController_forgetPassword",
+        "summary": "Забыли пароль",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ForgetPasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "На электронную почту отправлен логин и новый сгенерированный пароль",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Пользователя с такой электронной почтой не существует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Транзация не совернеша, так как сгенерированный пароль не записался в БД. \n\nТранзация не совернеша, так как письмо с логином и паролем не отправлено на электронную почту. \n\nЧто-то пошло не так на сервере. \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_users",
+          "any"
+        ]
+      }
+    },
+    "/api/v1/users/change-password": {
+      "patch": {
+        "operationId": "UsersController_updatePassword",
+        "summary": "Меняем пароль",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Пароль изменен",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Не тот старый пароль",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Транзация не совернеша, так как новый пароль не записан в БД. \n\nТранзация не совернеша, так как не удалось завершить все сессии. \n\nЧто-то пошло не так на сервере. \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_users",
+          "user"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/api/v1/sessions": {
+      "post": {
+        "operationId": "SessionsController_create",
+        "summary": "Аутентификация",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSessionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Пользователь авторизовался",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateSessionResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Нет пользователя с таким логином или электронной почтой. \n\nНе тот пароль \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_sessions",
+          "any"
+        ]
+      },
+      "get": {
+        "operationId": "SessionsController_findAll",
+        "summary": "Получить список сессий",
+        "parameters": [],
+        "responses": {
+          "401": {
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "default": {
+            "summary": "Получить список записей",
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SessionEntity"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_sessions",
+          "user"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "SessionsController_update",
+        "summary": "Получить новый access токен (нужен refresh токен)",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Получили новый access токен.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateSessionResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Refresh токен просрочен \n\nRefresh токен не передан \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_sessions",
+          "any"
+        ],
+        "security": [
+          {
+            "refresh-token": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "SessionsController_removeAll",
+        "summary": "Закрыть все сессии",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Закрыли все сессии.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_sessions",
+          "user"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/api/v1/sessions/logout": {
+      "post": {
+        "operationId": "SessionsController_logout",
+        "summary": "Выход с аккаунта",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "Пользователь вышел с аккаунта",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateSessionResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_sessions",
+          "user"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/api/v1/sessions/{id}": {
+      "delete": {
+        "operationId": "SessionsController_remove",
+        "summary": "Закрыть сессию по id",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Закрыли сессию по id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_sessions",
+          "user"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/api/v1/item-categories": {
+      "post": {
+        "operationId": "ItemCategoriesController_create",
+        "summary": "Создание записи",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateItemCategoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Запись создана успешно",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Не верный формат данных в JSON",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\nУ пользователя нет роли администратора \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "В БД уже есть запись с таким полем",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_item-categories",
+          "ADMIN"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "ItemCategoriesController_findAll",
+        "summary": "Получить список записей",
+        "parameters": [
+          {
+            "name": "dp_itemBrandId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "brand",
+            "required": false,
+            "in": "query",
+            "example": "de-pa-electric",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Получили список записей",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ItemCategoryWithIdDto"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_item-categories",
+          "any"
+        ]
+      }
+    },
+    "/api/v1/item-categories/bulk": {
+      "post": {
+        "operationId": "ItemCategoriesController_createBulk",
+        "summary": "Создание несколько записей за раз",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBulkItemCategoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Записи добавлены в БД",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Не верный формат данных в JSON",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\nУ пользователя нет роли администратора \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "В БД уже есть запись с таким полем",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_item-categories",
+          "ADMIN"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      },
+      "put": {
+        "operationId": "ItemCategoriesController_updateBulk",
+        "summary": "Обновление записей транзакцией",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBulkItemCategoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Обновили записи. Транзакция выполнена.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Не верный формат данных в JSON",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\nУ пользователя нет роли администратора \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "В БД уже есть запись с таким полем",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_item-categories",
+          "ADMIN"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/api/v1/item-categories/{id}": {
+      "get": {
+        "operationId": "ItemCategoriesController_findOne",
+        "summary": "Получить запись по id",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Получили запись по id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemCategoryWithIdDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_item-categories",
+          "any"
+        ]
+      },
+      "patch": {
+        "operationId": "ItemCategoriesController_update",
+        "summary": "Обновление записи по id",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateItemCategoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Обновили запись по id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Не верный формат данных в JSON",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\nУ пользователя нет роли администратора \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "В БД уже есть запись с таким полем",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_item-categories",
+          "ADMIN"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "ItemCategoriesController_remove",
+        "summary": "Удаление записи по id",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Удалили запись по id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\nУ пользователя нет роли администратора \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_item-categories",
+          "ADMIN"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/api/v1/item-characteristics": {
+      "post": {
+        "operationId": "ItemCharacteristicsController_create",
+        "summary": "Создание записи",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateItemCharacteristicDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Запись создана успешно",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Не верный формат данных в JSON",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\nУ пользователя нет роли администратора \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "В БД уже есть запись с таким полем",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_item-characteristics",
+          "ADMIN"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "ItemCharacteristicsController_findAll",
+        "summary": "Получить список записей",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Получили список записей",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ItemCharacteristicWithIdDto"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_item-characteristics",
+          "any"
+        ]
+      }
+    },
+    "/api/v1/item-characteristics/bulk": {
+      "post": {
+        "operationId": "ItemCharacteristicsController_createBulk",
+        "summary": "Создание несколько записей за раз",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBulkItemCharacteristicDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Записи добавлены в БД",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Не верный формат данных в JSON",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\nУ пользователя нет роли администратора \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "В БД уже есть запись с таким полем",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_item-characteristics",
+          "ADMIN"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      },
+      "put": {
+        "operationId": "ItemCharacteristicsController_updateBulk",
+        "summary": "Обновление записи по id",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBulkItemCharacteristicDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Обновили запись по id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Не верный формат данных в JSON",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\nУ пользователя нет роли администратора \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "В БД уже есть запись с таким полем",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_item-characteristics",
+          "ADMIN"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/api/v1/item-characteristics/{id}": {
+      "get": {
+        "operationId": "ItemCharacteristicsController_findOne",
+        "summary": "Получить запись по id",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Получили запись по id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemCharacteristicWithIdDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_item-characteristics",
+          "any"
+        ]
+      },
+      "patch": {
+        "operationId": "ItemCharacteristicsController_update",
+        "summary": "Обновление записи по id",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateItemCharacteristicDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Обновили запись по id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Не верный формат данных в JSON",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\nУ пользователя нет роли администратора \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "В БД уже есть запись с таким полем",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_item-characteristics",
+          "ADMIN"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "ItemCharacteristicsController_remove",
+        "summary": "Удаление записи по id",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Удалили запись по id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\nУ пользователя нет роли администратора \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_item-characteristics",
+          "ADMIN"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/api/v1/items": {
+      "post": {
+        "operationId": "ItemsController_create",
+        "summary": "Создание записи транзакцией",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateItemDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Запись создана успешно. Транзакция выполнена.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Не верный формат данных в JSON",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\nУ пользователя нет роли администратора \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "В БД уже есть запись с таким полем",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Транзакция не выполнена.Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_items",
+          "ADMIN"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "ItemsController_findAll",
+        "summary": "Получить список записей",
+        "parameters": [
+          {
+            "name": "dp_itemCategoryId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dp_model",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "category",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": "dp-accessories",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Получили список записей",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetItemShortDto"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Транзакция не выполнена.Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_items",
+          "any"
+        ]
+      }
+    },
+    "/api/v1/items/bulk": {
+      "post": {
+        "operationId": "ItemsController_createBulk",
+        "summary": "Создание несколько записей за раз транзакцией",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBulkItemDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Записи добавлены в БД. Транзакция выполнена.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Не верный формат данных в JSON",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\nУ пользователя нет роли администратора \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "В БД уже есть запись с таким полем",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Транзакция не выполнена.Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_items",
+          "ADMIN"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      },
+      "put": {
+        "operationId": "ItemsController_updateBulk",
+        "summary": "Обновление записи по uuid транзакцией",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBulkItemDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Обновили запись по uuid. Транзакция выполнена.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Не верный формат данных в JSON",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\nУ пользователя нет роли администратора \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "В БД уже есть запись с таким полем",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Транзакция не выполнена.Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_items",
+          "ADMIN"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/api/v1/items/model/{model}": {
+      "get": {
+        "operationId": "ItemsController_findOneByModel",
+        "summary": "Получить запись по id",
+        "parameters": [
+          {
+            "name": "model",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Получили запись по id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetItemDto"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_items",
+          "any"
+        ]
+      }
+    },
+    "/api/v1/items/filter/models": {
+      "post": {
+        "operationId": "ItemsController_findModels",
+        "summary": "Получить список записей",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FindItemModelsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Получили список записей",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetItemShortDto"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_items",
+          "any"
+        ]
+      }
+    },
+    "/api/v1/items/filter/ids": {
+      "post": {
+        "operationId": "ItemsController_findIds",
+        "summary": "Получить список записей",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FindItemIdsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Получили список записей",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetItemShortDto"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_items",
+          "any"
+        ]
+      }
+    },
+    "/api/v1/items/search": {
+      "post": {
+        "operationId": "ItemsController_search",
+        "summary": "Получить список записей",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchItemsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Получили список записей",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetItemShortDto"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_items",
+          "any"
+        ]
+      }
+    },
+    "/api/v1/items/search-all": {
+      "post": {
+        "operationId": "ItemsController_searchAll",
+        "summary": "Получить список записей",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchAllItemsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Получили список записей",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetItemShortDto"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_items",
+          "any"
+        ]
+      }
+    },
+    "/api/v1/items/{id}": {
+      "get": {
+        "operationId": "ItemsController_findOne",
+        "summary": "Получить запись по id",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Получили запись по id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemEntity"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_items",
+          "any"
+        ]
+      },
+      "patch": {
+        "operationId": "ItemsController_update",
+        "summary": "Обновление записи по uuid транзакцией",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateItemDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Обновили запись по uuid. Транзакция выполнена.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Не верный формат данных в JSON",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\nУ пользователя нет роли администратора \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "В БД уже есть запись с таким полем",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Транзакция не выполнена.Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_items",
+          "ADMIN"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "ItemsController_remove",
+        "summary": "Удаление записи по id",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Удалили запись по id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\nУ пользователя нет роли администратора \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_items",
+          "ADMIN"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/api/v1/articles": {
+      "post": {
+        "operationId": "ArticlesController_create",
+        "summary": "Создание записи транзакцией",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateArticleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Запись создана успешно. Транзакция выполнена.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Не верный формат данных в JSON",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\nУ пользователя нет роли администратора \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "В БД уже есть запись с таким полем",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Транзакция не выполнена.Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_articles",
+          "ADMIN"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "ArticlesController_findAll",
+        "summary": "Получить список записей",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Получили список записей",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticleEntity"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Транзакция не выполнена.Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_articles",
+          "any"
+        ]
+      }
+    },
+    "/api/v1/articles/bulk": {
+      "post": {
+        "operationId": "ArticlesController_createBulk",
+        "summary": "Создание несколько записей за раз транзакцией",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBulkArticleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Записи добавлены в БД. Транзакция выполнена.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Не верный формат данных в JSON",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\nУ пользователя нет роли администратора \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "В БД уже есть запись с таким полем",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Транзакция не выполнена.Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_articles",
+          "ADMIN"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/api/v1/articles/url/{url}": {
+      "get": {
+        "operationId": "ArticlesController_findOneByUrl",
+        "summary": "Просмотр записи по url",
+        "parameters": [
+          {
+            "name": "url",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Получили запись по url.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArticleEntity"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_articles",
+          "any"
+        ]
+      }
+    },
+    "/api/v1/articles/{id}": {
+      "get": {
+        "operationId": "ArticlesController_findOne",
+        "summary": "Получить запись по id",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Получили запись по id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArticleEntity"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_articles",
+          "any"
+        ]
+      },
+      "patch": {
+        "operationId": "ArticlesController_update",
+        "summary": "Обновление записи по uuid транзакцией",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateArticleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Обновили запись по uuid. Транзакция выполнена.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Не верный формат данных в JSON",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\nУ пользователя нет роли администратора \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "В БД уже есть запись с таким полем",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Транзакция не выполнена.Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_articles",
+          "ADMIN"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "ArticlesController_remove",
+        "summary": "Удаление записи по id",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Удалили запись по id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\nУ пользователя нет роли администратора \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_articles",
+          "ADMIN"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/api/v1/contact-types": {
+      "post": {
+        "operationId": "ContactTypesController_create",
+        "summary": "Создание записи",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactTypeCreateDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Запись создана успешно",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Не верный формат данных в JSON",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\nУ пользователя нет роли администратора \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "В БД уже есть запись с таким полем",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_contact-types",
+          "ADMIN"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "ContactTypesController_findAll",
+        "summary": "Получить список записей",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Получили список записей",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ContactTypeEntity"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_contact-types",
+          "any"
+        ]
+      }
+    },
+    "/api/v1/contact-types/bulk": {
+      "post": {
+        "operationId": "ContactTypesController_createBulk",
+        "summary": "Создание несколько записей за раз",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactTypeCreateBulkDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Записи добавлены в БД",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Не верный формат данных в JSON",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\nУ пользователя нет роли администратора \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "В БД уже есть запись с таким полем",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_contact-types",
+          "ADMIN"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/api/v1/contact-types/{id}": {
+      "get": {
+        "operationId": "ContactTypesController_findOne",
+        "summary": "Получить запись по id",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Получили запись по id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactTypeEntity"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_contact-types",
+          "any"
+        ]
+      },
+      "patch": {
+        "operationId": "ContactTypesController_update",
+        "summary": "Обновление записи по id",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactTypeUpdateDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Обновили запись по id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Не верный формат данных в JSON",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\nУ пользователя нет роли администратора \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "В БД уже есть запись с таким полем",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_contact-types",
+          "ADMIN"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "ContactTypesController_remove",
+        "summary": "Удаление записи по id",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Удалили запись по id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\nУ пользователя нет роли администратора \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_contact-types",
+          "ADMIN"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/api/v1/helpers": {
+      "post": {
+        "operationId": "HelpersController_create",
+        "summary": "Создание записи транзакцией",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateHelperDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Запись создана успешно. Транзакция выполнена.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Не верный формат данных в JSON",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\nУ пользователя нет роли администратора \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Транзакция не выполнена.Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_helpers",
+          "ADMIN"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "HelpersController_findAll",
+        "summary": "Получить список записей",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Получили список записей",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HelperEntity"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_helpers",
+          "any"
+        ]
+      }
+    },
+    "/api/v1/helpers/bulk": {
+      "post": {
+        "operationId": "HelpersController_createBulk",
+        "summary": "Создание несколько записей за раз транзакцией",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBulkHelperDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Записи добавлены в БД. Транзакция выполнена.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Не верный формат данных в JSON",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\nУ пользователя нет роли администратора \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Транзакция не выполнена.Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_helpers",
+          "ADMIN"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/api/v1/helpers/{id}": {
+      "get": {
+        "operationId": "HelpersController_findOne",
+        "summary": "Получить запись по id",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Получили запись по id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HelperEntity"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_helpers",
+          "any"
+        ]
+      },
+      "patch": {
+        "operationId": "HelpersController_update",
+        "summary": "Обновление записи по uuid транзакцией",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateHelperDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Обновили запись по uuid. Транзакция выполнена.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Не верный формат данных в JSON",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\nУ пользователя нет роли администратора \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Транзакция не выполнена.Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_helpers",
+          "ADMIN"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "HelpersController_remove",
+        "summary": "Удаление записи по id",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Удалили запись по id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\nУ пользователя нет роли администратора \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_helpers",
+          "ADMIN"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/api/v1/item-brands": {
+      "post": {
+        "operationId": "ItemBrandsController_create",
+        "summary": "Создание записи",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateItemBrandDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Запись создана успешно",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Не верный формат данных в JSON",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\nУ пользователя нет роли администратора \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "В БД уже есть запись с таким полем",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_item-brands",
+          "ADMIN"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "ItemBrandsController_findAll",
+        "summary": "Получить список записей",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Получили список записей",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ItemBrandWithIdDto"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_item-brands",
+          "any"
+        ]
+      }
+    },
+    "/api/v1/item-brands/bulk": {
+      "post": {
+        "operationId": "ItemBrandsController_createBulk",
+        "summary": "Создание несколько записей за раз",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBulkItemBrandDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Записи добавлены в БД",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Не верный формат данных в JSON",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\nУ пользователя нет роли администратора \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "В БД уже есть запись с таким полем",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_item-brands",
+          "ADMIN"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      },
+      "put": {
+        "operationId": "ItemBrandsController_updateBulk",
+        "summary": "Обновление записей транзакцией",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBulkItemBrandDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Обновили записи. Транзакция выполнена.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Не верный формат данных в JSON",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\nУ пользователя нет роли администратора \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "В БД уже есть запись с таким полем",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_item-brands",
+          "ADMIN"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/api/v1/item-brands/{id}": {
+      "get": {
+        "operationId": "ItemBrandsController_findOne",
+        "summary": "Получить запись по id",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Получили запись по id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemBrandWithIdDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_item-brands",
+          "any"
+        ]
+      },
+      "patch": {
+        "operationId": "ItemBrandsController_update",
+        "summary": "Обновление записи по id",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateItemBrandDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Обновили запись по id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Не верный формат данных в JSON",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\nУ пользователя нет роли администратора \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "В БД уже есть запись с таким полем",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_item-brands",
+          "ADMIN"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "ItemBrandsController_remove",
+        "summary": "Удаление записи по id",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Удалили запись по id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\nУ пользователя нет роли администратора \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_item-brands",
+          "ADMIN"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/api/v1/orders": {
+      "post": {
+        "operationId": "OrdersController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrderDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "api_v1_orders",
+          "user"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "OrdersController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "api_v1_orders",
+          "user"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/api/v1/orders/{id}": {
+      "get": {
+        "operationId": "OrdersController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "api_v1_orders",
+          "user"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/api/v1/orders/{id}/completed": {
+      "patch": {
+        "operationId": "OrdersController_updateCompleted",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "api_v1_orders",
+          "MODER"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/api/v1/orders/{id}/cancel": {
+      "patch": {
+        "operationId": "OrdersController_updateCancelled",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "api_v1_orders",
+          "user"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/api/v1/apk-versions/last": {
+      "get": {
+        "operationId": "ApkVersionsController_findLast",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "api_v1_apk-versions"
+        ]
+      }
+    },
+    "/api/v1/favorite-items/{itemId}": {
+      "post": {
+        "operationId": "FavoriteItemsController_like",
+        "summary": "Создание записи",
+        "parameters": [
+          {
+            "name": "itemId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Запись создана успешно",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_favorite-items",
+          "user"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "FavoriteItemsController_unLike",
+        "summary": "Удаление записи по id",
+        "parameters": [
+          {
+            "name": "itemId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Удалили запись по id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_favorite-items",
+          "user"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/api/v1/favorite-items": {
+      "get": {
+        "operationId": "FavoriteItemsController_findAll",
+        "summary": "Получить список записей",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Получили список записей",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetFavoriteItemDto"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_favorite-items",
+          "user"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "REST API документация",
+    "description": "Роли: \n\n- [any](#/any) - любой пользователь может выполнять запрос \n\n- [user](#/user) - зарегистрированный пользователь может выполнять запрос \n\n- [ADMIN](#/ADMIN) - зарегистрированный пользователь с ролью ADMIN может выполнять запрос \n\n- [MODER](#/MODER) - зарегистрированный пользователь с ролью MODER может выполнять запрос \n\nЭндпоинты: \n\n- [/api/v1/users](#/api_v1_users) - регистрация, подтверждение аккаунта, забыли пароль, смена пароля, смена e-mail, отмена смены e-mail \n\n- [/api/v1/sessions](#/api_v1_sessions) - работа с сессиями \n\n- [/api/v1/apk-versions](#/api_v1_apk-versions) - информация о последней версии для Android \n\n- [/api/v1/item-characteristics](#/api_v1_item-characteristics) - характеристики номенклатуры \n\n- [/api/v1/item-brands](#/api_v1_item-brands) - производители номенклатуры \n\n- [/api/v1/item-categories](#/api_v1_item-categories) - категории номенклатуры \n\n- [/api/v1/items](#/api_v1_items) - номенклатура \n\n- [/api/v1/favorite-items](#/api_v1_favorite-items) - избранные \n\n- [/api/v1/orders](#/api_v1_orders) - заказы \n\n- [/api/v1/articles](#/api_v1_articles) - новости (статьи) \n\n- [/api/v1/contact-types](#/api_v1_contact-types) - типы контактов \n\n- [/api/v1/helpers](#/api_v1_helpers) - контакты юр. лица для клиентов \n\n**Таблица - Роли и их доступные эндпоинты** \n\n|Роль|Метод|Эндпоинт| \n|---|---|---| \n|any|POST|/api/v1/users| \n|any|GET|/api/v1/users/activate-account/{token}| \n|user|PATCH|/api/v1/users/change-email| \n|any|GET|/api/v1/users/change-email/{token}/confirm| \n|any|GET|/api/v1/users/change-email/{token}/delete| \n|any|POST|/api/v1/users/forget-password| \n|user|PATCH|/api/v1/users/change-password| \n| | | \n|any|POST|/api/v1/sessions| \n|user|GET|/api/v1/sessions| \n|any|PATCH|/api/v1/sessions| \n|user|DELETE|/api/v1/sessions| \n|user|POST|/api/v1/sessions/logout| \n|user|DELETE|/api/v1/sessions/{id}| \n| | | \n|any|GET|/api/v1/apk-versions| \n| | | \n|ADMIN|POST|/api/v1/item-characteristics| \n|any|GET|/api/v1/item-characteristics| \n|ADMIN|POST|/api/v1/item-characteristics/bulk| \n|ADMIN|PUT|/api/v1/item-characteristics/bulk| \n|any|GET|/api/v1/item-characteristics/{id}| \n|ADMIN|PATCH|/api/v1/item-characteristics/{id}| \n|ADMIN|DELETE|/api/v1/item-characteristics/{id}| \n| | | \n|ADMIN|POST|/api/v1/item-brands| \n|any|GET|/api/v1/item-brands| \n|ADMIN|POST|/api/v1/item-brands/bulk| \n|ADMIN|PUT|/api/v1/item-brands/bulk| \n|any|GET|/api/v1/item-brands/{id}| \n|ADMIN|PATCH|/api/v1/item-brands/{id}| \n|ADMIN|DELETE|/api/v1/item-brands/{id}| \n| | | \n|ADMIN|POST|/api/v1/item-categories| \n|any|GET|/api/v1/item-categories| \n|ADMIN|POST|/api/v1/item-categories/bulk| \n|ADMIN|PUT|/api/v1/item-categories/bulk| \n|any|GET|/api/v1/item-categories/{id}| \n|ADMIN|PATCH|/api/v1/item-categories/{id}| \n|ADMIN|DELETE|/api/v1/item-categories/{id}| \n| | | \n|ADMIN|POST|/api/v1/items| \n|any|GET|/api/v1/items| \n|ADMIN|POST|/api/v1/items/bulk| \n|ADMIN|PUT|/api/v1/items/bulk| \n|any|GET|/api/v1/items//model/{model}| \n|any|POST|/api/v1/items/filter/models| \n|any|GET|/api/v1/items/search/{search}| \n|any|GET|/api/v1/items/search-all/{search}| \n|any|GET|/api/v1/items/{id}| \n|ADMIN|PATCH|/api/v1/items/{id}| \n|ADMIN|DELETE|/api/v1/items/{id}| \n| | | \n|user|POST|/api/v1/favorite-items/{id}| \n|user|DELETE|/api/v1/favorite-items/{id}| \n|user|GET|/api/v1/favorite-items| \n| | | \n|user|POST|/api/v1/order| \n|any|GET|/api/v1/order| \n|user|GET|/api/v1/order/{id}| \n|MODER|PATCH|/api/v1/order/{id}/completed| \n|user|PATCH|/api/v1/order/{id}/cancel| \n| | | \n|ADMIN|POST|/api/v1/articles| \n|any|GET|/api/v1/articles| \n|ADMIN|POST|/api/v1/articles/bulk| \n|any|GET|/api/v1/articles/url/{url}| \n|any|GET|/api/v1/articles/{id}| \n|ADMIN|PATCH|/api/v1/articles/{id}| \n|ADMIN|DELETE|/api/v1/articles/{id}| \n| | | \n|ADMIN|POST|/api/v1/contact-types| \n|any|GET|/api/v1/contact-types| \n|ADMIN|POST|/api/v1/contact-types/bulk| \n|any|GET|/api/v1/contact-types/{id}| \n|ADMIN|PATCH|/api/v1/contact-types/{id}| \n|ADMIN|DELETE|/api/v1/contact-types/{id}| \n| | | \n|ADMIN|POST|/api/v1/helpers| \n|any|GET|/api/v1/helpers| \n|ADMIN|POST|/api/v1/helpers/bulk| \n|any|GET|/api/v1/helpers/{id}| \n|ADMIN|PATCH|/api/v1/helpers/{id}| \n|ADMIN|DELETE|/api/v1/helpers/{id}| \n",
+    "version": "1.0.0",
+    "contact": {}
+  },
+  "tags": [
+    {
+      "name": "api_v1_users",
+      "description": "Регистрация"
+    },
+    {
+      "name": "api_v1_sessions",
+      "description": "Работа с сессиями"
+    },
+    {
+      "name": "api_v1_apk-versions",
+      "description": "Информация о последней версии для Android"
+    },
+    {
+      "name": "api_v1_item-characteristics",
+      "description": "Характеристики номенклатуры"
+    },
+    {
+      "name": "api_v1_item-brands",
+      "description": "Производители номенклатуры"
+    },
+    {
+      "name": "api_v1_item-categories",
+      "description": "Категории номенклатуры"
+    },
+    {
+      "name": "api_v1_items",
+      "description": "Номенклатура"
+    },
+    {
+      "name": "api_v1_favorite-items",
+      "description": "Избранные"
+    },
+    {
+      "name": "api_v1_orders",
+      "description": "Заявка номенклатуры"
+    },
+    {
+      "name": "api_v1_articles",
+      "description": "Новости (статьи)"
+    },
+    {
+      "name": "api_v1_contact-types",
+      "description": "Типы контакта"
+    },
+    {
+      "name": "api_v1_helpers",
+      "description": "Контакты (список контактов юр. лица для клиентов)"
+    },
+    {
+      "name": "any",
+      "description": "Для любого пользователя"
+    },
+    {
+      "name": "user",
+      "description": "Для зарег. пользователей (нужен токен доступа)"
+    },
+    {
+      "name": "ADMIN",
+      "description": "Для зарег. пользователей (нужен access токен и роль ADMIN)"
+    },
+    {
+      "name": "MODER",
+      "description": "Для зарег. пользователей (нужен access токен и роль MODER)"
+    }
+  ],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "access-token": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http",
+        "name": "JWT",
+        "description": "access token - токен доступа",
+        "in": "header"
+      },
+      "refresh-token": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http",
+        "name": "JWT",
+        "description": "refresh token - токен обновления",
+        "in": "header"
+      }
+    },
+    "schemas": {
+      "CreateUserDto": {
+        "type": "object",
+        "properties": {
+          "dp_login": {
+            "type": "string",
+            "example": "user123"
+          },
+          "dp_email": {
+            "type": "string",
+            "example": "user123@example.com"
+          },
+          "dp_password": {
+            "type": "string",
+            "example": "secret123"
+          },
+          "dp_unp": {
+            "type": "string",
+            "example": "1234567890123"
+          },
+          "dp_nameLegalEntity": {
+            "type": "string",
+            "example": "Частное торгово-производственное унитарное предприятие \"Иванов\""
+          },
+          "dp_shortNameLegalEntity": {
+            "type": "string",
+            "example": "Частное предприятие \"Иванов\""
+          },
+          "dp_address": {
+            "type": "string",
+            "example": "224017, Беларусь, Брестская обл., г. Брест, ул. Московская, д. 267"
+          },
+          "dp_receptionPhone": {
+            "type": "string",
+            "example": "+375331112233"
+          },
+          "dp_firstName": {
+            "type": "string",
+            "example": "Иван"
+          },
+          "dp_lastName": {
+            "type": "string",
+            "example": "Иванович"
+          },
+          "dp_middleName": {
+            "type": "string",
+            "example": "Иванов"
+          }
+        },
+        "required": [
+          "dp_login",
+          "dp_email",
+          "dp_password",
+          "dp_unp",
+          "dp_nameLegalEntity",
+          "dp_shortNameLegalEntity",
+          "dp_address",
+          "dp_receptionPhone",
+          "dp_firstName",
+          "dp_lastName",
+          "dp_middleName"
+        ]
+      },
+      "CreateUserResponseDto": {
+        "type": "object",
+        "properties": {
+          "statusCode": {
+            "type": "number",
+            "example": 201
+          },
+          "message": {
+            "type": "string"
+          },
+          "dp_accessToken": {
+            "type": "string",
+            "example": "токен"
+          },
+          "dp_refreshToken": {
+            "type": "string",
+            "example": "токен"
+          }
+        },
+        "required": [
+          "statusCode",
+          "message",
+          "dp_accessToken",
+          "dp_refreshToken"
+        ]
+      },
+      "HttpResponseDto": {
+        "type": "object",
+        "properties": {
+          "statusCode": {
+            "type": "number",
+            "example": 0
+          },
+          "message": {
+            "type": "string",
+            "example": "сообщение"
+          }
+        },
+        "required": [
+          "statusCode",
+          "message"
+        ]
+      },
+      "GetUserDto": {
+        "type": "object",
+        "properties": {
+          "dp_id": {
+            "type": "number"
+          },
+          "dp_unp": {
+            "type": "string"
+          },
+          "dp_nameLegalEntity": {
+            "type": "string"
+          },
+          "dp_shortNameLegalEntity": {
+            "type": "string"
+          },
+          "dp_address": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "dp_id",
+          "dp_unp",
+          "dp_nameLegalEntity",
+          "dp_shortNameLegalEntity",
+          "dp_address"
+        ]
+      },
+      "ChangeEmailDto": {
+        "type": "object",
+        "properties": {
+          "dp_email": {
+            "type": "string",
+            "example": "user@example.com"
+          }
+        },
+        "required": [
+          "dp_email"
+        ]
+      },
+      "ForgetPasswordDto": {
+        "type": "object",
+        "properties": {
+          "emailOrLogin": {
+            "type": "string",
+            "example": "user123@example.com"
+          }
+        },
+        "required": [
+          "emailOrLogin"
+        ]
+      },
+      "ChangePasswordDto": {
+        "type": "object",
+        "properties": {
+          "dp_oldPassword": {
+            "type": "string",
+            "example": "secret123"
+          },
+          "dp_newPassword": {
+            "type": "string",
+            "example": "secret321"
+          }
+        },
+        "required": [
+          "dp_oldPassword",
+          "dp_newPassword"
+        ]
+      },
+      "CreateSessionDto": {
+        "type": "object",
+        "properties": {
+          "emailOrLogin": {
+            "type": "string",
+            "example": "user123@example.com"
+          },
+          "dp_password": {
+            "type": "string",
+            "example": "secret123"
+          }
+        },
+        "required": [
+          "emailOrLogin",
+          "dp_password"
+        ]
+      },
+      "CreateSessionResponseDto": {
+        "type": "object",
+        "properties": {
+          "statusCode": {
+            "type": "number",
+            "example": 201
+          },
+          "message": {
+            "type": "string"
+          },
+          "dp_accessToken": {
+            "type": "string",
+            "example": "token"
+          },
+          "dp_refreshToken": {
+            "type": "string",
+            "example": "token"
+          }
+        },
+        "required": [
+          "statusCode",
+          "message",
+          "dp_accessToken",
+          "dp_refreshToken"
+        ]
+      },
+      "SessionEntity": {
+        "type": "object",
+        "properties": {
+          "dp_id": {
+            "type": "number"
+          },
+          "dp_date": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2023-04-02T00:00:00.000Z"
+          },
+          "dp_ip": {
+            "type": "string",
+            "example": "111.111.111.111"
+          },
+          "dp_agent": {
+            "type": "string",
+            "example": "Firefox Browser"
+          }
+        },
+        "required": [
+          "dp_id",
+          "dp_date",
+          "dp_ip",
+          "dp_agent"
+        ]
+      },
+      "UpdateSessionResponseDto": {
+        "type": "object",
+        "properties": {
+          "dp_accessToken": {
+            "type": "string",
+            "example": "token"
+          }
+        },
+        "required": [
+          "dp_accessToken"
+        ]
+      },
+      "CreateItemCategoryDto": {
+        "type": "object",
+        "properties": {
+          "dp_name": {
+            "type": "string",
+            "example": "Аксессуары"
+          },
+          "dp_sortingIndex": {
+            "type": "number",
+            "example": 10000
+          },
+          "dp_urlSegment": {
+            "type": "string",
+            "example": "dp-accessories"
+          },
+          "dp_photoUrl": {
+            "type": "string",
+            "example": "https://ooodepa.github.io/ooodepa_imgs/products/de-pa-electric/accessories/11202.png"
+          },
+          "dp_seoKeywords": {
+            "type": "string",
+            "example": ""
+          },
+          "dp_seoDescription": {
+            "type": "string",
+            "example": ""
+          },
+          "dp_isHidden": {
+            "type": "boolean",
+            "example": false
+          },
+          "dp_itemBrandId": {
+            "type": "number",
+            "example": 0
+          }
+        },
+        "required": [
+          "dp_name",
+          "dp_sortingIndex",
+          "dp_urlSegment",
+          "dp_photoUrl",
+          "dp_seoKeywords",
+          "dp_seoDescription",
+          "dp_isHidden"
+        ]
+      },
+      "ItemCategoryNoIdDto": {
+        "type": "object",
+        "properties": {
+          "dp_name": {
+            "type": "string",
+            "example": "Аксессуары"
+          },
+          "dp_sortingIndex": {
+            "type": "number",
+            "example": 10000
+          },
+          "dp_urlSegment": {
+            "type": "string",
+            "example": "dp-accessories"
+          },
+          "dp_photoUrl": {
+            "type": "string",
+            "example": "https://ooodepa.github.io/ooodepa_imgs/products/de-pa-electric/accessories/11202.png"
+          },
+          "dp_seoKeywords": {
+            "type": "string",
+            "example": ""
+          },
+          "dp_seoDescription": {
+            "type": "string",
+            "example": ""
+          },
+          "dp_isHidden": {
+            "type": "boolean",
+            "example": false
+          },
+          "dp_itemBrandId": {
+            "type": "number",
+            "example": 0
+          }
+        },
+        "required": [
+          "dp_name",
+          "dp_sortingIndex",
+          "dp_urlSegment",
+          "dp_photoUrl",
+          "dp_seoKeywords",
+          "dp_seoDescription",
+          "dp_isHidden"
+        ]
+      },
+      "CreateBulkItemCategoryDto": {
+        "type": "object",
+        "properties": {
+          "bulk": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ItemCategoryNoIdDto"
+            }
+          }
+        },
+        "required": [
+          "bulk"
+        ]
+      },
+      "ItemCategoryWithIdDto": {
+        "type": "object",
+        "properties": {
+          "dp_name": {
+            "type": "string",
+            "example": "Аксессуары"
+          },
+          "dp_sortingIndex": {
+            "type": "number",
+            "example": 10000
+          },
+          "dp_urlSegment": {
+            "type": "string",
+            "example": "dp-accessories"
+          },
+          "dp_photoUrl": {
+            "type": "string",
+            "example": "https://ooodepa.github.io/ooodepa_imgs/products/de-pa-electric/accessories/11202.png"
+          },
+          "dp_seoKeywords": {
+            "type": "string",
+            "example": ""
+          },
+          "dp_seoDescription": {
+            "type": "string",
+            "example": ""
+          },
+          "dp_isHidden": {
+            "type": "boolean",
+            "example": false
+          },
+          "dp_itemBrandId": {
+            "type": "number",
+            "example": 0
+          },
+          "dp_id": {
+            "type": "number",
+            "example": 0
+          }
+        },
+        "required": [
+          "dp_name",
+          "dp_sortingIndex",
+          "dp_urlSegment",
+          "dp_photoUrl",
+          "dp_seoKeywords",
+          "dp_seoDescription",
+          "dp_isHidden",
+          "dp_id"
+        ]
+      },
+      "UpdateItemCategoryDto": {
+        "type": "object",
+        "properties": {
+          "dp_name": {
+            "type": "string",
+            "example": "Аксессуары"
+          },
+          "dp_sortingIndex": {
+            "type": "number",
+            "example": 10000
+          },
+          "dp_urlSegment": {
+            "type": "string",
+            "example": "dp-accessories"
+          },
+          "dp_photoUrl": {
+            "type": "string",
+            "example": "https://ooodepa.github.io/ooodepa_imgs/products/de-pa-electric/accessories/11202.png"
+          },
+          "dp_seoKeywords": {
+            "type": "string",
+            "example": ""
+          },
+          "dp_seoDescription": {
+            "type": "string",
+            "example": ""
+          },
+          "dp_isHidden": {
+            "type": "boolean",
+            "example": false
+          },
+          "dp_itemBrandId": {
+            "type": "number",
+            "example": 0
+          }
+        },
+        "required": [
+          "dp_name",
+          "dp_sortingIndex",
+          "dp_urlSegment",
+          "dp_photoUrl",
+          "dp_seoKeywords",
+          "dp_seoDescription",
+          "dp_isHidden"
+        ]
+      },
+      "UpdateBulkItemCategoryDto": {
+        "type": "object",
+        "properties": {
+          "bulk": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ItemCategoryWithIdDto"
+            }
+          }
+        },
+        "required": [
+          "bulk"
+        ]
+      },
+      "CreateItemCharacteristicDto": {
+        "type": "object",
+        "properties": {
+          "dp_name": {
+            "type": "string",
+            "example": "В коробке"
+          }
+        },
+        "required": [
+          "dp_name"
+        ]
+      },
+      "ItemCharacteristicNoIdDto": {
+        "type": "object",
+        "properties": {
+          "dp_name": {
+            "type": "string",
+            "example": "В коробке"
+          }
+        },
+        "required": [
+          "dp_name"
+        ]
+      },
+      "CreateBulkItemCharacteristicDto": {
+        "type": "object",
+        "properties": {
+          "bulk": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ItemCharacteristicNoIdDto"
+            }
+          }
+        },
+        "required": [
+          "bulk"
+        ]
+      },
+      "ItemCharacteristicWithIdDto": {
+        "type": "object",
+        "properties": {
+          "dp_name": {
+            "type": "string",
+            "example": "В коробке"
+          },
+          "dp_id": {
+            "type": "number",
+            "example": 0
+          }
+        },
+        "required": [
+          "dp_name",
+          "dp_id"
+        ]
+      },
+      "UpdateItemCharacteristicDto": {
+        "type": "object",
+        "properties": {
+          "dp_name": {
+            "type": "string",
+            "example": "В коробке"
+          }
+        },
+        "required": [
+          "dp_name"
+        ]
+      },
+      "UpdateBulkItemCharacteristicDto": {
+        "type": "object",
+        "properties": {
+          "bulk": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ItemCharacteristicWithIdDto"
+            }
+          }
+        },
+        "required": [
+          "bulk"
+        ]
+      },
+      "LstItemCharacteristicNoIdDto": {
+        "type": "object",
+        "properties": {
+          "dp_characteristicId": {
+            "type": "number",
+            "example": 1
+          },
+          "dp_value": {
+            "type": "string",
+            "example": "12"
+          }
+        },
+        "required": [
+          "dp_characteristicId",
+          "dp_value"
+        ]
+      },
+      "LstItemGaleryNoIdDto": {
+        "type": "object",
+        "properties": {
+          "dp_photoUrl": {
+            "type": "string",
+            "example": "https://ooodepa.github.io/ooodepa_imgs/products/de-pa-electric/accessories/10012-1.png"
+          }
+        },
+        "required": [
+          "dp_photoUrl"
+        ]
+      },
+      "CreateItemDto": {
+        "type": "object",
+        "properties": {
+          "dp_name": {
+            "type": "string",
+            "example": "Розетка тройная встравая с заземлением"
+          },
+          "dp_model": {
+            "type": "string",
+            "example": "dp-10012"
+          },
+          "dp_cost": {
+            "type": "number",
+            "example": 10.61
+          },
+          "dp_photoUrl": {
+            "type": "string",
+            "example": "https://ooodepa.github.io/ooodepa_imgs/products/de-pa-electric/accessories/10012.png"
+          },
+          "dp_itemCategoryId": {
+            "type": "number",
+            "example": 1
+          },
+          "dp_seoKeywords": {
+            "type": "string",
+            "example": ""
+          },
+          "dp_seoDescription": {
+            "type": "string",
+            "example": ""
+          },
+          "dp_itemCharecteristics": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LstItemCharacteristicNoIdDto"
+            }
+          },
+          "dp_itemGalery": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LstItemGaleryNoIdDto"
+            }
+          }
+        },
+        "required": [
+          "dp_name",
+          "dp_model",
+          "dp_cost",
+          "dp_photoUrl",
+          "dp_itemCategoryId",
+          "dp_seoKeywords",
+          "dp_seoDescription",
+          "dp_itemCharecteristics",
+          "dp_itemGalery"
+        ]
+      },
+      "ItemNoIdDto": {
+        "type": "object",
+        "properties": {
+          "dp_name": {
+            "type": "string",
+            "example": "Розетка тройная встравая с заземлением"
+          },
+          "dp_model": {
+            "type": "string",
+            "example": "dp-10012"
+          },
+          "dp_cost": {
+            "type": "number",
+            "example": 10.61
+          },
+          "dp_photoUrl": {
+            "type": "string",
+            "example": "https://ooodepa.github.io/ooodepa_imgs/products/de-pa-electric/accessories/10012.png"
+          },
+          "dp_itemCategoryId": {
+            "type": "number",
+            "example": 1
+          },
+          "dp_seoKeywords": {
+            "type": "string",
+            "example": ""
+          },
+          "dp_seoDescription": {
+            "type": "string",
+            "example": ""
+          },
+          "dp_itemCharecteristics": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LstItemCharacteristicNoIdDto"
+            }
+          },
+          "dp_itemGalery": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LstItemGaleryNoIdDto"
+            }
+          }
+        },
+        "required": [
+          "dp_name",
+          "dp_model",
+          "dp_cost",
+          "dp_photoUrl",
+          "dp_itemCategoryId",
+          "dp_seoKeywords",
+          "dp_seoDescription",
+          "dp_itemCharecteristics",
+          "dp_itemGalery"
+        ]
+      },
+      "CreateBulkItemDto": {
+        "type": "object",
+        "properties": {
+          "bulk": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ItemNoIdDto"
+            }
+          }
+        },
+        "required": [
+          "bulk"
+        ]
+      },
+      "GetItemShortDto": {
+        "type": "object",
+        "properties": {
+          "dp_id": {
+            "type": "string",
+            "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+          },
+          "dp_name": {
+            "type": "string",
+            "example": "Розетка тройная встравая с заземлением"
+          },
+          "dp_model": {
+            "type": "string",
+            "example": "dp-10012"
+          },
+          "dp_cost": {
+            "type": "number",
+            "example": 10.61
+          },
+          "dp_photoUrl": {
+            "type": "string",
+            "example": "https://ooodepa.github.io/ooodepa_imgs/products/de-pa-electric/accessories/10012.png"
+          },
+          "dp_itemCategoryId": {
+            "type": "number",
+            "example": 1
+          },
+          "dp_seoKeywords": {
+            "type": "string",
+            "example": ""
+          },
+          "dp_seoDescription": {
+            "type": "string",
+            "example": ""
+          }
+        },
+        "required": [
+          "dp_id",
+          "dp_name",
+          "dp_model",
+          "dp_cost",
+          "dp_photoUrl",
+          "dp_itemCategoryId",
+          "dp_seoKeywords",
+          "dp_seoDescription"
+        ]
+      },
+      "LstItemCharacteristicWithIdDto": {
+        "type": "object",
+        "properties": {
+          "dp_characteristicId": {
+            "type": "number",
+            "example": 1
+          },
+          "dp_value": {
+            "type": "string",
+            "example": "12"
+          },
+          "dp_id": {
+            "type": "number",
+            "example": 0
+          },
+          "dp_itemId": {
+            "type": "string",
+            "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+          }
+        },
+        "required": [
+          "dp_characteristicId",
+          "dp_value",
+          "dp_id",
+          "dp_itemId"
+        ]
+      },
+      "LstItemGaleryWithIdDto": {
+        "type": "object",
+        "properties": {
+          "dp_photoUrl": {
+            "type": "string",
+            "example": "https://ooodepa.github.io/ooodepa_imgs/products/de-pa-electric/accessories/10012-1.png"
+          },
+          "dp_id": {
+            "type": "number",
+            "example": 0
+          },
+          "dp_itemId": {
+            "type": "string",
+            "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+          }
+        },
+        "required": [
+          "dp_photoUrl",
+          "dp_id",
+          "dp_itemId"
+        ]
+      },
+      "GetItemDto": {
+        "type": "object",
+        "properties": {
+          "dp_id": {
+            "type": "string",
+            "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+          },
+          "dp_name": {
+            "type": "string",
+            "example": "Розетка тройная встравая с заземлением"
+          },
+          "dp_model": {
+            "type": "string",
+            "example": "dp-10012"
+          },
+          "dp_cost": {
+            "type": "number",
+            "example": 10.61
+          },
+          "dp_photoUrl": {
+            "type": "string",
+            "example": "https://ooodepa.github.io/ooodepa_imgs/products/de-pa-electric/accessories/10012.png"
+          },
+          "dp_itemCategoryId": {
+            "type": "number",
+            "example": 1
+          },
+          "dp_seoKeywords": {
+            "type": "string",
+            "example": ""
+          },
+          "dp_seoDescription": {
+            "type": "string",
+            "example": ""
+          },
+          "dp_itemCharecteristics": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LstItemCharacteristicWithIdDto"
+            }
+          },
+          "dp_itemGalery": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LstItemGaleryWithIdDto"
+            }
+          }
+        },
+        "required": [
+          "dp_id",
+          "dp_name",
+          "dp_model",
+          "dp_cost",
+          "dp_photoUrl",
+          "dp_itemCategoryId",
+          "dp_seoKeywords",
+          "dp_seoDescription",
+          "dp_itemCharecteristics",
+          "dp_itemGalery"
+        ]
+      },
+      "FindItemModelsDto": {
+        "type": "object",
+        "properties": {
+          "models": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "models"
+        ]
+      },
+      "FindItemIdsDto": {
+        "type": "object",
+        "properties": {
+          "ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "ids"
+        ]
+      },
+      "SearchItemsDto": {
+        "type": "object",
+        "properties": {
+          "search": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "search"
+        ]
+      },
+      "SearchAllItemsDto": {
+        "type": "object",
+        "properties": {
+          "search": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "search"
+        ]
+      },
+      "LstItemCharacteristicEntity": {
+        "type": "object",
+        "properties": {
+          "dp_id": {
+            "type": "number"
+          },
+          "dp_itemId": {
+            "type": "string"
+          },
+          "dp_characteristicId": {
+            "type": "number"
+          },
+          "dp_value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "dp_id",
+          "dp_itemId",
+          "dp_characteristicId",
+          "dp_value"
+        ]
+      },
+      "LstItemGaleryEntity": {
+        "type": "object",
+        "properties": {
+          "dp_id": {
+            "type": "number"
+          },
+          "dp_itemId": {
+            "type": "string"
+          },
+          "dp_photoUrl": {
+            "type": "string",
+            "example": "https://example.com/image.png"
+          }
+        },
+        "required": [
+          "dp_id",
+          "dp_itemId",
+          "dp_photoUrl"
+        ]
+      },
+      "ItemEntity": {
+        "type": "object",
+        "properties": {
+          "dp_id": {
+            "type": "string"
+          },
+          "dp_name": {
+            "type": "string"
+          },
+          "dp_model": {
+            "type": "string"
+          },
+          "dp_cost": {
+            "type": "number"
+          },
+          "dp_photoUrl": {
+            "type": "string"
+          },
+          "dp_itemCategoryId": {
+            "type": "number"
+          },
+          "dp_seoKeywords": {
+            "type": "string"
+          },
+          "dp_seoDescription": {
+            "type": "string"
+          },
+          "dp_itemCharecteristics": {
+            "$ref": "#/components/schemas/LstItemCharacteristicEntity"
+          },
+          "dp_itemGalery": {
+            "$ref": "#/components/schemas/LstItemGaleryEntity"
+          }
+        },
+        "required": [
+          "dp_id",
+          "dp_name",
+          "dp_model",
+          "dp_cost",
+          "dp_photoUrl",
+          "dp_itemCategoryId",
+          "dp_seoKeywords",
+          "dp_seoDescription",
+          "dp_itemCharecteristics",
+          "dp_itemGalery"
+        ]
+      },
+      "UpdateItemDto": {
+        "type": "object",
+        "properties": {
+          "dp_name": {
+            "type": "string",
+            "example": "Розетка тройная встравая с заземлением"
+          },
+          "dp_model": {
+            "type": "string",
+            "example": "dp-10012"
+          },
+          "dp_cost": {
+            "type": "number",
+            "example": 10.61
+          },
+          "dp_photoUrl": {
+            "type": "string",
+            "example": "https://ooodepa.github.io/ooodepa_imgs/products/de-pa-electric/accessories/10012.png"
+          },
+          "dp_itemCategoryId": {
+            "type": "number",
+            "example": 1
+          },
+          "dp_seoKeywords": {
+            "type": "string",
+            "example": ""
+          },
+          "dp_seoDescription": {
+            "type": "string",
+            "example": ""
+          },
+          "dp_itemCharecteristics": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LstItemCharacteristicNoIdDto"
+            }
+          },
+          "dp_itemGalery": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LstItemGaleryNoIdDto"
+            }
+          }
+        },
+        "required": [
+          "dp_name",
+          "dp_model",
+          "dp_cost",
+          "dp_photoUrl",
+          "dp_itemCategoryId",
+          "dp_seoKeywords",
+          "dp_seoDescription",
+          "dp_itemCharecteristics",
+          "dp_itemGalery"
+        ]
+      },
+      "ItemWithIdDto": {
+        "type": "object",
+        "properties": {
+          "dp_name": {
+            "type": "string",
+            "example": "Розетка тройная встравая с заземлением"
+          },
+          "dp_model": {
+            "type": "string",
+            "example": "dp-10012"
+          },
+          "dp_cost": {
+            "type": "number",
+            "example": 10.61
+          },
+          "dp_photoUrl": {
+            "type": "string",
+            "example": "https://ooodepa.github.io/ooodepa_imgs/products/de-pa-electric/accessories/10012.png"
+          },
+          "dp_itemCategoryId": {
+            "type": "number",
+            "example": 1
+          },
+          "dp_seoKeywords": {
+            "type": "string",
+            "example": ""
+          },
+          "dp_seoDescription": {
+            "type": "string",
+            "example": ""
+          },
+          "dp_itemCharecteristics": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LstItemCharacteristicNoIdDto"
+            }
+          },
+          "dp_itemGalery": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LstItemGaleryNoIdDto"
+            }
+          },
+          "dp_id": {
+            "type": "string",
+            "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+          }
+        },
+        "required": [
+          "dp_name",
+          "dp_model",
+          "dp_cost",
+          "dp_photoUrl",
+          "dp_itemCategoryId",
+          "dp_seoKeywords",
+          "dp_seoDescription",
+          "dp_itemCharecteristics",
+          "dp_itemGalery",
+          "dp_id"
+        ]
+      },
+      "UpdateBulkItemDto": {
+        "type": "object",
+        "properties": {
+          "bulk": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ItemWithIdDto"
+            }
+          }
+        },
+        "required": [
+          "bulk"
+        ]
+      },
+      "LstArticleAttachedLinks": {
+        "type": "object",
+        "properties": {
+          "dp_name": {
+            "type": "string",
+            "example": "Каталог 2023"
+          },
+          "dp_url": {
+            "type": "string",
+            "example": "https://example.com/catalogs/catalog-2023.pdf"
+          },
+          "dp_articleId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "dp_name",
+          "dp_url",
+          "dp_articleId"
+        ]
+      },
+      "CreateArticleDto": {
+        "type": "object",
+        "properties": {
+          "dp_name": {
+            "type": "string",
+            "example": "Каталоги"
+          },
+          "dp_date": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2023-04-13T05:00:00.000"
+          },
+          "dp_urlSegment": {
+            "type": "string",
+            "example": "catalogs"
+          },
+          "dp_photoUrl": {
+            "type": "string",
+            "example": "https://example.com/image.png"
+          },
+          "dp_text": {
+            "type": "string"
+          },
+          "dp_seoKeywords": {
+            "type": "string"
+          },
+          "dp_seoDescription": {
+            "type": "string"
+          },
+          "dp_articleAttachedLinks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LstArticleAttachedLinks"
+            }
+          }
+        },
+        "required": [
+          "dp_name",
+          "dp_date",
+          "dp_urlSegment",
+          "dp_photoUrl",
+          "dp_text",
+          "dp_seoKeywords",
+          "dp_seoDescription",
+          "dp_articleAttachedLinks"
+        ]
+      },
+      "CreateBulkArticleDto": {
+        "type": "object",
+        "properties": {
+          "bulk": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateArticleDto"
+            }
+          }
+        },
+        "required": [
+          "bulk"
+        ]
+      },
+      "ArticleEntity": {
+        "type": "object",
+        "properties": {
+          "dp_id": {
+            "type": "string"
+          },
+          "dp_name": {
+            "type": "string",
+            "example": "Каталоги"
+          },
+          "dp_date": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2023-04-13T05:00:00.000"
+          },
+          "dp_urlSegment": {
+            "type": "string",
+            "example": "catalogs"
+          },
+          "dp_photoUrl": {
+            "type": "string",
+            "example": "https://example.com/image.png"
+          },
+          "dp_text": {
+            "type": "string"
+          },
+          "dp_seoKeywords": {
+            "type": "string"
+          },
+          "dp_seoDescription": {
+            "type": "string"
+          },
+          "dp_articleAttachedLinks": {
+            "$ref": "#/components/schemas/LstArticleAttachedLinks"
+          }
+        },
+        "required": [
+          "dp_id",
+          "dp_name",
+          "dp_date",
+          "dp_urlSegment",
+          "dp_photoUrl",
+          "dp_text",
+          "dp_seoKeywords",
+          "dp_seoDescription",
+          "dp_articleAttachedLinks"
+        ]
+      },
+      "UpdateArticleDto": {
+        "type": "object",
+        "properties": {
+          "dp_name": {
+            "type": "string",
+            "example": "Каталоги"
+          },
+          "dp_date": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2023-04-13T05:00:00.000"
+          },
+          "dp_urlSegment": {
+            "type": "string",
+            "example": "catalogs"
+          },
+          "dp_photoUrl": {
+            "type": "string",
+            "example": "https://example.com/image.png"
+          },
+          "dp_text": {
+            "type": "string"
+          },
+          "dp_seoKeywords": {
+            "type": "string"
+          },
+          "dp_seoDescription": {
+            "type": "string"
+          },
+          "dp_articleAttachedLinks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LstArticleAttachedLinks"
+            }
+          }
+        }
+      },
+      "ContactTypeCreateDto": {
+        "type": "object",
+        "properties": {
+          "dp_name": {
+            "type": "string",
+            "example": "whatsapp"
+          }
+        },
+        "required": [
+          "dp_name"
+        ]
+      },
+      "ContactTypeCreateBulkDto": {
+        "type": "object",
+        "properties": {
+          "bulk": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContactTypeCreateDto"
+            }
+          }
+        },
+        "required": [
+          "bulk"
+        ]
+      },
+      "ContactTypeEntity": {
+        "type": "object",
+        "properties": {
+          "dp_id": {
+            "type": "number"
+          },
+          "dp_name": {
+            "type": "string",
+            "example": "whatsapp"
+          }
+        },
+        "required": [
+          "dp_id",
+          "dp_name"
+        ]
+      },
+      "ContactTypeUpdateDto": {
+        "type": "object",
+        "properties": {
+          "dp_name": {
+            "type": "string",
+            "example": "whatsapp"
+          }
+        }
+      },
+      "CreateLstHelperCommunicationDto": {
+        "type": "object",
+        "properties": {
+          "dp_contactTypeId": {
+            "type": "number",
+            "example": 1
+          },
+          "dp_value": {
+            "type": "string",
+            "example": "+375331112233"
+          },
+          "dp_isHidden": {
+            "type": "boolean",
+            "example": false
+          }
+        },
+        "required": [
+          "dp_contactTypeId",
+          "dp_value",
+          "dp_isHidden"
+        ]
+      },
+      "CreateHelperDto": {
+        "type": "object",
+        "properties": {
+          "dp_sortingIndex": {
+            "type": "number"
+          },
+          "dp_name": {
+            "type": "string"
+          },
+          "dp_description": {
+            "type": "string"
+          },
+          "dp_isHidden": {
+            "type": "boolean",
+            "example": false
+          },
+          "dp_helperContactTypes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateLstHelperCommunicationDto"
+            }
+          }
+        },
+        "required": [
+          "dp_sortingIndex",
+          "dp_name",
+          "dp_description",
+          "dp_isHidden",
+          "dp_helperContactTypes"
+        ]
+      },
+      "CreateBulkHelperDto": {
+        "type": "object",
+        "properties": {
+          "bulk": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateHelperDto"
+            }
+          }
+        },
+        "required": [
+          "bulk"
+        ]
+      },
+      "LstHelperCommunicationTypeEntity": {
+        "type": "object",
+        "properties": {
+          "dp_id": {
+            "type": "number"
+          },
+          "dp_helperId": {
+            "type": "string"
+          },
+          "dp_contactTypeId": {
+            "type": "number"
+          },
+          "dp_value": {
+            "type": "string",
+            "example": "+375331112233"
+          },
+          "dp_isHidden": {
+            "type": "boolean",
+            "example": false
+          }
+        },
+        "required": [
+          "dp_id",
+          "dp_helperId",
+          "dp_contactTypeId",
+          "dp_value",
+          "dp_isHidden"
+        ]
+      },
+      "HelperEntity": {
+        "type": "object",
+        "properties": {
+          "dp_id": {
+            "type": "string"
+          },
+          "dp_sortingIndex": {
+            "type": "number",
+            "example": 10000
+          },
+          "dp_name": {
+            "type": "string",
+            "example": "Центральный офис"
+          },
+          "dp_description": {
+            "type": "string",
+            "example": "г. Брест"
+          },
+          "dp_isHidden": {
+            "type": "boolean",
+            "example": false
+          },
+          "dp_helperContactTypes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LstHelperCommunicationTypeEntity"
+            }
+          }
+        },
+        "required": [
+          "dp_id",
+          "dp_sortingIndex",
+          "dp_name",
+          "dp_description",
+          "dp_isHidden",
+          "dp_helperContactTypes"
+        ]
+      },
+      "UpdateHelperDto": {
+        "type": "object",
+        "properties": {
+          "dp_sortingIndex": {
+            "type": "number"
+          },
+          "dp_name": {
+            "type": "string"
+          },
+          "dp_description": {
+            "type": "string"
+          },
+          "dp_isHidden": {
+            "type": "boolean",
+            "example": false
+          },
+          "dp_helperContactTypes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateLstHelperCommunicationDto"
+            }
+          }
+        }
+      },
+      "CreateItemBrandDto": {
+        "type": "object",
+        "properties": {
+          "dp_name": {
+            "type": "string",
+            "example": "DE-PA Electric"
+          },
+          "dp_sortingIndex": {
+            "type": "number",
+            "example": 10000
+          },
+          "dp_photoUrl": {
+            "type": "string",
+            "example": "https://ooodepa.github.io/ooodepa_imgs/productCategories/de-pa-electric-logo.png"
+          },
+          "dp_urlSegment": {
+            "type": "string",
+            "example": "de-pa-electric"
+          },
+          "dp_seoKeywords": {
+            "type": "string",
+            "example": ""
+          },
+          "dp_seoDescription": {
+            "type": "string",
+            "example": ""
+          },
+          "dp_isHidden": {
+            "type": "boolean",
+            "example": false
+          }
+        },
+        "required": [
+          "dp_name",
+          "dp_sortingIndex",
+          "dp_photoUrl",
+          "dp_urlSegment",
+          "dp_seoKeywords",
+          "dp_seoDescription",
+          "dp_isHidden"
+        ]
+      },
+      "ItemBrandNoIdDto": {
+        "type": "object",
+        "properties": {
+          "dp_name": {
+            "type": "string",
+            "example": "DE-PA Electric"
+          },
+          "dp_sortingIndex": {
+            "type": "number",
+            "example": 10000
+          },
+          "dp_photoUrl": {
+            "type": "string",
+            "example": "https://ooodepa.github.io/ooodepa_imgs/productCategories/de-pa-electric-logo.png"
+          },
+          "dp_urlSegment": {
+            "type": "string",
+            "example": "de-pa-electric"
+          },
+          "dp_seoKeywords": {
+            "type": "string",
+            "example": ""
+          },
+          "dp_seoDescription": {
+            "type": "string",
+            "example": ""
+          },
+          "dp_isHidden": {
+            "type": "boolean",
+            "example": false
+          }
+        },
+        "required": [
+          "dp_name",
+          "dp_sortingIndex",
+          "dp_photoUrl",
+          "dp_urlSegment",
+          "dp_seoKeywords",
+          "dp_seoDescription",
+          "dp_isHidden"
+        ]
+      },
+      "CreateBulkItemBrandDto": {
+        "type": "object",
+        "properties": {
+          "bulk": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ItemBrandNoIdDto"
+            }
+          }
+        },
+        "required": [
+          "bulk"
+        ]
+      },
+      "ItemBrandWithIdDto": {
+        "type": "object",
+        "properties": {
+          "dp_name": {
+            "type": "string",
+            "example": "DE-PA Electric"
+          },
+          "dp_sortingIndex": {
+            "type": "number",
+            "example": 10000
+          },
+          "dp_photoUrl": {
+            "type": "string",
+            "example": "https://ooodepa.github.io/ooodepa_imgs/productCategories/de-pa-electric-logo.png"
+          },
+          "dp_urlSegment": {
+            "type": "string",
+            "example": "de-pa-electric"
+          },
+          "dp_seoKeywords": {
+            "type": "string",
+            "example": ""
+          },
+          "dp_seoDescription": {
+            "type": "string",
+            "example": ""
+          },
+          "dp_isHidden": {
+            "type": "boolean",
+            "example": false
+          },
+          "dp_id": {
+            "type": "number",
+            "example": 0
+          }
+        },
+        "required": [
+          "dp_name",
+          "dp_sortingIndex",
+          "dp_photoUrl",
+          "dp_urlSegment",
+          "dp_seoKeywords",
+          "dp_seoDescription",
+          "dp_isHidden",
+          "dp_id"
+        ]
+      },
+      "UpdateItemBrandDto": {
+        "type": "object",
+        "properties": {
+          "dp_name": {
+            "type": "string",
+            "example": "DE-PA Electric"
+          },
+          "dp_sortingIndex": {
+            "type": "number",
+            "example": 10000
+          },
+          "dp_photoUrl": {
+            "type": "string",
+            "example": "https://ooodepa.github.io/ooodepa_imgs/productCategories/de-pa-electric-logo.png"
+          },
+          "dp_urlSegment": {
+            "type": "string",
+            "example": "de-pa-electric"
+          },
+          "dp_seoKeywords": {
+            "type": "string",
+            "example": ""
+          },
+          "dp_seoDescription": {
+            "type": "string",
+            "example": ""
+          },
+          "dp_isHidden": {
+            "type": "boolean",
+            "example": false
+          }
+        },
+        "required": [
+          "dp_name",
+          "dp_sortingIndex",
+          "dp_photoUrl",
+          "dp_urlSegment",
+          "dp_seoKeywords",
+          "dp_seoDescription",
+          "dp_isHidden"
+        ]
+      },
+      "UpdateBulkItemBrandDto": {
+        "type": "object",
+        "properties": {
+          "bulk": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ItemBrandWithIdDto"
+            }
+          }
+        },
+        "required": [
+          "bulk"
+        ]
+      },
+      "OrderItemDto": {
+        "type": "object",
+        "properties": {
+          "dp_itemId": {
+            "type": "string",
+            "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+          },
+          "dp_count": {
+            "type": "number",
+            "example": 1
+          }
+        },
+        "required": [
+          "dp_itemId",
+          "dp_count"
+        ]
+      },
+      "CreateOrderDto": {
+        "type": "object",
+        "properties": {
+          "dp_orderItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderItemDto"
+            }
+          }
+        },
+        "required": [
+          "dp_orderItems"
+        ]
+      },
+      "GetFavoriteItemDto": {
+        "type": "object",
+        "properties": {
+          "dp_id": {
+            "type": "number",
+            "example": 0
+          },
+          "dp_userId": {
+            "type": "number",
+            "example": 0
+          },
+          "dp_itemId": {
+            "type": "string",
+            "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+          }
+        },
+        "required": [
+          "dp_id",
+          "dp_userId",
+          "dp_itemId"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,45 @@
+<style>
+  .content {
+    width: 466px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    border: 1px solid #06c;
+    border-radius: 8px;
+    padding: 0 16px;
+    color: #24292f;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  .footer__text {
+    text-align: center;
+    color: grey;
+  }
+</style>
+
+<div class='content'>
+  <p>Здравствуйте.</p>
+
+  <p>
+    Мы получили запрос на смену электронной почты для вашего аккаунта. Если это
+    были вы, то пожалуйста подтвердите новый адрес электронной почты, перейдя по
+    ссылке ниже:
+  </p>
+
+  <p style='word-wrap: break-word;'>
+    <a target='_blank' href='{{dp_url_confirm_change_email}}'>
+      {{dp_url_confirm_change_email}}
+    </a>
+  </p>
+
+  <p>
+    Если вы не запрашивали смену электронной почты, пожалуйста, проигнорируйте
+    это письмо.
+  </p>
+
+  <p>С наилучшими пожеланиями,</p>
+  <p>{{dp_org}}</p>
+</div>
+
+<p class="footer__text">Уведомление о смене электронной почты</p>
+
+<p class="footer__text">{{dp_org}}</p>

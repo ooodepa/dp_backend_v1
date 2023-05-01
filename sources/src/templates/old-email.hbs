@@ -1,0 +1,40 @@
+<style>
+  .content {
+    width: 466px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    border: 1px solid #06c;
+    border-radius: 8px;
+    padding: 0 16px;
+    color: #24292f;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  .footer__text {
+    text-align: center;
+    color: grey;
+  }
+</style>
+
+<div class='content'>
+  {{! <p>Тема: Уведомление о смене электронной почты</p> }}
+
+  <p>Здравствуйте.</p>
+
+  <p>
+    Мы хотели уведомить вас о том, что была применена попытка изменения вашей
+    электронной почты на новую почту:
+    <b>{{dp_newEmail}}</b>
+  </p>
+
+  <p>Если вы не запрашивали изменение электронной почты, пожалуйста,</p>
+
+  <ul>
+    <li>закройте все сеансы</li>
+    <li>смените пароль</li>
+  </ul>
+</div>
+
+<p class="footer__text">Уведомление о смене электронной почты</p>
+
+<p class="footer__text">{{dp_org}}</p>
