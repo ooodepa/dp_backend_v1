@@ -12,8 +12,8 @@ export class ApkVersionsService {
   ) {}
 
   async findLast() {
-    const [candidate] =  await this.apkVersionEntity.find({
-      order: {dp_date: 'DESC'},
+    const [candidate] = await this.apkVersionEntity.find({
+      order: { dp_date: 'DESC' },
       take: 1,
     });
     return candidate;

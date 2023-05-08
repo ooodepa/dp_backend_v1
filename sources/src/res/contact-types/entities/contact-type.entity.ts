@@ -1,13 +1,14 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('DP_CTL_ContactTypes')
 export class ContactTypeEntity {
-  @ApiProperty()
   @PrimaryGeneratedColumn()
   dp_id: number;
 
-  @ApiProperty({ example: 'whatsapp' })
-  @Column({ unique: true })
+  @Index('UNI_ctlContactTypes_name', { unique: true })
+  @Column()
   dp_name: string;
+
+  @Column({ default: false })
+  dp_isHidden: boolean;
 }

@@ -18,8 +18,8 @@ export class DPCTLUsers1679771812813 implements MigrationInterface {
             \`dp_firstName\` varchar(32) NOT NULL,
             \`dp_lastName\` varchar(32) NOT NULL,
             \`dp_middleName\` varchar(32) NOT NULL,
-            UNIQUE INDEX \`IDX_dcf0f04c8479c5e51b3559c982\` (\`dp_login\`),
-            UNIQUE INDEX \`IDX_0e72cc05d134241526e13449e6\` (\`dp_email\`),
+            UNIQUE INDEX \`UNI_ctlUsers_login\` (\`dp_login\`),
+            UNIQUE INDEX \`UNI_ctlUsers_email\` (\`dp_email\`),
             PRIMARY KEY (\`dp_id\`)
         ) ENGINE = InnoDB
     `);
@@ -27,10 +27,10 @@ export class DPCTLUsers1679771812813 implements MigrationInterface {
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
-        DROP INDEX \`IDX_0e72cc05d134241526e13449e6\` ON \`DP_CTL_Users\`
+        ALTER TABLE \`DP_CTL_Users\` DROP INDEX \`UNI_ctlUsers_email\`
     `);
     await queryRunner.query(`
-        DROP INDEX \`IDX_dcf0f04c8479c5e51b3559c982\` ON \`DP_CTL_Users\`
+        ALTER TABLE \`DP_CTL_Users\`  DROP INDEX \`UNI_ctlUsers_login\`
     `);
     await queryRunner.query(`
         DROP TABLE \`DP_CTL_Users\`

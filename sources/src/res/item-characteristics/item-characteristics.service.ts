@@ -4,7 +4,7 @@ import { DataSource, In, Repository } from 'typeorm';
 
 import HttpResponse from 'src/utils/HttpResponseDto/HttpResponse';
 import HttpExceptions from 'src/utils/HttpResponseDto/HttpException';
-import ItemCharacteristicNoIdDto from './dto/item-characteristics-no-id.dto';
+import ItemCharacteristicNoIdDto from './dto/item-characteristic-no-id.dto';
 import ItemCharacteristicWithIdDto from './dto/item-characteristic-with-id.dto';
 import { ItemCharacteristicEntity } from './entities/item-characteristic.entity';
 import { CreateItemCharacteristicDto } from './dto/create-item-characteristic.dto';

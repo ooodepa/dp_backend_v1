@@ -1,5 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 
+import SessionsApiProperty from '../sessions.swagger';
+
 export class CreateSessionResponseDto {
   @ApiProperty({ example: 201 })
   statusCode: number;
@@ -7,9 +9,9 @@ export class CreateSessionResponseDto {
   @ApiProperty()
   message: string;
 
-  @ApiProperty({ example: 'token' })
+  @ApiProperty(SessionsApiProperty.dp_accessToken)
   dp_accessToken: string;
 
-  @ApiProperty({ example: 'token' })
+  @ApiProperty(SessionsApiProperty.dp_refreshToken)
   dp_refreshToken: string;
 }

@@ -38,6 +38,7 @@ import { FavoriteItemsModule } from './res/favorite-items/favorite-items.module'
       database: process.env.APP__DB_NAME,
       entities: [path.join('dist', '**', '*.entity.js')],
       logging: true,
+      logger: 'file',
       synchronize: false,
     }),
     UsersModule,

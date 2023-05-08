@@ -17,12 +17,11 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
+import GetSessionDto from './dto/get-session.dto';
 import { SessionsService } from './sessions.service';
-import { SessionEntity } from './entities/session.entity';
 import { CreateSessionDto } from './dto/create-session.dto';
 import { UpdateSessionResponseDto } from './dto/update-session.dto';
 import SwaggerApiResponse from 'src/utils/Swagger/SwaggerApiResponse';
-import SwaggerApiOperation from 'src/utils/Swagger/SwaggerApiOperation';
 import HttpResponseDto from 'src/utils/HttpResponseDto/HttpResponseDto.dto';
 import { CreateSessionResponseDto } from './dto/create-session-response.dto';
 import { VerifyAccessTokenGuard } from 'src/guards/VerifyAccessTokenGuard.guard';
@@ -70,10 +69,7 @@ export class SessionsController {
 
   @ApiTags('user')
   @ApiOperation({ summary: 'Получить список сессий' })
-  @ApiResponse({
-    ...SwaggerApiOperation.Find,
-    type: [SessionEntity],
-  })
+  @ApiResponse({ ...SwaggerApiResponse.Finded, type: [GetSessionDto] })
   @ApiResponse(SwaggerApiResponse.Unauthorized)
   @ApiResponse(SwaggerApiResponse.ServerError)
   @ApiBearerAuth('access-token')

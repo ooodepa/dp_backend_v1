@@ -1,11 +1,11 @@
 import { IsNumber } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-import ItemCategoryDto from './item-category.dto';
-import ItemCategoryApiProperty from '../item-category-api-property';
+import ItemCategoryNoIdDto from './item-category-no-id.dto';
+import ItemCategoriesApiProperty from '../item-categories.swagger';
 
-export default class ItemCategoryWithIdDto extends ItemCategoryDto {
+export default class ItemCategoryWithIdDto extends ItemCategoryNoIdDto {
   @IsNumber()
-  @ApiProperty(ItemCategoryApiProperty.dp_id)
+  @ApiProperty(ItemCategoriesApiProperty.dp_id)
   dp_id: number;
 }

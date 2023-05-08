@@ -36,13 +36,13 @@ export class ItemsService {
 
       const uuid = savedItem.dp_id;
 
-      dto.dp_itemCharecteristics.forEach((e) => {
+      dto.dp_itemCharacteristics.forEach((e) => {
         e.dp_itemId = uuid;
       });
 
       await queryRunner.manager
         .getRepository(LstItemCharacteristicEntity)
-        .save(dto.dp_itemCharecteristics);
+        .save(dto.dp_itemCharacteristics);
 
       dto.dp_itemGalery.forEach((e) => {
         e.dp_itemId = uuid;
@@ -75,13 +75,13 @@ export class ItemsService {
 
         const uuid = savedItem.dp_id;
 
-        bulk[i].dp_itemCharecteristics.forEach((e) => {
+        bulk[i].dp_itemCharacteristics.forEach((e) => {
           e.dp_itemId = uuid;
         });
 
         await queryRunner.manager
           .getRepository(LstItemCharacteristicEntity)
-          .save(bulk[i].dp_itemCharecteristics);
+          .save(bulk[i].dp_itemCharacteristics);
 
         bulk[i].dp_itemGalery.forEach((e) => {
           e.dp_itemId = uuid;
@@ -118,10 +118,12 @@ export class ItemsService {
     return await this.itemEntity.find({
       where: {
         dp_model: filter.dp_model,
+
         dp_itemCategoryId: filter.dp_itemCategoryId
           ? Number(filter.dp_itemCategoryId)
           : undefined,
       },
+      relations: ['dp_itemCharacteristics', 'dp_itemGalery'],
       order: { dp_model: 'ASC' },
     });
   }
@@ -130,13 +132,14 @@ export class ItemsService {
     await this.itemEntity.findOneOrFail({ where: { dp_model: model } });
     return await this.itemEntity.findOne({
       where: { dp_model: model },
-      relations: ['dp_itemCharecteristics', 'dp_itemGalery'],
+      relations: ['dp_itemCharacteristics', 'dp_itemGalery'],
     });
   }
 
   async findModels(dto: FindItemModelsDto) {
     return await this.itemEntity.find({
       where: { dp_model: In(dto.models) },
+      relations: ['dp_itemCharacteristics', 'dp_itemGalery'],
       order: { dp_model: 'DESC' },
     });
   }
@@ -144,6 +147,7 @@ export class ItemsService {
   async findIds(dto: FindItemIdsDto) {
     return await this.itemEntity.find({
       where: { dp_id: In(dto.ids) },
+      relations: ['dp_itemCharacteristics', 'dp_itemGalery'],
       order: { dp_model: 'DESC' },
     });
   }
@@ -164,6 +168,7 @@ export class ItemsService {
         { dp_model: Like(`%${search}%`) },
         { dp_name: Like(`%${search}%`) },
       ],
+      relations: ['dp_itemCharacteristics', 'dp_itemGalery'],
     });
   }
 
@@ -171,7 +176,7 @@ export class ItemsService {
     await this.itemEntity.findOneOrFail({ where: { dp_id: id } });
     return await this.itemEntity.findOne({
       where: { dp_id: id },
-      relations: ['dp_itemCharecteristics', 'dp_itemGalery'],
+      relations: ['dp_itemCharacteristics', 'dp_itemGalery'],
     });
   }
 
@@ -194,13 +199,13 @@ export class ItemsService {
 
       await queryRunner.manager.getRepository(ItemEntity).save(dto);
 
-      dto.dp_itemCharecteristics.forEach((e) => {
+      dto.dp_itemCharacteristics.forEach((e) => {
         e.dp_itemId = uuid;
       });
 
       await queryRunner.manager
         .getRepository(LstItemCharacteristicEntity)
-        .insert(dto.dp_itemCharecteristics);
+        .insert(dto.dp_itemCharacteristics);
 
       dto.dp_itemGalery.forEach((e) => {
         e.dp_itemId = uuid;
@@ -248,13 +253,13 @@ export class ItemsService {
 
         await queryRunner.manager.getRepository(ItemEntity).save(bulk[i]);
 
-        bulk[i].dp_itemCharecteristics.forEach((e) => {
+        bulk[i].dp_itemCharacteristics.forEach((e) => {
           e.dp_itemId = uuid;
         });
 
         await queryRunner.manager
           .getRepository(LstItemCharacteristicEntity)
-          .insert(bulk[i].dp_itemCharecteristics);
+          .insert(bulk[i].dp_itemCharacteristics);
 
         bulk[i].dp_itemGalery.forEach((e) => {
           e.dp_itemId = uuid;

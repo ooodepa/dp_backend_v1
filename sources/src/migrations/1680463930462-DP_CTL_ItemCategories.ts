@@ -14,8 +14,9 @@ export class DPCTLItemCategories1680463930462 implements MigrationInterface {
             \`dp_seoKeywords\` varchar(255) NOT NULL DEFAULT '',
             \`dp_seoDescription\` varchar(255) NOT NULL DEFAULT '',
             \`dp_isHidden\` tinyint NOT NULL DEFAULT 0,
-            UNIQUE INDEX \`IDX_b8cf6d9f5d710f523e80e47b09\` (\`dp_name\`),
-            UNIQUE INDEX \`IDX_11b3857fb725a0cab0c0100a12\` (\`dp_urlSegment\`),
+            UNIQUE INDEX \`UNI_ctlItemCategories_name\` (\`dp_name\`),
+            UNIQUE INDEX \`UNI_ctlItemCategories_urlSegment\` (\`dp_urlSegment\`),
+            UNIQUE INDEX \`UNI_ctlItemCategories_seoDescription\` (\`dp_seoDescription\`),
             PRIMARY KEY (\`dp_id\`)
         ) ENGINE = InnoDB
     `);
@@ -23,10 +24,13 @@ export class DPCTLItemCategories1680463930462 implements MigrationInterface {
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
-        ALTER TABLE \`DP_CTL_ItemCategories\` DROP INDEX \`IDX_11b3857fb725a0cab0c0100a12\`
+        ALTER TABLE \`DP_CTL_ItemCategories\` DROP INDEX \`UNI_ctlItemCategories_seoDescription\`
     `);
     await queryRunner.query(`
-        ALTER TABLE \`DP_CTL_ItemCategories\` DROP INDEX \`IDX_b8cf6d9f5d710f523e80e47b09\`
+        ALTER TABLE \`DP_CTL_ItemCategories\` DROP INDEX \`UNI_ctlItemCategories_urlSegment\`
+    `);
+    await queryRunner.query(`
+        ALTER TABLE \`DP_CTL_ItemCategories\` DROP INDEX \`UNI_ctlItemCategories_name\`
     `);
     await queryRunner.query(`
         DROP TABLE \`DP_CTL_ItemCategories\`

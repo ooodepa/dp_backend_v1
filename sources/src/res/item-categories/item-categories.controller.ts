@@ -17,8 +17,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
+import { GetItemCategoryDto } from './dto/get-item-category.dto';
 import { ItemCategoriesService } from './item-categories.service';
-import ItemCategoryWithIdDto from './dto/item-category-with-id.dto';
 import SwaggerApiResponse from 'src/utils/Swagger/SwaggerApiResponse';
 import { CreateItemCategoryDto } from './dto/create-item-category.dto';
 import { UpdateItemCategoryDto } from './dto/update-item-category.dto';
@@ -66,7 +66,7 @@ export class ItemCategoriesController {
 
   @ApiTags('any')
   @ApiOperation(SwaggerApiOperation.Find)
-  @ApiResponse({ ...SwaggerApiResponse.Finded, type: [ItemCategoryWithIdDto] })
+  @ApiResponse({ ...SwaggerApiResponse.Finded, type: [GetItemCategoryDto] })
   @ApiResponse(SwaggerApiResponse.ServerError)
   @Get()
   findAll(@Query() filter: FilterItemCategoryDto) {
@@ -75,15 +75,22 @@ export class ItemCategoriesController {
 
   @ApiTags('any')
   @ApiOperation(SwaggerApiOperation.FindById)
-  @ApiResponse({
-    ...SwaggerApiResponse.FindedById,
-    type: ItemCategoryWithIdDto,
-  })
+  @ApiResponse({ ...SwaggerApiResponse.FindedById, type: GetItemCategoryDto })
   @ApiResponse(SwaggerApiResponse.NotFound)
   @ApiResponse(SwaggerApiResponse.ServerError)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.itemCategoriesService.findOne(+id);
+  }
+
+  @ApiTags('any')
+  @ApiOperation(SwaggerApiOperation.FindById)
+  @ApiResponse({ ...SwaggerApiResponse.FindedById, type: GetItemCategoryDto })
+  @ApiResponse(SwaggerApiResponse.NotFound)
+  @ApiResponse(SwaggerApiResponse.ServerError)
+  @Get('filter-one/url/:url')
+  findOneByUrl(@Param('url') url: string) {
+    return this.itemCategoriesService.findOneByUrl(url);
   }
 
   @ApiTags('ADMIN')

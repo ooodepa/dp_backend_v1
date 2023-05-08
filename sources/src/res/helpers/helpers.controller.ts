@@ -16,7 +16,7 @@ import {
 } from '@nestjs/swagger';
 
 import { HelpersService } from './helpers.service';
-import { HelperEntity } from './entities/helper.entity';
+import { GetHelperDto } from './dto/get-helper.dto';
 import { CreateHelperDto } from './dto/create-helper.dto';
 import { UpdateHelperDto } from './dto/update-helper.dto';
 import { CreateBulkHelperDto } from './dto/create-bulk-helper.dto';
@@ -60,7 +60,7 @@ export class HelpersController {
 
   @ApiTags('any')
   @ApiOperation(SwaggerApiOperation.Find)
-  @ApiResponse({ ...SwaggerApiResponse.Finded, type: [HelperEntity] })
+  @ApiResponse({ ...SwaggerApiResponse.Finded, type: [GetHelperDto] })
   @ApiResponse(SwaggerApiResponse.ServerError)
   @Get()
   findAll() {
@@ -69,7 +69,7 @@ export class HelpersController {
 
   @ApiTags('any')
   @ApiOperation(SwaggerApiOperation.FindById)
-  @ApiResponse({ ...SwaggerApiResponse.FindedById, type: HelperEntity })
+  @ApiResponse({ ...SwaggerApiResponse.FindedById, type: GetHelperDto })
   @ApiResponse(SwaggerApiResponse.NotFound)
   @ApiResponse(SwaggerApiResponse.ServerError)
   @Get(':id')

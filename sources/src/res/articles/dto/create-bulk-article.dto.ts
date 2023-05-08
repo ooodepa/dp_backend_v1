@@ -1,13 +1,12 @@
 import { Type } from 'class-transformer';
+import { IsArray } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { ArrayMinSize, IsArray } from 'class-validator';
 
 import { CreateArticleDto } from './create-article.dto';
 
 export class CreateBulkArticleDto {
-  @ApiProperty({ type: [CreateArticleDto] })
   @IsArray()
-  @ArrayMinSize(1)
   @Type(() => CreateArticleDto)
+  @ApiProperty({ type: [CreateArticleDto] })
   bulk: [CreateArticleDto];
 }

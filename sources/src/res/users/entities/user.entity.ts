@@ -1,14 +1,16 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('DP_CTL_Users')
 export class UserEntity {
   @PrimaryGeneratedColumn()
   dp_id: number;
 
-  @Column({ unique: true, length: 64 })
+  @Index('UNI_ctlUsers_login', { unique: true })
+  @Column({ length: 64 })
   dp_login: string;
 
-  @Column({ unique: true, length: 64 })
+  @Index('UNI_ctlUsers_email', { unique: true })
+  @Column({ length: 64 })
   dp_email: string;
 
   @Column({ length: 60 })

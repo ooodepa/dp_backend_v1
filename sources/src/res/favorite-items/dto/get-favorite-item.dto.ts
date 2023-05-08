@@ -1,12 +1,3 @@
-import { ApiProperty } from '@nestjs/swagger';
+import FavoriteItemWithId from './favorite-item-with-id.dto';
 
-export default class GetFavoriteItemDto {
-  @ApiProperty({ example: 0 })
-  dp_id: number;
-
-  @ApiProperty({ example: 0 })
-  dp_userId: number;
-
-  @ApiProperty({ example: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx' })
-  dp_itemId: string;
-}
+export default class GetFavoriteItemDto extends FavoriteItemWithId {}

@@ -16,13 +16,13 @@ import {
 } from '@nestjs/swagger';
 
 import { ContactTypesService } from './contact-types.service';
-import { ContactTypeEntity } from './entities/contact-type.entity';
-import { ContactTypeCreateDto } from './dto/create-contact-type.dto';
-import { ContactTypeUpdateDto } from './dto/update-contact-type.dto';
+import { GetContactTypeDto } from './dto/get-contact-type.dto';
+import { CreateContactTypeDto } from './dto/create-contact-type.dto';
+import { UpdateContactTypeDto } from './dto/update-contact-type.dto';
 import SwaggerApiResponse from 'src/utils/Swagger/SwaggerApiResponse';
 import SwaggerApiOperation from 'src/utils/Swagger/SwaggerApiOperation';
 import { IsAdministratorGuard } from 'src/guards/IsAdministratorGuard.guard';
-import { ContactTypeCreateBulkDto } from './dto/create-bulk-contact-type.dto';
+import { CreateBulkContactTypeDto } from './dto/create-bulk-contact-type.dto';
 import { VerifyAccessTokenGuard } from 'src/guards/VerifyAccessTokenGuard.guard';
 
 @ApiTags('api_v1_contact-types')
@@ -41,7 +41,7 @@ export class ContactTypesController {
   @UseGuards(IsAdministratorGuard)
   @UseGuards(VerifyAccessTokenGuard)
   @Post()
-  create(@Body() contactTypeCreateDto: ContactTypeCreateDto) {
+  create(@Body() contactTypeCreateDto: CreateContactTypeDto) {
     return this.contactTypesService.create(contactTypeCreateDto);
   }
 
@@ -56,13 +56,13 @@ export class ContactTypesController {
   @UseGuards(IsAdministratorGuard)
   @UseGuards(VerifyAccessTokenGuard)
   @Post('bulk')
-  createBulk(@Body() contactTypeCreateBulkDto: ContactTypeCreateBulkDto) {
+  createBulk(@Body() contactTypeCreateBulkDto: CreateBulkContactTypeDto) {
     return this.contactTypesService.createBulk(contactTypeCreateBulkDto.bulk);
   }
 
   @ApiTags('any')
   @ApiOperation(SwaggerApiOperation.Find)
-  @ApiResponse({ ...SwaggerApiResponse.Finded, type: [ContactTypeEntity] })
+  @ApiResponse({ ...SwaggerApiResponse.Finded, type: [GetContactTypeDto] })
   @ApiResponse(SwaggerApiResponse.ServerError)
   @Get()
   findAll() {
@@ -71,7 +71,7 @@ export class ContactTypesController {
 
   @ApiTags('any')
   @ApiOperation(SwaggerApiOperation.FindById)
-  @ApiResponse({ ...SwaggerApiResponse.FindedById, type: ContactTypeEntity })
+  @ApiResponse({ ...SwaggerApiResponse.FindedById, type: GetContactTypeDto })
   @ApiResponse(SwaggerApiResponse.NotFound)
   @ApiResponse(SwaggerApiResponse.ServerError)
   @Get(':id')
@@ -93,7 +93,7 @@ export class ContactTypesController {
   @Patch(':id')
   update(
     @Param('id') id: string,
-    @Body() contactTypeUpdateDto: ContactTypeUpdateDto,
+    @Body() contactTypeUpdateDto: UpdateContactTypeDto,
   ) {
     return this.contactTypesService.update(+id, contactTypeUpdateDto);
   }

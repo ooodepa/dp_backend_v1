@@ -7,10 +7,10 @@ class CreateUserResponseDto {
   @ApiProperty()
   message: string;
 
-  @ApiProperty({ example: 'токен' })
+  @ApiProperty({ example: 'jwt' })
   dp_accessToken: string;
 
-  @ApiProperty({ example: 'токен' })
+  @ApiProperty({ example: 'jwt' })
   dp_refreshToken: string;
 }
 

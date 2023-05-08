@@ -1,21 +1,39 @@
+import {
+  ArrayMinSize,
+  IsArray,
+  IsNotEmpty,
+  IsString,
+  IsUUID,
+  ValidateNested,
+} from 'class-validator';
+import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
 
-import ItemDto from './item.dto';
-import ItemsApiProperty from '../items-api-property';
-import LstItemGaleryNoIdDto from './lst-item-galery-no-id.dto';
-import LstItemCharacteristicNoIdDto from './lst-item-characteristic-no-id.dto';
+import ItemNoIdDto from './item-no-id.dto';
+import ItemsApiProperty from '../items.swagger';
+import LstItemGaleryWithIdDto from './lst-item-galery-with-id.dto';
+import LstItemCharacteristicWithIdDto from './lst-item-characteristic-with-id.dto';
 
-export default class ItemWithIdDto extends ItemDto {
+export default class ItemWithIdDto extends ItemNoIdDto {
   @IsNotEmpty()
   @IsUUID()
   @IsString()
   @ApiProperty(ItemsApiProperty.dp_id)
   dp_id: string;
 
-  @ApiProperty({ type: [LstItemCharacteristicNoIdDto] })
-  dp_itemCharecteristics: LstItemCharacteristicNoIdDto[];
+  @IsArray()
+  @IsNotEmpty()
+  @ArrayMinSize(0)
+  @ValidateNested({ each: true })
+  @Type(() => LstItemCharacteristicWithIdDto)
+  @ApiProperty({ type: [LstItemCharacteristicWithIdDto] })
+  dp_itemCharacteristics: LstItemCharacteristicWithIdDto[];
 
-  @ApiProperty({ type: [LstItemGaleryNoIdDto] })
-  dp_itemGalery: LstItemGaleryNoIdDto[];
+  @IsArray()
+  @IsNotEmpty()
+  @ArrayMinSize(0)
+  @ValidateNested({ each: true })
+  @Type(() => LstItemGaleryWithIdDto)
+  @ApiProperty({ type: [LstItemGaleryWithIdDto] })
+  dp_itemGalery: LstItemGaleryWithIdDto[];
 }

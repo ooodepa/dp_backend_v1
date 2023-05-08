@@ -24,7 +24,7 @@ const SwaggerApiOperation = {
     summary: 'Обновление записи по uuid транзакцией',
   },
   UpdateBulk: {
-    summary: 'Обновление записей транзакцией'
+    summary: 'Обновление записей транзакцией',
   },
   DeleteById: {
     summary: 'Удаление записи по id',

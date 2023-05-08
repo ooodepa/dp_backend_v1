@@ -16,7 +16,7 @@
     "prod-migr-run": "yarn build && yarn prod-typeorm migration:run",
     "prod-migr-rev": "yarn prod-typeorm migration:revert",
     "build": "nest build",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "format": "prettier --write \"src/**/*.{ts,json,md}\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",

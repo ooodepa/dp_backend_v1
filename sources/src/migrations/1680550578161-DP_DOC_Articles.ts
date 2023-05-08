@@ -11,10 +11,14 @@ export class DPDOCArticles1680550578161 implements MigrationInterface {
             \`dp_date\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
             \`dp_urlSegment\` varchar(255) NOT NULL,
             \`dp_photoUrl\` varchar(255) NOT NULL DEFAULT '',
-            \`dp_text\` varchar(255) NOT NULL DEFAULT '',
+            \`dp_text\` varchar(8192) NOT NULL DEFAULT '',
+            \`dp_sortingIndex\` int NOT NULL DEFAULT '10000',
             \`dp_seoKeywords\` varchar(255) NOT NULL DEFAULT '',
             \`dp_seoDescription\` varchar(255) NOT NULL DEFAULT '',
-            UNIQUE INDEX \`IDX_1fa42c5402ac9e0804f6baea91\` (\`dp_urlSegment\`),
+            \`dp_isHidden\` tinyint NOT NULL DEFAULT 0,
+            UNIQUE INDEX \`UNI_docArticles_name\` (\`dp_name\`),
+            UNIQUE INDEX \`UNI_docArticles_urlSegment\` (\`dp_urlSegment\`),
+            UNIQUE INDEX \`UNI_docArticles_seoDescription\` (\`dp_seoDescription\`),
             PRIMARY KEY (\`dp_id\`)
         ) ENGINE = InnoDB
     `);
@@ -41,7 +45,13 @@ export class DPDOCArticles1680550578161 implements MigrationInterface {
         DROP TABLE \`DP_LST_ArticleAttachedLinks\`
     `);
     await queryRunner.query(`
-        ALTER TABLE \`DP_DOC_Articles\` DROP INDEX \`IDX_1fa42c5402ac9e0804f6baea91\`
+        ALTER TABLE \`DP_DOC_Articles\` DROP INDEX \`UNI_docArticles_seoDescription\`
+    `);
+    await queryRunner.query(`
+        ALTER TABLE \`DP_DOC_Articles\` DROP INDEX \`UNI_docArticles_urlSegment\`
+    `);
+    await queryRunner.query(`
+        ALTER TABLE \`DP_DOC_Articles\` DROP INDEX \`UNI_docArticles_name\`
     `);
     await queryRunner.query(`
         DROP TABLE \`DP_DOC_Articles\`

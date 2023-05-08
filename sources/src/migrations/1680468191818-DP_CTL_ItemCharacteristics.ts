@@ -10,7 +10,8 @@ export class DPCTLItemCharacteristics1680468191818
         CREATE TABLE \`DP_CTL_ItemCharacteristics\` (
             \`dp_id\` int NOT NULL AUTO_INCREMENT,
             \`dp_name\` varchar(255) NOT NULL,
-            UNIQUE INDEX \`IDX_40a29531f16cdee3db2d13ba89\` (\`dp_name\`),
+            \`dp_isHidden\` tinyint NOT NULL DEFAULT 0,
+            UNIQUE INDEX \`UNI_ctlItemCharacteristics_name\` (\`dp_name\`),
             PRIMARY KEY (\`dp_id\`)
         ) ENGINE = InnoDB
     `);
@@ -18,7 +19,7 @@ export class DPCTLItemCharacteristics1680468191818
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
-        ALTER TABLE \`DP_CTL_ItemCharacteristics\` DROP INDEX \`IDX_40a29531f16cdee3db2d13ba89\`
+        ALTER TABLE \`DP_CTL_ItemCharacteristics\` DROP INDEX \`UNI_ctlItemCharacteristics_name\`
     `);
     await queryRunner.query(`
         DROP TABLE \`DP_CTL_ItemCharacteristics\`

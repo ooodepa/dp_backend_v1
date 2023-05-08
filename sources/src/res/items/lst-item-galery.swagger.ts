@@ -8,14 +8,13 @@ interface IProps {
 
 const LstItemGaleryApiProperty: IProps = {
   dp_id: {
-    example: 0,
+    example: 1,
   },
   dp_itemId: {
     example: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
   },
   dp_photoUrl: {
-    example:
-      'https://ooodepa.github.io/ooodepa_imgs/products/de-pa-electric/accessories/10012-1.png',
+    example: 'https://example.com/img.png',
   },
 };
 

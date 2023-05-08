@@ -1,3 +1,3 @@
-import ItemCharacteristicNoIdDto from './item-characteristics-no-id.dto';
+import ItemCharacteristicNoIdDto from './item-characteristic-no-id.dto';
 
 export class UpdateItemCharacteristicDto extends ItemCharacteristicNoIdDto {}

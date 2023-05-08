@@ -23,6 +23,8 @@ export class VerifyAccessTokenGuard implements CanActivate {
     const req = context.switchToHttp().getRequest();
     const accessToken = this.usersService.getBearerToken(req);
 
+    await this.usersService.verifyToken(accessToken, 'access');
+
     const candidate = await this.sessionEntity.findOne({
       where: { dp_accessToken: accessToken },
     });

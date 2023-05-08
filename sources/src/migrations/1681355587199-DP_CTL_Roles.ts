@@ -8,7 +8,7 @@ export class DPCTLRoles1681355587199 implements MigrationInterface {
         CREATE TABLE \`DP_CTL_Roles\` (
             \`dp_id\` int NOT NULL AUTO_INCREMENT,
             \`dp_name\` varchar(8) NOT NULL,
-            UNIQUE INDEX \`IDX_1db4050abccb069e00f27486e4\` (\`dp_name\`),
+            UNIQUE INDEX \`UNI_ctlRoles_name\` (\`dp_name\`),
             PRIMARY KEY (\`dp_id\`)
         ) ENGINE = InnoDB
     `);
@@ -21,7 +21,7 @@ export class DPCTLRoles1681355587199 implements MigrationInterface {
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
-        ALTER TABLE \`DP_CTL_Roles\` DROP INDEX \`IDX_1db4050abccb069e00f27486e4\`
+        ALTER TABLE \`DP_CTL_Roles\` DROP INDEX \`UNI_ctlRoles_name\`
     `);
     await queryRunner.query(`
         DROP TABLE \`DP_CTL_Roles\`

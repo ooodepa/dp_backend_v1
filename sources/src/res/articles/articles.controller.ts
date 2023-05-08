@@ -17,12 +17,12 @@ import {
 } from '@nestjs/swagger';
 
 import { ArticlesService } from './articles.service';
-import { ArticleEntity } from './entities/artile.entity';
+import { GetArticleDto } from './dto/get-article.dto';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { CreateBulkArticleDto } from './dto/create-bulk-article.dto';
-import SwaggerApiOperation from 'src/utils/Swagger/SwaggerApiOperation';
 import SwaggerApiResponse from 'src/utils/Swagger/SwaggerApiResponse';
+import SwaggerApiOperation from 'src/utils/Swagger/SwaggerApiOperation';
 import { IsAdministratorGuard } from 'src/guards/IsAdministratorGuard.guard';
 import { VerifyAccessTokenGuard } from 'src/guards/VerifyAccessTokenGuard.guard';
 
@@ -63,7 +63,7 @@ export class ArticlesController {
 
   @ApiTags('any')
   @ApiOperation(SwaggerApiOperation.Find)
-  @ApiResponse({ ...SwaggerApiResponse.Finded, type: [ArticleEntity] })
+  @ApiResponse({ ...SwaggerApiResponse.Finded, type: [GetArticleDto] })
   @ApiResponse(SwaggerApiResponse.ServerErrorAndTransaction)
   @Get()
   findAll() {
@@ -75,18 +75,18 @@ export class ArticlesController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Получили запись по url.',
-    type: ArticleEntity,
+    type: GetArticleDto,
   })
   @ApiResponse(SwaggerApiResponse.NotFound)
   @ApiResponse(SwaggerApiResponse.ServerError)
-  @Get('url/:url')
+  @Get('filter-one/url/:url')
   findOneByUrl(@Param('url') url: string) {
     return this.articlesService.findOneByUrl(url);
   }
 
   @ApiTags('any')
   @ApiOperation(SwaggerApiOperation.FindById)
-  @ApiResponse({ ...SwaggerApiResponse.FindedById, type: ArticleEntity })
+  @ApiResponse({ ...SwaggerApiResponse.FindedById, type: GetArticleDto })
   @ApiResponse(SwaggerApiResponse.NotFound)
   @ApiResponse(SwaggerApiResponse.ServerError)
   @Get(':id')

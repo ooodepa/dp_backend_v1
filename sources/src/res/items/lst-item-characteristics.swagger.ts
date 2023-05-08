@@ -9,7 +9,7 @@ interface IProps {
 
 const LstItemCharacteristicsApiProperty: IProps = {
   dp_id: {
-    example: 0,
+    example: 1,
   },
   dp_itemId: {
     example: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',

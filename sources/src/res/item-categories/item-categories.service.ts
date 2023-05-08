@@ -1,6 +1,6 @@
-import { DataSource, In, Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { DataSource, In, Repository } from 'typeorm';
 
 import ItemCategoryNoIdDto from './dto/item-category-no-id.dto';
 import HttpResponse from 'src/utils/HttpResponseDto/HttpResponse';
@@ -58,6 +58,12 @@ export class ItemCategoriesService {
   async findOne(id: number) {
     return await this.itemCategoryEntity.findOneOrFail({
       where: { dp_id: id },
+    });
+  }
+
+  async findOneByUrl(url: string) {
+    return await this.itemCategoryEntity.findOneOrFail({
+      where: { dp_urlSegment: url },
     });
   }
 

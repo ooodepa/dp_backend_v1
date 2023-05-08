@@ -10,7 +10,8 @@ export class DPCTLCommunicationTypes1680555268495
         CREATE TABLE \`DP_CTL_ContactTypes\` (
             \`dp_id\` int NOT NULL AUTO_INCREMENT,
             \`dp_name\` varchar(255) NOT NULL,
-            UNIQUE INDEX \`IDX_9774a8a3ab056a56dbe14d8901\` (\`dp_name\`),
+            \`dp_isHidden\` tinyint NOT NULL DEFAULT 0,
+            UNIQUE INDEX \`UNI_ctlContactTypes_name\` (\`dp_name\`),
             PRIMARY KEY (\`dp_id\`)
         ) ENGINE = InnoDB
     `);
@@ -18,7 +19,7 @@ export class DPCTLCommunicationTypes1680555268495
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
-        ALTER TABLE \`DP_CTL_ContactTypes\` DROP INDEX \`IDX_9774a8a3ab056a56dbe14d8901\`
+        ALTER TABLE \`DP_CTL_ContactTypes\` DROP INDEX \`UNI_ctlContactTypes_name\`
     `);
     await queryRunner.query(`
         DROP TABLE \`DP_CTL_ContactTypes\`

@@ -14,7 +14,10 @@ export class DPCTLItems1680469415362 implements MigrationInterface {
             \`dp_itemCategoryId\` int NOT NULL,
             \`dp_seoKeywords\` varchar(255) NOT NULL DEFAULT '',
             \`dp_seoDescription\` varchar(255) NOT NULL DEFAULT '',
-            UNIQUE INDEX \`IDX_a366cf1ff7d13533257352d448\` (\`dp_model\`),
+            \`dp_isHidden\` varchar(255) NOT NULL DEFAULT 0,
+            UNIQUE INDEX \`UNI_ctlItems_name\` (\`dp_name\`),
+            UNIQUE INDEX \`UNI_ctlItems_model\` (\`dp_model\`),
+            UNIQUE INDEX \`UNI_ctlItems_seoDescription\` (\`dp_seoDescription\`),
             PRIMARY KEY (\`dp_id\`)
         ) ENGINE = InnoDB
     `);
@@ -73,7 +76,13 @@ export class DPCTLItems1680469415362 implements MigrationInterface {
         ALTER TABLE \`DP_CTL_Items\` DROP FOREIGN KEY \`FK_78eb00f3436232d09c51da69a9e\`
     `);
     await queryRunner.query(`
-        ALTER TABLE \`DP_CTL_Items\` DROP INDEX \`IDX_a366cf1ff7d13533257352d448\`
+        ALTER TABLE \`DP_CTL_Items\` DROP INDEX \`UNI_ctlItems_seoDescription\`
+    `);
+    await queryRunner.query(`
+        ALTER TABLE \`DP_CTL_Items\` DROP INDEX \`UNI_ctlItems_model\`
+    `);
+    await queryRunner.query(`
+        ALTER TABLE \`DP_CTL_Items\` DROP INDEX \`UNI_ctlItems_name\`
     `);
     await queryRunner.query(`
         DROP TABLE \`DP_CTL_Items\`

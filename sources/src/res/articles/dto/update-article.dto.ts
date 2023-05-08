@@ -1,7 +1,3 @@
-import { PartialType } from '@nestjs/swagger';
+import ArticleNoId from './article-no-id.dto';
 
-import { CreateArticleDto } from './create-article.dto';
-
-export class UpdateArticleDto extends PartialType(CreateArticleDto) {
-    dp_id: string;
-}
+export class UpdateArticleDto extends ArticleNoId {}

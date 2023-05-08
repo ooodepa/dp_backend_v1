@@ -28,13 +28,15 @@ export class ArticlesService {
 
       const uuid = savedItem.dp_id;
 
-      dto.dp_articleAttachedLinks.forEach((e) => {
-        e.dp_articleId = uuid;
-      });
+      if (dto.dp_articleAttachedLinks) {
+        dto.dp_articleAttachedLinks.forEach((e) => {
+          e.dp_articleId = uuid;
+        });
 
-      await queryRunner.manager
-        .getRepository(LstArticleAttachedLinks)
-        .insert(dto.dp_articleAttachedLinks);
+        await queryRunner.manager
+          .getRepository(LstArticleAttachedLinks)
+          .insert(dto.dp_articleAttachedLinks);
+      }
 
       await queryRunner.commitTransaction();
     } catch (err) {
@@ -59,13 +61,15 @@ export class ArticlesService {
 
         const uuid = savedItem.dp_id;
 
-        bulk[i].dp_articleAttachedLinks.forEach((e) => {
-          e.dp_articleId = uuid;
-        });
+        if (bulk[i].dp_articleAttachedLinks) {
+          bulk[i].dp_articleAttachedLinks.forEach((e) => {
+            e.dp_articleId = uuid;
+          });
 
-        await queryRunner.manager
-          .getRepository(LstArticleAttachedLinks)
-          .insert(bulk[i].dp_articleAttachedLinks);
+          await queryRunner.manager
+            .getRepository(LstArticleAttachedLinks)
+            .insert(bulk[i].dp_articleAttachedLinks);
+        }
       }
 
       await queryRunner.commitTransaction();
@@ -116,13 +120,15 @@ export class ArticlesService {
 
       await queryRunner.manager.getRepository(ArticleEntity).save(dto);
 
-      dto.dp_articleAttachedLinks.forEach((e) => {
-        e.dp_articleId = uuid;
-      });
+      if (dto.dp_articleAttachedLinks) {
+        dto.dp_articleAttachedLinks.forEach((e) => {
+          e.dp_articleId = uuid;
+        });
 
-      await queryRunner.manager
-        .getRepository(LstArticleAttachedLinks)
-        .insert(dto.dp_articleAttachedLinks);
+        await queryRunner.manager
+          .getRepository(LstArticleAttachedLinks)
+          .insert(dto.dp_articleAttachedLinks);
+      }
 
       await queryRunner.commitTransaction();
     } catch (err) {

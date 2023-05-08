@@ -81,6 +81,16 @@ export class ItemBrandsController {
     return this.itemBrandsService.findOne(+id);
   }
 
+  @ApiTags('any')
+  @ApiOperation(SwaggerApiOperation.FindById)
+  @ApiResponse({ ...SwaggerApiResponse.FindedById, type: ItemBrandWithIdDto })
+  @ApiResponse(SwaggerApiResponse.NotFound)
+  @ApiResponse(SwaggerApiResponse.ServerError)
+  @Get('filter-one/url/:url')
+  findOneByUrl(@Param('url') url: string) {
+    return this.itemBrandsService.findOneByUrl(url);
+  }
+
   @ApiTags('ADMIN')
   @ApiOperation(SwaggerApiOperation.UpdateById)
   @ApiResponse(SwaggerApiResponse.UpdatedById)

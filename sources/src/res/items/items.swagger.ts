@@ -19,23 +19,22 @@ const ItemsApiProperty: IProps = {
     example: 'Розетка тройная встравая с заземлением',
   },
   dp_model: {
-    example: 'dp-10012',
+    example: '10012',
   },
   dp_cost: {
     example: 10.61,
   },
   dp_photoUrl: {
-    example:
-      'https://ooodepa.github.io/ooodepa_imgs/products/de-pa-electric/accessories/10012.png',
+    example: 'https://example.com/img.png',
   },
   dp_itemCategoryId: {
     example: 1,
   },
   dp_seoKeywords: {
-    example: '',
+    example: 'розетка розетки',
   },
   dp_seoDescription: {
-    example: '',
+    example: 'Розетка тройная встравая с заземлением. 10012',
   },
 };
 

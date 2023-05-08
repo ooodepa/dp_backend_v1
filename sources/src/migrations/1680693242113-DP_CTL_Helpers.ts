@@ -9,9 +9,9 @@ export class DPCTLHelpers1680693242113 implements MigrationInterface {
             \`dp_id\` varchar(36) NOT NULL,
             \`dp_sortingIndex\` int NOT NULL DEFAULT '10000',
             \`dp_name\` varchar(255) NOT NULL,
-            \`dp_description\` varchar(255) NOT NULL DEFAULT '',
+            \`dp_text\` varchar(2048) NOT NULL DEFAULT '',
             \`dp_isHidden\` tinyint NOT NULL DEFAULT 0,
-            UNIQUE INDEX \`IDX_7ebc0a151646e98fe415dc4499\` (\`dp_name\`),
+            UNIQUE INDEX \`UNI_ctlHelpers_name\` (\`dp_name\`),
             PRIMARY KEY (\`dp_id\`)
         ) ENGINE = InnoDB
     `);
@@ -46,7 +46,7 @@ export class DPCTLHelpers1680693242113 implements MigrationInterface {
         DROP TABLE \`DP_LST_HelperContactTypes\`
     `);
     await queryRunner.query(`
-        ALTER TABLE \`DP_CTL_Helpers\` DROP INDEX \`IDX_7ebc0a151646e98fe415dc4499\`
+        ALTER TABLE \`DP_CTL_Helpers\` DROP INDEX \`UNI_ctlHelpers_name\`
     `);
     await queryRunner.query(`
         DROP TABLE \`DP_CTL_Helpers\`

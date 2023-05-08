@@ -2,12 +2,12 @@ import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { ArrayMinSize, IsArray } from 'class-validator';
 
-import { ContactTypeCreateDto } from './create-contact-type.dto';
+import { CreateContactTypeDto } from './create-contact-type.dto';
 
-export class ContactTypeCreateBulkDto {
-  @ApiProperty({ type: [ContactTypeCreateDto] })
+export class CreateBulkContactTypeDto {
+  @ApiProperty({ type: [CreateContactTypeDto] })
   @IsArray()
   @ArrayMinSize(1)
-  @Type(() => ContactTypeCreateDto)
-  bulk: [ContactTypeCreateDto];
+  @Type(() => CreateContactTypeDto)
+  bulk: [CreateContactTypeDto];
 }

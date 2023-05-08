@@ -504,6 +504,19 @@
         "summary": "Получить список сессий",
         "parameters": [],
         "responses": {
+          "200": {
+            "description": "Получили список записей",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetSessionDto"
+                  }
+                }
+              }
+            }
+          },
           "401": {
             "description": "Access токен просрочен \n\nAccess токен не передан \n\n",
             "content": {
@@ -520,20 +533,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/HttpResponseDto"
-                }
-              }
-            }
-          },
-          "default": {
-            "summary": "Получить список записей",
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/SessionEntity"
-                  }
                 }
               }
             }
@@ -844,7 +843,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/ItemCategoryWithIdDto"
+                    "$ref": "#/components/schemas/GetItemCategoryDto"
                   }
                 }
               }
@@ -1051,7 +1050,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ItemCategoryWithIdDto"
+                  "$ref": "#/components/schemas/GetItemCategoryDto"
                 }
               }
             }
@@ -1240,6 +1239,58 @@
           {
             "access-token": []
           }
+        ]
+      }
+    },
+    "/api/v1/item-categories/filter-one/url/{url}": {
+      "get": {
+        "operationId": "ItemCategoriesController_findOneByUrl",
+        "summary": "Получить запись по id",
+        "parameters": [
+          {
+            "name": "url",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Получили запись по id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetItemCategoryDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_item-categories",
+          "any"
         ]
       }
     },
@@ -1846,7 +1897,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/GetItemShortDto"
+                    "$ref": "#/components/schemas/GetItemDto"
                   }
                 }
               }
@@ -2033,7 +2084,7 @@
         ]
       }
     },
-    "/api/v1/items/model/{model}": {
+    "/api/v1/items/filter-one/model/{model}": {
       "get": {
         "operationId": "ItemsController_findOneByModel",
         "summary": "Получить запись по id",
@@ -2111,7 +2162,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/GetItemShortDto"
+                    "$ref": "#/components/schemas/GetItemDto"
                   }
                 }
               }
@@ -2157,7 +2208,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/GetItemShortDto"
+                    "$ref": "#/components/schemas/GetItemDto"
                   }
                 }
               }
@@ -2203,7 +2254,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/GetItemShortDto"
+                    "$ref": "#/components/schemas/GetItemDto"
                   }
                 }
               }
@@ -2249,7 +2300,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/GetItemShortDto"
+                    "$ref": "#/components/schemas/GetItemDto"
                   }
                 }
               }
@@ -2292,7 +2343,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ItemEntity"
+                  "$ref": "#/components/schemas/GetItemDto"
                 }
               }
             }
@@ -2573,7 +2624,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/ArticleEntity"
+                    "$ref": "#/components/schemas/GetArticleDto"
                   }
                 }
               }
@@ -2674,7 +2725,7 @@
         ]
       }
     },
-    "/api/v1/articles/url/{url}": {
+    "/api/v1/articles/filter-one/url/{url}": {
       "get": {
         "operationId": "ArticlesController_findOneByUrl",
         "summary": "Просмотр записи по url",
@@ -2694,7 +2745,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ArticleEntity"
+                  "$ref": "#/components/schemas/GetArticleDto"
                 }
               }
             }
@@ -2746,7 +2797,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ArticleEntity"
+                  "$ref": "#/components/schemas/GetArticleDto"
                 }
               }
             }
@@ -2948,7 +2999,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ContactTypeCreateDto"
+                "$ref": "#/components/schemas/CreateContactTypeDto"
               }
             }
           }
@@ -3027,7 +3078,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/ContactTypeEntity"
+                    "$ref": "#/components/schemas/GetContactTypeDto"
                   }
                 }
               }
@@ -3060,7 +3111,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ContactTypeCreateBulkDto"
+                "$ref": "#/components/schemas/CreateBulkContactTypeDto"
               }
             }
           }
@@ -3148,7 +3199,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ContactTypeEntity"
+                  "$ref": "#/components/schemas/GetContactTypeDto"
                 }
               }
             }
@@ -3197,7 +3248,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ContactTypeUpdateDto"
+                "$ref": "#/components/schemas/UpdateContactTypeDto"
               }
             }
           }
@@ -3419,7 +3470,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/HelperEntity"
+                    "$ref": "#/components/schemas/GetHelperDto"
                   }
                 }
               }
@@ -3530,7 +3581,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HelperEntity"
+                  "$ref": "#/components/schemas/GetHelperDto"
                 }
               }
             }
@@ -4200,6 +4251,58 @@
         ]
       }
     },
+    "/api/v1/item-brands/filter-one/url/{url}": {
+      "get": {
+        "operationId": "ItemBrandsController_findOneByUrl",
+        "summary": "Получить запись по id",
+        "parameters": [
+          {
+            "name": "url",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Получили запись по id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemBrandWithIdDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_item-brands",
+          "any"
+        ]
+      }
+    },
     "/api/v1/orders": {
       "post": {
         "operationId": "OrdersController_create",
@@ -4338,10 +4441,28 @@
     "/api/v1/apk-versions/last": {
       "get": {
         "operationId": "ApkVersionsController_findLast",
+        "summary": "Получить запись по id",
         "parameters": [],
         "responses": {
           "200": {
-            "description": ""
+            "description": "Получили запись по id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetApkVersionsDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -4680,11 +4801,11 @@
           },
           "dp_accessToken": {
             "type": "string",
-            "example": "токен"
+            "example": "jwt"
           },
           "dp_refreshToken": {
             "type": "string",
-            "example": "токен"
+            "example": "jwt"
           }
         },
         "required": [
@@ -4808,11 +4929,11 @@
           },
           "dp_accessToken": {
             "type": "string",
-            "example": "token"
+            "example": "jwt"
           },
           "dp_refreshToken": {
             "type": "string",
-            "example": "token"
+            "example": "jwt"
           }
         },
         "required": [
@@ -4822,16 +4943,16 @@
           "dp_refreshToken"
         ]
       },
-      "SessionEntity": {
+      "GetSessionDto": {
         "type": "object",
         "properties": {
           "dp_id": {
-            "type": "number"
+            "type": "number",
+            "example": 1
           },
           "dp_date": {
-            "format": "date-time",
             "type": "string",
-            "example": "2023-04-02T00:00:00.000Z"
+            "example": "2023-01-01T00:00:00:000Z"
           },
           "dp_ip": {
             "type": "string",
@@ -4839,7 +4960,7 @@
           },
           "dp_agent": {
             "type": "string",
-            "example": "Firefox Browser"
+            "example": "Firefox"
           }
         },
         "required": [
@@ -4854,7 +4975,7 @@
         "properties": {
           "dp_accessToken": {
             "type": "string",
-            "example": "token"
+            "example": "jwt"
           }
         },
         "required": [
@@ -4868,25 +4989,25 @@
             "type": "string",
             "example": "Аксессуары"
           },
-          "dp_sortingIndex": {
-            "type": "number",
-            "example": 10000
-          },
           "dp_urlSegment": {
             "type": "string",
             "example": "dp-accessories"
           },
           "dp_photoUrl": {
             "type": "string",
-            "example": "https://ooodepa.github.io/ooodepa_imgs/products/de-pa-electric/accessories/11202.png"
+            "example": "https://example.com/img.png"
+          },
+          "dp_sortingIndex": {
+            "type": "number",
+            "example": 10000
           },
           "dp_seoKeywords": {
             "type": "string",
-            "example": ""
+            "example": "вилка вилки патроны патрон"
           },
           "dp_seoDescription": {
             "type": "string",
-            "example": ""
+            "example": "Продукты DE-PA Electric. Аксессуары"
           },
           "dp_isHidden": {
             "type": "boolean",
@@ -4899,9 +5020,9 @@
         },
         "required": [
           "dp_name",
-          "dp_sortingIndex",
           "dp_urlSegment",
           "dp_photoUrl",
+          "dp_sortingIndex",
           "dp_seoKeywords",
           "dp_seoDescription",
           "dp_isHidden"
@@ -4914,25 +5035,25 @@
             "type": "string",
             "example": "Аксессуары"
           },
-          "dp_sortingIndex": {
-            "type": "number",
-            "example": 10000
-          },
           "dp_urlSegment": {
             "type": "string",
             "example": "dp-accessories"
           },
           "dp_photoUrl": {
             "type": "string",
-            "example": "https://ooodepa.github.io/ooodepa_imgs/products/de-pa-electric/accessories/11202.png"
+            "example": "https://example.com/img.png"
+          },
+          "dp_sortingIndex": {
+            "type": "number",
+            "example": 10000
           },
           "dp_seoKeywords": {
             "type": "string",
-            "example": ""
+            "example": "вилка вилки патроны патрон"
           },
           "dp_seoDescription": {
             "type": "string",
-            "example": ""
+            "example": "Продукты DE-PA Electric. Аксессуары"
           },
           "dp_isHidden": {
             "type": "boolean",
@@ -4945,9 +5066,9 @@
         },
         "required": [
           "dp_name",
-          "dp_sortingIndex",
           "dp_urlSegment",
           "dp_photoUrl",
+          "dp_sortingIndex",
           "dp_seoKeywords",
           "dp_seoDescription",
           "dp_isHidden"
@@ -4967,16 +5088,12 @@
           "bulk"
         ]
       },
-      "ItemCategoryWithIdDto": {
+      "GetItemCategoryDto": {
         "type": "object",
         "properties": {
           "dp_name": {
             "type": "string",
             "example": "Аксессуары"
-          },
-          "dp_sortingIndex": {
-            "type": "number",
-            "example": 10000
           },
           "dp_urlSegment": {
             "type": "string",
@@ -4984,15 +5101,19 @@
           },
           "dp_photoUrl": {
             "type": "string",
-            "example": "https://ooodepa.github.io/ooodepa_imgs/products/de-pa-electric/accessories/11202.png"
+            "example": "https://example.com/img.png"
+          },
+          "dp_sortingIndex": {
+            "type": "number",
+            "example": 10000
           },
           "dp_seoKeywords": {
             "type": "string",
-            "example": ""
+            "example": "вилка вилки патроны патрон"
           },
           "dp_seoDescription": {
             "type": "string",
-            "example": ""
+            "example": "Продукты DE-PA Electric. Аксессуары"
           },
           "dp_isHidden": {
             "type": "boolean",
@@ -5009,9 +5130,9 @@
         },
         "required": [
           "dp_name",
-          "dp_sortingIndex",
           "dp_urlSegment",
           "dp_photoUrl",
+          "dp_sortingIndex",
           "dp_seoKeywords",
           "dp_seoDescription",
           "dp_isHidden",
@@ -5025,25 +5146,25 @@
             "type": "string",
             "example": "Аксессуары"
           },
-          "dp_sortingIndex": {
-            "type": "number",
-            "example": 10000
-          },
           "dp_urlSegment": {
             "type": "string",
             "example": "dp-accessories"
           },
           "dp_photoUrl": {
             "type": "string",
-            "example": "https://ooodepa.github.io/ooodepa_imgs/products/de-pa-electric/accessories/11202.png"
+            "example": "https://example.com/img.png"
+          },
+          "dp_sortingIndex": {
+            "type": "number",
+            "example": 10000
           },
           "dp_seoKeywords": {
             "type": "string",
-            "example": ""
+            "example": "вилка вилки патроны патрон"
           },
           "dp_seoDescription": {
             "type": "string",
-            "example": ""
+            "example": "Продукты DE-PA Electric. Аксессуары"
           },
           "dp_isHidden": {
             "type": "boolean",
@@ -5056,12 +5177,63 @@
         },
         "required": [
           "dp_name",
-          "dp_sortingIndex",
           "dp_urlSegment",
           "dp_photoUrl",
+          "dp_sortingIndex",
           "dp_seoKeywords",
           "dp_seoDescription",
           "dp_isHidden"
+        ]
+      },
+      "ItemCategoryWithIdDto": {
+        "type": "object",
+        "properties": {
+          "dp_name": {
+            "type": "string",
+            "example": "Аксессуары"
+          },
+          "dp_urlSegment": {
+            "type": "string",
+            "example": "dp-accessories"
+          },
+          "dp_photoUrl": {
+            "type": "string",
+            "example": "https://example.com/img.png"
+          },
+          "dp_sortingIndex": {
+            "type": "number",
+            "example": 10000
+          },
+          "dp_seoKeywords": {
+            "type": "string",
+            "example": "вилка вилки патроны патрон"
+          },
+          "dp_seoDescription": {
+            "type": "string",
+            "example": "Продукты DE-PA Electric. Аксессуары"
+          },
+          "dp_isHidden": {
+            "type": "boolean",
+            "example": false
+          },
+          "dp_itemBrandId": {
+            "type": "number",
+            "example": 0
+          },
+          "dp_id": {
+            "type": "number",
+            "example": 0
+          }
+        },
+        "required": [
+          "dp_name",
+          "dp_urlSegment",
+          "dp_photoUrl",
+          "dp_sortingIndex",
+          "dp_seoKeywords",
+          "dp_seoDescription",
+          "dp_isHidden",
+          "dp_id"
         ]
       },
       "UpdateBulkItemCategoryDto": {
@@ -5084,10 +5256,15 @@
           "dp_name": {
             "type": "string",
             "example": "В коробке"
+          },
+          "dp_isHidden": {
+            "type": "boolean",
+            "example": false
           }
         },
         "required": [
-          "dp_name"
+          "dp_name",
+          "dp_isHidden"
         ]
       },
       "ItemCharacteristicNoIdDto": {
@@ -5096,10 +5273,15 @@
           "dp_name": {
             "type": "string",
             "example": "В коробке"
+          },
+          "dp_isHidden": {
+            "type": "boolean",
+            "example": false
           }
         },
         "required": [
-          "dp_name"
+          "dp_name",
+          "dp_isHidden"
         ]
       },
       "CreateBulkItemCharacteristicDto": {
@@ -5123,6 +5305,10 @@
             "type": "string",
             "example": "В коробке"
           },
+          "dp_isHidden": {
+            "type": "boolean",
+            "example": false
+          },
           "dp_id": {
             "type": "number",
             "example": 0
@@ -5130,6 +5316,7 @@
         },
         "required": [
           "dp_name",
+          "dp_isHidden",
           "dp_id"
         ]
       },
@@ -5139,10 +5326,15 @@
           "dp_name": {
             "type": "string",
             "example": "В коробке"
+          },
+          "dp_isHidden": {
+            "type": "boolean",
+            "example": false
           }
         },
         "required": [
-          "dp_name"
+          "dp_name",
+          "dp_isHidden"
         ]
       },
       "UpdateBulkItemCharacteristicDto": {
@@ -5181,7 +5373,7 @@
         "properties": {
           "dp_photoUrl": {
             "type": "string",
-            "example": "https://ooodepa.github.io/ooodepa_imgs/products/de-pa-electric/accessories/10012-1.png"
+            "example": "https://example.com/img.png"
           }
         },
         "required": [
@@ -5197,7 +5389,7 @@
           },
           "dp_model": {
             "type": "string",
-            "example": "dp-10012"
+            "example": "10012"
           },
           "dp_cost": {
             "type": "number",
@@ -5205,7 +5397,7 @@
           },
           "dp_photoUrl": {
             "type": "string",
-            "example": "https://ooodepa.github.io/ooodepa_imgs/products/de-pa-electric/accessories/10012.png"
+            "example": "https://example.com/img.png"
           },
           "dp_itemCategoryId": {
             "type": "number",
@@ -5213,13 +5405,13 @@
           },
           "dp_seoKeywords": {
             "type": "string",
-            "example": ""
+            "example": "розетка розетки"
           },
           "dp_seoDescription": {
             "type": "string",
-            "example": ""
+            "example": "Розетка тройная встравая с заземлением. 10012"
           },
-          "dp_itemCharecteristics": {
+          "dp_itemCharacteristics": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/LstItemCharacteristicNoIdDto"
@@ -5240,7 +5432,7 @@
           "dp_itemCategoryId",
           "dp_seoKeywords",
           "dp_seoDescription",
-          "dp_itemCharecteristics",
+          "dp_itemCharacteristics",
           "dp_itemGalery"
         ]
       },
@@ -5253,7 +5445,7 @@
           },
           "dp_model": {
             "type": "string",
-            "example": "dp-10012"
+            "example": "10012"
           },
           "dp_cost": {
             "type": "number",
@@ -5261,7 +5453,7 @@
           },
           "dp_photoUrl": {
             "type": "string",
-            "example": "https://ooodepa.github.io/ooodepa_imgs/products/de-pa-electric/accessories/10012.png"
+            "example": "https://example.com/img.png"
           },
           "dp_itemCategoryId": {
             "type": "number",
@@ -5269,13 +5461,13 @@
           },
           "dp_seoKeywords": {
             "type": "string",
-            "example": ""
+            "example": "розетка розетки"
           },
           "dp_seoDescription": {
             "type": "string",
-            "example": ""
+            "example": "Розетка тройная встравая с заземлением. 10012"
           },
-          "dp_itemCharecteristics": {
+          "dp_itemCharacteristics": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/LstItemCharacteristicNoIdDto"
@@ -5296,7 +5488,7 @@
           "dp_itemCategoryId",
           "dp_seoKeywords",
           "dp_seoDescription",
-          "dp_itemCharecteristics",
+          "dp_itemCharacteristics",
           "dp_itemGalery"
         ]
       },
@@ -5314,53 +5506,6 @@
           "bulk"
         ]
       },
-      "GetItemShortDto": {
-        "type": "object",
-        "properties": {
-          "dp_id": {
-            "type": "string",
-            "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-          },
-          "dp_name": {
-            "type": "string",
-            "example": "Розетка тройная встравая с заземлением"
-          },
-          "dp_model": {
-            "type": "string",
-            "example": "dp-10012"
-          },
-          "dp_cost": {
-            "type": "number",
-            "example": 10.61
-          },
-          "dp_photoUrl": {
-            "type": "string",
-            "example": "https://ooodepa.github.io/ooodepa_imgs/products/de-pa-electric/accessories/10012.png"
-          },
-          "dp_itemCategoryId": {
-            "type": "number",
-            "example": 1
-          },
-          "dp_seoKeywords": {
-            "type": "string",
-            "example": ""
-          },
-          "dp_seoDescription": {
-            "type": "string",
-            "example": ""
-          }
-        },
-        "required": [
-          "dp_id",
-          "dp_name",
-          "dp_model",
-          "dp_cost",
-          "dp_photoUrl",
-          "dp_itemCategoryId",
-          "dp_seoKeywords",
-          "dp_seoDescription"
-        ]
-      },
       "LstItemCharacteristicWithIdDto": {
         "type": "object",
         "properties": {
@@ -5374,7 +5519,7 @@
           },
           "dp_id": {
             "type": "number",
-            "example": 0
+            "example": 1
           },
           "dp_itemId": {
             "type": "string",
@@ -5393,11 +5538,11 @@
         "properties": {
           "dp_photoUrl": {
             "type": "string",
-            "example": "https://ooodepa.github.io/ooodepa_imgs/products/de-pa-electric/accessories/10012-1.png"
+            "example": "https://example.com/img.png"
           },
           "dp_id": {
             "type": "number",
-            "example": 0
+            "example": 1
           },
           "dp_itemId": {
             "type": "string",
@@ -5413,17 +5558,13 @@
       "GetItemDto": {
         "type": "object",
         "properties": {
-          "dp_id": {
-            "type": "string",
-            "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-          },
           "dp_name": {
             "type": "string",
             "example": "Розетка тройная встравая с заземлением"
           },
           "dp_model": {
             "type": "string",
-            "example": "dp-10012"
+            "example": "10012"
           },
           "dp_cost": {
             "type": "number",
@@ -5431,7 +5572,7 @@
           },
           "dp_photoUrl": {
             "type": "string",
-            "example": "https://ooodepa.github.io/ooodepa_imgs/products/de-pa-electric/accessories/10012.png"
+            "example": "https://example.com/img.png"
           },
           "dp_itemCategoryId": {
             "type": "number",
@@ -5439,13 +5580,13 @@
           },
           "dp_seoKeywords": {
             "type": "string",
-            "example": ""
+            "example": "розетка розетки"
           },
           "dp_seoDescription": {
             "type": "string",
-            "example": ""
+            "example": "Розетка тройная встравая с заземлением. 10012"
           },
-          "dp_itemCharecteristics": {
+          "dp_itemCharacteristics": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/LstItemCharacteristicWithIdDto"
@@ -5456,10 +5597,13 @@
             "items": {
               "$ref": "#/components/schemas/LstItemGaleryWithIdDto"
             }
+          },
+          "dp_id": {
+            "type": "string",
+            "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
           }
         },
         "required": [
-          "dp_id",
           "dp_name",
           "dp_model",
           "dp_cost",
@@ -5467,8 +5611,9 @@
           "dp_itemCategoryId",
           "dp_seoKeywords",
           "dp_seoDescription",
-          "dp_itemCharecteristics",
-          "dp_itemGalery"
+          "dp_itemCharacteristics",
+          "dp_itemGalery",
+          "dp_id"
         ]
       },
       "FindItemModelsDto": {
@@ -5521,96 +5666,6 @@
           "search"
         ]
       },
-      "LstItemCharacteristicEntity": {
-        "type": "object",
-        "properties": {
-          "dp_id": {
-            "type": "number"
-          },
-          "dp_itemId": {
-            "type": "string"
-          },
-          "dp_characteristicId": {
-            "type": "number"
-          },
-          "dp_value": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "dp_id",
-          "dp_itemId",
-          "dp_characteristicId",
-          "dp_value"
-        ]
-      },
-      "LstItemGaleryEntity": {
-        "type": "object",
-        "properties": {
-          "dp_id": {
-            "type": "number"
-          },
-          "dp_itemId": {
-            "type": "string"
-          },
-          "dp_photoUrl": {
-            "type": "string",
-            "example": "https://example.com/image.png"
-          }
-        },
-        "required": [
-          "dp_id",
-          "dp_itemId",
-          "dp_photoUrl"
-        ]
-      },
-      "ItemEntity": {
-        "type": "object",
-        "properties": {
-          "dp_id": {
-            "type": "string"
-          },
-          "dp_name": {
-            "type": "string"
-          },
-          "dp_model": {
-            "type": "string"
-          },
-          "dp_cost": {
-            "type": "number"
-          },
-          "dp_photoUrl": {
-            "type": "string"
-          },
-          "dp_itemCategoryId": {
-            "type": "number"
-          },
-          "dp_seoKeywords": {
-            "type": "string"
-          },
-          "dp_seoDescription": {
-            "type": "string"
-          },
-          "dp_itemCharecteristics": {
-            "$ref": "#/components/schemas/LstItemCharacteristicEntity"
-          },
-          "dp_itemGalery": {
-            "$ref": "#/components/schemas/LstItemGaleryEntity"
-          }
-        },
-        "required": [
-          "dp_id",
-          "dp_name",
-          "dp_model",
-          "dp_cost",
-          "dp_photoUrl",
-          "dp_itemCategoryId",
-          "dp_seoKeywords",
-          "dp_seoDescription",
-          "dp_itemCharecteristics",
-          "dp_itemGalery"
-        ]
-      },
       "UpdateItemDto": {
         "type": "object",
         "properties": {
@@ -5620,7 +5675,7 @@
           },
           "dp_model": {
             "type": "string",
-            "example": "dp-10012"
+            "example": "10012"
           },
           "dp_cost": {
             "type": "number",
@@ -5628,7 +5683,7 @@
           },
           "dp_photoUrl": {
             "type": "string",
-            "example": "https://ooodepa.github.io/ooodepa_imgs/products/de-pa-electric/accessories/10012.png"
+            "example": "https://example.com/img.png"
           },
           "dp_itemCategoryId": {
             "type": "number",
@@ -5636,13 +5691,13 @@
           },
           "dp_seoKeywords": {
             "type": "string",
-            "example": ""
+            "example": "розетка розетки"
           },
           "dp_seoDescription": {
             "type": "string",
-            "example": ""
+            "example": "Розетка тройная встравая с заземлением. 10012"
           },
-          "dp_itemCharecteristics": {
+          "dp_itemCharacteristics": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/LstItemCharacteristicNoIdDto"
@@ -5663,7 +5718,7 @@
           "dp_itemCategoryId",
           "dp_seoKeywords",
           "dp_seoDescription",
-          "dp_itemCharecteristics",
+          "dp_itemCharacteristics",
           "dp_itemGalery"
         ]
       },
@@ -5676,7 +5731,7 @@
           },
           "dp_model": {
             "type": "string",
-            "example": "dp-10012"
+            "example": "10012"
           },
           "dp_cost": {
             "type": "number",
@@ -5684,7 +5739,7 @@
           },
           "dp_photoUrl": {
             "type": "string",
-            "example": "https://ooodepa.github.io/ooodepa_imgs/products/de-pa-electric/accessories/10012.png"
+            "example": "https://example.com/img.png"
           },
           "dp_itemCategoryId": {
             "type": "number",
@@ -5692,22 +5747,22 @@
           },
           "dp_seoKeywords": {
             "type": "string",
-            "example": ""
+            "example": "розетка розетки"
           },
           "dp_seoDescription": {
             "type": "string",
-            "example": ""
+            "example": "Розетка тройная встравая с заземлением. 10012"
           },
-          "dp_itemCharecteristics": {
+          "dp_itemCharacteristics": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/LstItemCharacteristicNoIdDto"
+              "$ref": "#/components/schemas/LstItemCharacteristicWithIdDto"
             }
           },
           "dp_itemGalery": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/LstItemGaleryNoIdDto"
+              "$ref": "#/components/schemas/LstItemGaleryWithIdDto"
             }
           },
           "dp_id": {
@@ -5723,7 +5778,7 @@
           "dp_itemCategoryId",
           "dp_seoKeywords",
           "dp_seoDescription",
-          "dp_itemCharecteristics",
+          "dp_itemCharacteristics",
           "dp_itemGalery",
           "dp_id"
         ]
@@ -5742,25 +5797,21 @@
           "bulk"
         ]
       },
-      "LstArticleAttachedLinks": {
+      "ArticleAttachedLinksNoId": {
         "type": "object",
         "properties": {
           "dp_name": {
             "type": "string",
-            "example": "Каталог 2023"
+            "example": "Сертификат 1"
           },
           "dp_url": {
             "type": "string",
-            "example": "https://example.com/catalogs/catalog-2023.pdf"
-          },
-          "dp_articleId": {
-            "type": "string"
+            "example": "https://example.com/certificate1.pdf"
           }
         },
         "required": [
           "dp_name",
-          "dp_url",
-          "dp_articleId"
+          "dp_url"
         ]
       },
       "CreateArticleDto": {
@@ -5768,34 +5819,44 @@
         "properties": {
           "dp_name": {
             "type": "string",
-            "example": "Каталоги"
+            "example": "Сертификаты"
           },
           "dp_date": {
-            "format": "date-time",
             "type": "string",
-            "example": "2023-04-13T05:00:00.000"
+            "example": "2023-01-01T00:00:00.000Z"
           },
           "dp_urlSegment": {
             "type": "string",
-            "example": "catalogs"
+            "example": "certificates"
           },
           "dp_photoUrl": {
             "type": "string",
-            "example": "https://example.com/image.png"
+            "example": "https://example.com/img.png"
           },
           "dp_text": {
-            "type": "string"
+            "type": "string",
+            "example": "My certificates"
+          },
+          "dp_sortingIndex": {
+            "type": "number",
+            "example": 10000
           },
           "dp_seoKeywords": {
-            "type": "string"
+            "type": "string",
+            "example": "сертификаты сертификат"
           },
           "dp_seoDescription": {
-            "type": "string"
+            "type": "string",
+            "example": "Страница сертификатов"
+          },
+          "dp_isHidden": {
+            "type": "boolean",
+            "example": false
           },
           "dp_articleAttachedLinks": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/LstArticleAttachedLinks"
+              "$ref": "#/components/schemas/ArticleAttachedLinksNoId"
             }
           }
         },
@@ -5805,8 +5866,10 @@
           "dp_urlSegment",
           "dp_photoUrl",
           "dp_text",
+          "dp_sortingIndex",
           "dp_seoKeywords",
           "dp_seoDescription",
+          "dp_isHidden",
           "dp_articleAttachedLinks"
         ]
       },
@@ -5824,52 +5887,95 @@
           "bulk"
         ]
       },
-      "ArticleEntity": {
+      "ArticleAttachedLinksWithId": {
         "type": "object",
         "properties": {
-          "dp_id": {
-            "type": "string"
-          },
           "dp_name": {
             "type": "string",
-            "example": "Каталоги"
+            "example": "Сертификат 1"
           },
-          "dp_date": {
-            "format": "date-time",
+          "dp_url": {
             "type": "string",
-            "example": "2023-04-13T05:00:00.000"
+            "example": "https://example.com/certificate1.pdf"
           },
-          "dp_urlSegment": {
+          "dp_id": {
+            "type": "number",
+            "example": 1
+          },
+          "dp_articleId": {
             "type": "string",
-            "example": "catalogs"
-          },
-          "dp_photoUrl": {
-            "type": "string",
-            "example": "https://example.com/image.png"
-          },
-          "dp_text": {
-            "type": "string"
-          },
-          "dp_seoKeywords": {
-            "type": "string"
-          },
-          "dp_seoDescription": {
-            "type": "string"
-          },
-          "dp_articleAttachedLinks": {
-            "$ref": "#/components/schemas/LstArticleAttachedLinks"
+            "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
           }
         },
         "required": [
+          "dp_name",
+          "dp_url",
           "dp_id",
+          "dp_articleId"
+        ]
+      },
+      "GetArticleDto": {
+        "type": "object",
+        "properties": {
+          "dp_name": {
+            "type": "string",
+            "example": "Сертификаты"
+          },
+          "dp_date": {
+            "type": "string",
+            "example": "2023-01-01T00:00:00.000Z"
+          },
+          "dp_urlSegment": {
+            "type": "string",
+            "example": "certificates"
+          },
+          "dp_photoUrl": {
+            "type": "string",
+            "example": "https://example.com/img.png"
+          },
+          "dp_text": {
+            "type": "string",
+            "example": "My certificates"
+          },
+          "dp_sortingIndex": {
+            "type": "number",
+            "example": 10000
+          },
+          "dp_seoKeywords": {
+            "type": "string",
+            "example": "сертификаты сертификат"
+          },
+          "dp_seoDescription": {
+            "type": "string",
+            "example": "Страница сертификатов"
+          },
+          "dp_isHidden": {
+            "type": "boolean",
+            "example": false
+          },
+          "dp_articleAttachedLinks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ArticleAttachedLinksWithId"
+            }
+          },
+          "dp_id": {
+            "type": "string",
+            "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+          }
+        },
+        "required": [
           "dp_name",
           "dp_date",
           "dp_urlSegment",
           "dp_photoUrl",
           "dp_text",
+          "dp_sortingIndex",
           "dp_seoKeywords",
           "dp_seoDescription",
-          "dp_articleAttachedLinks"
+          "dp_isHidden",
+          "dp_articleAttachedLinks",
+          "dp_id"
         ]
       },
       "UpdateArticleDto": {
@@ -5877,57 +5983,84 @@
         "properties": {
           "dp_name": {
             "type": "string",
-            "example": "Каталоги"
+            "example": "Сертификаты"
           },
           "dp_date": {
-            "format": "date-time",
             "type": "string",
-            "example": "2023-04-13T05:00:00.000"
+            "example": "2023-01-01T00:00:00.000Z"
           },
           "dp_urlSegment": {
             "type": "string",
-            "example": "catalogs"
+            "example": "certificates"
           },
           "dp_photoUrl": {
             "type": "string",
-            "example": "https://example.com/image.png"
+            "example": "https://example.com/img.png"
           },
           "dp_text": {
-            "type": "string"
+            "type": "string",
+            "example": "My certificates"
+          },
+          "dp_sortingIndex": {
+            "type": "number",
+            "example": 10000
           },
           "dp_seoKeywords": {
-            "type": "string"
+            "type": "string",
+            "example": "сертификаты сертификат"
           },
           "dp_seoDescription": {
-            "type": "string"
+            "type": "string",
+            "example": "Страница сертификатов"
+          },
+          "dp_isHidden": {
+            "type": "boolean",
+            "example": false
           },
           "dp_articleAttachedLinks": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/LstArticleAttachedLinks"
+              "$ref": "#/components/schemas/ArticleAttachedLinksNoId"
             }
           }
-        }
+        },
+        "required": [
+          "dp_name",
+          "dp_date",
+          "dp_urlSegment",
+          "dp_photoUrl",
+          "dp_text",
+          "dp_sortingIndex",
+          "dp_seoKeywords",
+          "dp_seoDescription",
+          "dp_isHidden",
+          "dp_articleAttachedLinks"
+        ]
       },
-      "ContactTypeCreateDto": {
+      "CreateContactTypeDto": {
         "type": "object",
         "properties": {
           "dp_name": {
             "type": "string",
             "example": "whatsapp"
+          },
+          "dp_isHidden": {
+            "type": "boolean",
+            "example": false
           }
         },
         "required": [
-          "dp_name"
+          "dp_name",
+          "dp_isHidden"
         ]
       },
-      "ContactTypeCreateBulkDto": {
+      "CreateBulkContactTypeDto": {
         "type": "object",
         "properties": {
           "bulk": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/ContactTypeCreateDto"
+              "$ref": "#/components/schemas/CreateContactTypeDto"
             }
           }
         },
@@ -5935,32 +6068,46 @@
           "bulk"
         ]
       },
-      "ContactTypeEntity": {
+      "GetContactTypeDto": {
         "type": "object",
         "properties": {
-          "dp_id": {
-            "type": "number"
-          },
           "dp_name": {
             "type": "string",
             "example": "whatsapp"
+          },
+          "dp_isHidden": {
+            "type": "boolean",
+            "example": false
+          },
+          "dp_id": {
+            "type": "number",
+            "example": 1
           }
         },
         "required": [
-          "dp_id",
-          "dp_name"
+          "dp_name",
+          "dp_isHidden",
+          "dp_id"
         ]
       },
-      "ContactTypeUpdateDto": {
+      "UpdateContactTypeDto": {
         "type": "object",
         "properties": {
           "dp_name": {
             "type": "string",
             "example": "whatsapp"
+          },
+          "dp_isHidden": {
+            "type": "boolean",
+            "example": false
           }
-        }
+        },
+        "required": [
+          "dp_name",
+          "dp_isHidden"
+        ]
       },
-      "CreateLstHelperCommunicationDto": {
+      "HelperContactTypeNoId": {
         "type": "object",
         "properties": {
           "dp_contactTypeId": {
@@ -5969,7 +6116,7 @@
           },
           "dp_value": {
             "type": "string",
-            "example": "+375331112233"
+            "example": "+111223334455"
           },
           "dp_isHidden": {
             "type": "boolean",
@@ -5985,14 +6132,17 @@
       "CreateHelperDto": {
         "type": "object",
         "properties": {
-          "dp_sortingIndex": {
-            "type": "number"
-          },
           "dp_name": {
-            "type": "string"
+            "type": "string",
+            "example": "Директор"
           },
-          "dp_description": {
-            "type": "string"
+          "dp_text": {
+            "type": "string",
+            "example": "текст"
+          },
+          "dp_sortingIndex": {
+            "type": "number",
+            "example": 10000
           },
           "dp_isHidden": {
             "type": "boolean",
@@ -6001,14 +6151,14 @@
           "dp_helperContactTypes": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CreateLstHelperCommunicationDto"
+              "$ref": "#/components/schemas/HelperContactTypeNoId"
             }
           }
         },
         "required": [
-          "dp_sortingIndex",
           "dp_name",
-          "dp_description",
+          "dp_text",
+          "dp_sortingIndex",
           "dp_isHidden",
           "dp_helperContactTypes"
         ]
@@ -6027,53 +6177,53 @@
           "bulk"
         ]
       },
-      "LstHelperCommunicationTypeEntity": {
+      "HelperContactTypeWithId": {
         "type": "object",
         "properties": {
-          "dp_id": {
-            "type": "number"
-          },
-          "dp_helperId": {
-            "type": "string"
-          },
           "dp_contactTypeId": {
-            "type": "number"
+            "type": "number",
+            "example": 1
           },
           "dp_value": {
             "type": "string",
-            "example": "+375331112233"
+            "example": "+111223334455"
           },
           "dp_isHidden": {
             "type": "boolean",
             "example": false
+          },
+          "dp_id": {
+            "type": "number",
+            "example": 1
+          },
+          "dp_helperId": {
+            "type": "string",
+            "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
           }
         },
         "required": [
-          "dp_id",
-          "dp_helperId",
           "dp_contactTypeId",
           "dp_value",
-          "dp_isHidden"
+          "dp_isHidden",
+          "dp_id",
+          "dp_helperId"
         ]
       },
-      "HelperEntity": {
+      "GetHelperDto": {
         "type": "object",
         "properties": {
-          "dp_id": {
-            "type": "string"
+          "dp_name": {
+            "type": "string",
+            "example": "Директор"
+          },
+          "dp_text": {
+            "type": "string",
+            "example": "текст"
           },
           "dp_sortingIndex": {
             "type": "number",
             "example": 10000
           },
-          "dp_name": {
-            "type": "string",
-            "example": "Центральный офис"
-          },
-          "dp_description": {
-            "type": "string",
-            "example": "г. Брест"
-          },
           "dp_isHidden": {
             "type": "boolean",
             "example": false
@@ -6081,30 +6231,37 @@
           "dp_helperContactTypes": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/LstHelperCommunicationTypeEntity"
+              "$ref": "#/components/schemas/HelperContactTypeWithId"
             }
+          },
+          "dp_id": {
+            "type": "string",
+            "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
           }
         },
         "required": [
-          "dp_id",
-          "dp_sortingIndex",
           "dp_name",
-          "dp_description",
+          "dp_text",
+          "dp_sortingIndex",
           "dp_isHidden",
-          "dp_helperContactTypes"
+          "dp_helperContactTypes",
+          "dp_id"
         ]
       },
       "UpdateHelperDto": {
         "type": "object",
         "properties": {
-          "dp_sortingIndex": {
-            "type": "number"
-          },
           "dp_name": {
-            "type": "string"
+            "type": "string",
+            "example": "Директор"
           },
-          "dp_description": {
-            "type": "string"
+          "dp_text": {
+            "type": "string",
+            "example": "текст"
+          },
+          "dp_sortingIndex": {
+            "type": "number",
+            "example": 10000
           },
           "dp_isHidden": {
             "type": "boolean",
@@ -6113,10 +6270,17 @@
           "dp_helperContactTypes": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CreateLstHelperCommunicationDto"
+              "$ref": "#/components/schemas/HelperContactTypeNoId"
             }
           }
-        }
+        },
+        "required": [
+          "dp_name",
+          "dp_text",
+          "dp_sortingIndex",
+          "dp_isHidden",
+          "dp_helperContactTypes"
+        ]
       },
       "CreateItemBrandDto": {
         "type": "object",
@@ -6125,25 +6289,25 @@
             "type": "string",
             "example": "DE-PA Electric"
           },
-          "dp_sortingIndex": {
-            "type": "number",
-            "example": 10000
-          },
           "dp_photoUrl": {
             "type": "string",
-            "example": "https://ooodepa.github.io/ooodepa_imgs/productCategories/de-pa-electric-logo.png"
+            "example": "https://example.com/img.png"
           },
           "dp_urlSegment": {
             "type": "string",
             "example": "de-pa-electric"
           },
+          "dp_sortingIndex": {
+            "type": "number",
+            "example": 10000
+          },
           "dp_seoKeywords": {
             "type": "string",
-            "example": ""
+            "example": "de-pa electric"
           },
           "dp_seoDescription": {
             "type": "string",
-            "example": ""
+            "example": "Продукция DE-PA Electric"
           },
           "dp_isHidden": {
             "type": "boolean",
@@ -6152,9 +6316,9 @@
         },
         "required": [
           "dp_name",
-          "dp_sortingIndex",
           "dp_photoUrl",
           "dp_urlSegment",
+          "dp_sortingIndex",
           "dp_seoKeywords",
           "dp_seoDescription",
           "dp_isHidden"
@@ -6167,25 +6331,25 @@
             "type": "string",
             "example": "DE-PA Electric"
           },
-          "dp_sortingIndex": {
-            "type": "number",
-            "example": 10000
-          },
           "dp_photoUrl": {
             "type": "string",
-            "example": "https://ooodepa.github.io/ooodepa_imgs/productCategories/de-pa-electric-logo.png"
+            "example": "https://example.com/img.png"
           },
           "dp_urlSegment": {
             "type": "string",
             "example": "de-pa-electric"
           },
+          "dp_sortingIndex": {
+            "type": "number",
+            "example": 10000
+          },
           "dp_seoKeywords": {
             "type": "string",
-            "example": ""
+            "example": "de-pa electric"
           },
           "dp_seoDescription": {
             "type": "string",
-            "example": ""
+            "example": "Продукция DE-PA Electric"
           },
           "dp_isHidden": {
             "type": "boolean",
@@ -6194,9 +6358,9 @@
         },
         "required": [
           "dp_name",
-          "dp_sortingIndex",
           "dp_photoUrl",
           "dp_urlSegment",
+          "dp_sortingIndex",
           "dp_seoKeywords",
           "dp_seoDescription",
           "dp_isHidden"
@@ -6223,25 +6387,25 @@
             "type": "string",
             "example": "DE-PA Electric"
           },
-          "dp_sortingIndex": {
-            "type": "number",
-            "example": 10000
-          },
           "dp_photoUrl": {
             "type": "string",
-            "example": "https://ooodepa.github.io/ooodepa_imgs/productCategories/de-pa-electric-logo.png"
+            "example": "https://example.com/img.png"
           },
           "dp_urlSegment": {
             "type": "string",
             "example": "de-pa-electric"
           },
+          "dp_sortingIndex": {
+            "type": "number",
+            "example": 10000
+          },
           "dp_seoKeywords": {
             "type": "string",
-            "example": ""
+            "example": "de-pa electric"
           },
           "dp_seoDescription": {
             "type": "string",
-            "example": ""
+            "example": "Продукция DE-PA Electric"
           },
           "dp_isHidden": {
             "type": "boolean",
@@ -6249,14 +6413,14 @@
           },
           "dp_id": {
             "type": "number",
-            "example": 0
+            "example": 1
           }
         },
         "required": [
           "dp_name",
-          "dp_sortingIndex",
           "dp_photoUrl",
           "dp_urlSegment",
+          "dp_sortingIndex",
           "dp_seoKeywords",
           "dp_seoDescription",
           "dp_isHidden",
@@ -6270,25 +6434,25 @@
             "type": "string",
             "example": "DE-PA Electric"
           },
-          "dp_sortingIndex": {
-            "type": "number",
-            "example": 10000
-          },
           "dp_photoUrl": {
             "type": "string",
-            "example": "https://ooodepa.github.io/ooodepa_imgs/productCategories/de-pa-electric-logo.png"
+            "example": "https://example.com/img.png"
           },
           "dp_urlSegment": {
             "type": "string",
             "example": "de-pa-electric"
           },
+          "dp_sortingIndex": {
+            "type": "number",
+            "example": 10000
+          },
           "dp_seoKeywords": {
             "type": "string",
-            "example": ""
+            "example": "de-pa electric"
           },
           "dp_seoDescription": {
             "type": "string",
-            "example": ""
+            "example": "Продукция DE-PA Electric"
           },
           "dp_isHidden": {
             "type": "boolean",
@@ -6297,9 +6461,9 @@
         },
         "required": [
           "dp_name",
-          "dp_sortingIndex",
           "dp_photoUrl",
           "dp_urlSegment",
+          "dp_sortingIndex",
           "dp_seoKeywords",
           "dp_seoDescription",
           "dp_isHidden"
@@ -6350,26 +6514,53 @@
           "dp_orderItems"
         ]
       },
-      "GetFavoriteItemDto": {
+      "GetApkVersionsDto": {
         "type": "object",
         "properties": {
+          "dp_date": {
+            "type": "string",
+            "example": "2023-01-01T00:00:00.000Z"
+          },
+          "dp_version": {
+            "type": "string",
+            "example": "0.1.0"
+          },
+          "dp_url": {
+            "type": "string",
+            "example": "https://example.com/app-release-v0.1.0.apk"
+          },
           "dp_id": {
             "type": "number",
-            "example": 0
-          },
-          "dp_userId": {
-            "type": "number",
-            "example": 0
-          },
-          "dp_itemId": {
-            "type": "string",
             "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
           }
         },
         "required": [
-          "dp_id",
+          "dp_date",
+          "dp_version",
+          "dp_url",
+          "dp_id"
+        ]
+      },
+      "GetFavoriteItemDto": {
+        "type": "object",
+        "properties": {
+          "dp_userId": {
+            "type": "number",
+            "example": 1
+          },
+          "dp_itemId": {
+            "type": "string",
+            "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+          },
+          "dp_id": {
+            "type": "number",
+            "example": 1
+          }
+        },
+        "required": [
           "dp_userId",
-          "dp_itemId"
+          "dp_itemId",
+          "dp_id"
         ]
       }
     }

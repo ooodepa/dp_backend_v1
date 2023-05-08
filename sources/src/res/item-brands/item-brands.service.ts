@@ -39,6 +39,12 @@ export class ItemBrandsService {
     return await this.itemBrandEntity.findOneOrFail({ where: { dp_id: id } });
   }
 
+  async findOneByUrl(url: string): Promise<ItemBrandWithIdDto> {
+    return await this.itemBrandEntity.findOneOrFail({
+      where: { dp_urlSegment: url },
+    });
+  }
+
   async update(id: number, dto: UpdateItemBrandDto): Promise<HttpResponseDto> {
     await this.itemBrandEntity.findOneOrFail({ where: { dp_id: id } });
     await this.itemBrandEntity.update(id, dto);

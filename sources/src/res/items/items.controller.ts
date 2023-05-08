@@ -24,7 +24,6 @@ import SearchItemsDto from './dto/search-items.dto';
 import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
 import { FilterItemDto } from './dto/filter-item.dto';
-import GetItemShortDto from './dto/get-item-short.dto';
 import { FindItemIdsDto } from './dto/find-item-ids.dto';
 import SearchAllItemsDto from './dto/search-all-items.dto';
 import { CreateBulkItemDto } from './dto/create-bulk-item.dto';
@@ -72,7 +71,7 @@ export class ItemsController {
 
   @ApiTags('any')
   @ApiOperation(SwaggerApiOperation.Find)
-  @ApiResponse({ ...SwaggerApiResponse.Finded, type: [GetItemShortDto] })
+  @ApiResponse({ ...SwaggerApiResponse.Finded, type: [GetItemDto] })
   @ApiResponse(SwaggerApiResponse.ServerErrorAndTransaction)
   @Get()
   findAll(@Query() filter: FilterItemDto) {
@@ -84,14 +83,14 @@ export class ItemsController {
   @ApiResponse({ ...SwaggerApiResponse.FindedById, type: [GetItemDto] })
   @ApiResponse(SwaggerApiResponse.NotFound)
   @ApiResponse(SwaggerApiResponse.ServerError)
-  @Get('model/:model')
+  @Get('filter-one/model/:model')
   findOneByModel(@Param('model') model: string) {
     return this.itemsService.findOneByModel(model);
   }
 
   @ApiTags('any')
   @ApiOperation(SwaggerApiOperation.Find)
-  @ApiResponse({ ...SwaggerApiResponse.Finded, type: [GetItemShortDto] })
+  @ApiResponse({ ...SwaggerApiResponse.Finded, type: [GetItemDto] })
   @ApiResponse(SwaggerApiResponse.ServerError)
   @Post('filter/models')
   findModels(@Body() dto: FindItemModelsDto) {
@@ -100,7 +99,7 @@ export class ItemsController {
 
   @ApiTags('any')
   @ApiOperation(SwaggerApiOperation.Find)
-  @ApiResponse({ ...SwaggerApiResponse.Finded, type: [GetItemShortDto] })
+  @ApiResponse({ ...SwaggerApiResponse.Finded, type: [GetItemDto] })
   @ApiResponse(SwaggerApiResponse.ServerError)
   @Post('filter/ids')
   findIds(@Body() dto: FindItemIdsDto) {
@@ -109,7 +108,7 @@ export class ItemsController {
 
   @ApiTags('any')
   @ApiOperation(SwaggerApiOperation.Find)
-  @ApiResponse({ ...SwaggerApiResponse.Finded, type: [GetItemShortDto] })
+  @ApiResponse({ ...SwaggerApiResponse.Finded, type: [GetItemDto] })
   @ApiResponse(SwaggerApiResponse.ServerError)
   @Post('search')
   search(@Body() dto: SearchItemsDto) {
@@ -118,7 +117,7 @@ export class ItemsController {
 
   @ApiTags('any')
   @ApiOperation(SwaggerApiOperation.Find)
-  @ApiResponse({ ...SwaggerApiResponse.Finded, type: [GetItemShortDto] })
+  @ApiResponse({ ...SwaggerApiResponse.Finded, type: [GetItemDto] })
   @ApiResponse(SwaggerApiResponse.ServerError)
   @Post('search-all')
   searchAll(@Body() dto: SearchAllItemsDto) {
@@ -127,7 +126,7 @@ export class ItemsController {
 
   @ApiTags('any')
   @ApiOperation(SwaggerApiOperation.FindById)
-  @ApiResponse({ ...SwaggerApiResponse.FindedById, type: ItemEntity })
+  @ApiResponse({ ...SwaggerApiResponse.FindedById, type: GetItemDto })
   @ApiResponse(SwaggerApiResponse.NotFound)
   @ApiResponse(SwaggerApiResponse.ServerError)
   @Get(':id')

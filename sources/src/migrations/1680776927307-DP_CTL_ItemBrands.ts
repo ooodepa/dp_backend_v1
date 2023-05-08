@@ -14,8 +14,9 @@ export class DPCTLItemBrands1680776927307 implements MigrationInterface {
             \`dp_seoKeywords\` varchar(255) NOT NULL DEFAULT '',
             \`dp_seoDescription\` varchar(255) NOT NULL DEFAULT '',
             \`dp_isHidden\` tinyint NOT NULL DEFAULT 0,
-            UNIQUE INDEX \`IDX_b0966f9524c3e8f22ee06cbdb1\` (\`dp_name\`),
-            UNIQUE INDEX \`IDX_88bce9547f5da88d7818e29a4a\` (\`dp_urlSegment\`),
+            UNIQUE INDEX \`UNI_ctlItemBrands_name\` (\`dp_name\`),
+            UNIQUE INDEX \`UNI_ctlItemBrands_urlSegment\` (\`dp_urlSegment\`),
+            UNIQUE INDEX \`UNI_ctlItemBrands_seoDescription\` (\`dp_seoDescription\`),
             PRIMARY KEY (\`dp_id\`)
         ) ENGINE = InnoDB
     `);
@@ -38,10 +39,13 @@ export class DPCTLItemBrands1680776927307 implements MigrationInterface {
         ALTER TABLE \`DP_CTL_ItemCategories\` DROP COLUMN \`dp_itemBrandId\`
     `);
     await queryRunner.query(`
-        ALTER TABLE \`DP_CTL_ItemBrands\` DROP INDEX \`IDX_88bce9547f5da88d7818e29a4a\`
+        ALTER TABLE \`DP_CTL_ItemBrands\` DROP INDEX \`UNI_ctlItemBrands_seoDescription\`
     `);
     await queryRunner.query(`
-        ALTER TABLE \`DP_CTL_ItemBrands\` DROP INDEX \`IDX_b0966f9524c3e8f22ee06cbdb1\`
+        ALTER TABLE \`DP_CTL_ItemBrands\` DROP INDEX \`UNI_ctlItemBrands_urlSegment\`
+    `);
+    await queryRunner.query(`
+        ALTER TABLE \`DP_CTL_ItemBrands\` DROP INDEX \`UNI_ctlItemBrands_name\`
     `);
     await queryRunner.query(`
         DROP TABLE \`DP_CTL_ItemBrands\`
