@@ -19,7 +19,6 @@ import {
 
 import GetItemDto from './dto/get-item.dto';
 import { ItemsService } from './items.service';
-import { ItemEntity } from './entities/item.entity';
 import SearchItemsDto from './dto/search-items.dto';
 import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';

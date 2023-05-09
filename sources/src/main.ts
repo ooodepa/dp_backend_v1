@@ -1,7 +1,8 @@
 import * as fs from 'fs';
+import * as bodyParser from 'body-parser';
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe, HttpException, HttpStatus } from '@nestjs/common';
 import { SwaggerModule } from '@nestjs/swagger';
+import { ValidationPipe, HttpException, HttpStatus } from '@nestjs/common';
 
 import config from './swagger.config';
 import { AppModule } from './app.module';
@@ -10,6 +11,8 @@ import { HttpExceptionFilter } from './utils/HttpExceptionFilter';
 async function bootstrap() {
   const PORT = process.env.APP__PORT || 3000;
   const app = await NestFactory.create(AppModule);
+
+  app.use(bodyParser.json({ limit: '1mb' }));
 
   app.enableCors();
 
