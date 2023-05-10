@@ -5028,7 +5028,7 @@
           "dp_isHidden"
         ]
       },
-      "ItemCategoryNoIdDto": {
+      "ItemCategoryExcludeIdDto": {
         "type": "object",
         "properties": {
           "dp_name": {
@@ -5080,7 +5080,7 @@
           "bulk": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/ItemCategoryNoIdDto"
+              "$ref": "#/components/schemas/ItemCategoryExcludeIdDto"
             }
           }
         },
@@ -5267,7 +5267,7 @@
           "dp_isHidden"
         ]
       },
-      "ItemCharacteristicNoIdDto": {
+      "ItemCharacteristicExcludeIdDto": {
         "type": "object",
         "properties": {
           "dp_name": {
@@ -5290,7 +5290,7 @@
           "bulk": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/ItemCharacteristicNoIdDto"
+              "$ref": "#/components/schemas/ItemCharacteristicExcludeIdDto"
             }
           }
         },
@@ -5351,7 +5351,7 @@
           "bulk"
         ]
       },
-      "LstItemCharacteristicNoIdDto": {
+      "LstItemCharacteristicExcludeIdDto": {
         "type": "object",
         "properties": {
           "dp_characteristicId": {
@@ -5368,7 +5368,7 @@
           "dp_value"
         ]
       },
-      "LstItemGaleryNoIdDto": {
+      "LstItemGaleryExcludeIdDto": {
         "type": "object",
         "properties": {
           "dp_photoUrl": {
@@ -5414,13 +5414,13 @@
           "dp_itemCharacteristics": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/LstItemCharacteristicNoIdDto"
+              "$ref": "#/components/schemas/LstItemCharacteristicExcludeIdDto"
             }
           },
           "dp_itemGalery": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/LstItemGaleryNoIdDto"
+              "$ref": "#/components/schemas/LstItemGaleryExcludeIdDto"
             }
           }
         },
@@ -5436,7 +5436,7 @@
           "dp_itemGalery"
         ]
       },
-      "ItemNoIdDto": {
+      "ItemExcludeIdDto": {
         "type": "object",
         "properties": {
           "dp_name": {
@@ -5470,13 +5470,13 @@
           "dp_itemCharacteristics": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/LstItemCharacteristicNoIdDto"
+              "$ref": "#/components/schemas/LstItemCharacteristicExcludeIdDto"
             }
           },
           "dp_itemGalery": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/LstItemGaleryNoIdDto"
+              "$ref": "#/components/schemas/LstItemGaleryExcludeIdDto"
             }
           }
         },
@@ -5498,7 +5498,7 @@
           "bulk": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/ItemNoIdDto"
+              "$ref": "#/components/schemas/ItemExcludeIdDto"
             }
           }
         },
@@ -5509,6 +5509,14 @@
       "LstItemCharacteristicWithIdDto": {
         "type": "object",
         "properties": {
+          "dp_id": {
+            "type": "number",
+            "example": 1
+          },
+          "dp_itemId": {
+            "type": "string",
+            "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+          },
           "dp_characteristicId": {
             "type": "number",
             "example": 1
@@ -5516,30 +5524,18 @@
           "dp_value": {
             "type": "string",
             "example": "12"
-          },
-          "dp_id": {
-            "type": "number",
-            "example": 1
-          },
-          "dp_itemId": {
-            "type": "string",
-            "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
           }
         },
         "required": [
-          "dp_characteristicId",
-          "dp_value",
           "dp_id",
-          "dp_itemId"
+          "dp_itemId",
+          "dp_characteristicId",
+          "dp_value"
         ]
       },
       "LstItemGaleryWithIdDto": {
         "type": "object",
         "properties": {
-          "dp_photoUrl": {
-            "type": "string",
-            "example": "https://example.com/img.png"
-          },
           "dp_id": {
             "type": "number",
             "example": 1
@@ -5547,12 +5543,16 @@
           "dp_itemId": {
             "type": "string",
             "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+          },
+          "dp_photoUrl": {
+            "type": "string",
+            "example": "https://example.com/img.png"
           }
         },
         "required": [
-          "dp_photoUrl",
           "dp_id",
-          "dp_itemId"
+          "dp_itemId",
+          "dp_photoUrl"
         ]
       },
       "GetItemDto": {
@@ -5586,6 +5586,10 @@
             "type": "string",
             "example": "Розетка тройная встравая с заземлением. 10012"
           },
+          "dp_id": {
+            "type": "string",
+            "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+          },
           "dp_itemCharacteristics": {
             "type": "array",
             "items": {
@@ -5597,10 +5601,6 @@
             "items": {
               "$ref": "#/components/schemas/LstItemGaleryWithIdDto"
             }
-          },
-          "dp_id": {
-            "type": "string",
-            "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
           }
         },
         "required": [
@@ -5611,9 +5611,9 @@
           "dp_itemCategoryId",
           "dp_seoKeywords",
           "dp_seoDescription",
+          "dp_id",
           "dp_itemCharacteristics",
-          "dp_itemGalery",
-          "dp_id"
+          "dp_itemGalery"
         ]
       },
       "FindItemModelsDto": {
@@ -5700,13 +5700,13 @@
           "dp_itemCharacteristics": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/LstItemCharacteristicNoIdDto"
+              "$ref": "#/components/schemas/LstItemCharacteristicExcludeIdDto"
             }
           },
           "dp_itemGalery": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/LstItemGaleryNoIdDto"
+              "$ref": "#/components/schemas/LstItemGaleryExcludeIdDto"
             }
           }
         },
@@ -5753,6 +5753,10 @@
             "type": "string",
             "example": "Розетка тройная встравая с заземлением. 10012"
           },
+          "dp_id": {
+            "type": "string",
+            "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+          },
           "dp_itemCharacteristics": {
             "type": "array",
             "items": {
@@ -5764,10 +5768,6 @@
             "items": {
               "$ref": "#/components/schemas/LstItemGaleryWithIdDto"
             }
-          },
-          "dp_id": {
-            "type": "string",
-            "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
           }
         },
         "required": [
@@ -5778,9 +5778,9 @@
           "dp_itemCategoryId",
           "dp_seoKeywords",
           "dp_seoDescription",
+          "dp_id",
           "dp_itemCharacteristics",
-          "dp_itemGalery",
-          "dp_id"
+          "dp_itemGalery"
         ]
       },
       "UpdateBulkItemDto": {
@@ -5797,7 +5797,7 @@
           "bulk"
         ]
       },
-      "ArticleAttachedLinksNoId": {
+      "ArticleAttachedLinksExcludeIdDto": {
         "type": "object",
         "properties": {
           "dp_name": {
@@ -5856,7 +5856,7 @@
           "dp_articleAttachedLinks": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/ArticleAttachedLinksNoId"
+              "$ref": "#/components/schemas/ArticleAttachedLinksExcludeIdDto"
             }
           }
         },
@@ -5873,48 +5873,7 @@
           "dp_articleAttachedLinks"
         ]
       },
-      "CreateBulkArticleDto": {
-        "type": "object",
-        "properties": {
-          "bulk": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CreateArticleDto"
-            }
-          }
-        },
-        "required": [
-          "bulk"
-        ]
-      },
-      "ArticleAttachedLinksWithId": {
-        "type": "object",
-        "properties": {
-          "dp_name": {
-            "type": "string",
-            "example": "Сертификат 1"
-          },
-          "dp_url": {
-            "type": "string",
-            "example": "https://example.com/certificate1.pdf"
-          },
-          "dp_id": {
-            "type": "number",
-            "example": 1
-          },
-          "dp_articleId": {
-            "type": "string",
-            "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-          }
-        },
-        "required": [
-          "dp_name",
-          "dp_url",
-          "dp_id",
-          "dp_articleId"
-        ]
-      },
-      "GetArticleDto": {
+      "ArticleExcludeIdDto": {
         "type": "object",
         "properties": {
           "dp_name": {
@@ -5956,12 +5915,8 @@
           "dp_articleAttachedLinks": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/ArticleAttachedLinksWithId"
+              "$ref": "#/components/schemas/ArticleAttachedLinksExcludeIdDto"
             }
-          },
-          "dp_id": {
-            "type": "string",
-            "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
           }
         },
         "required": [
@@ -5974,8 +5929,112 @@
           "dp_seoKeywords",
           "dp_seoDescription",
           "dp_isHidden",
-          "dp_articleAttachedLinks",
-          "dp_id"
+          "dp_articleAttachedLinks"
+        ]
+      },
+      "CreateBulkArticleDto": {
+        "type": "object",
+        "properties": {
+          "bulk": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ArticleExcludeIdDto"
+            }
+          }
+        },
+        "required": [
+          "bulk"
+        ]
+      },
+      "ArticleAttachedLinksWithIdDto": {
+        "type": "object",
+        "properties": {
+          "dp_id": {
+            "type": "number",
+            "example": 1
+          },
+          "dp_articleId": {
+            "type": "string",
+            "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+          },
+          "dp_name": {
+            "type": "string",
+            "example": "Сертификат 1"
+          },
+          "dp_url": {
+            "type": "string",
+            "example": "https://example.com/certificate1.pdf"
+          }
+        },
+        "required": [
+          "dp_id",
+          "dp_articleId",
+          "dp_name",
+          "dp_url"
+        ]
+      },
+      "GetArticleDto": {
+        "type": "object",
+        "properties": {
+          "dp_name": {
+            "type": "string",
+            "example": "Сертификаты"
+          },
+          "dp_date": {
+            "type": "string",
+            "example": "2023-01-01T00:00:00.000Z"
+          },
+          "dp_urlSegment": {
+            "type": "string",
+            "example": "certificates"
+          },
+          "dp_photoUrl": {
+            "type": "string",
+            "example": "https://example.com/img.png"
+          },
+          "dp_text": {
+            "type": "string",
+            "example": "My certificates"
+          },
+          "dp_sortingIndex": {
+            "type": "number",
+            "example": 10000
+          },
+          "dp_seoKeywords": {
+            "type": "string",
+            "example": "сертификаты сертификат"
+          },
+          "dp_seoDescription": {
+            "type": "string",
+            "example": "Страница сертификатов"
+          },
+          "dp_isHidden": {
+            "type": "boolean",
+            "example": false
+          },
+          "dp_id": {
+            "type": "string",
+            "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+          },
+          "dp_articleAttachedLinks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ArticleAttachedLinksWithIdDto"
+            }
+          }
+        },
+        "required": [
+          "dp_name",
+          "dp_date",
+          "dp_urlSegment",
+          "dp_photoUrl",
+          "dp_text",
+          "dp_sortingIndex",
+          "dp_seoKeywords",
+          "dp_seoDescription",
+          "dp_isHidden",
+          "dp_id",
+          "dp_articleAttachedLinks"
         ]
       },
       "UpdateArticleDto": {
@@ -6020,7 +6079,7 @@
           "dp_articleAttachedLinks": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/ArticleAttachedLinksNoId"
+              "$ref": "#/components/schemas/ArticleAttachedLinksExcludeIdDto"
             }
           }
         },
@@ -6054,13 +6113,30 @@
           "dp_isHidden"
         ]
       },
+      "ContactTypeExcludeIdDto": {
+        "type": "object",
+        "properties": {
+          "dp_name": {
+            "type": "string",
+            "example": "whatsapp"
+          },
+          "dp_isHidden": {
+            "type": "boolean",
+            "example": false
+          }
+        },
+        "required": [
+          "dp_name",
+          "dp_isHidden"
+        ]
+      },
       "CreateBulkContactTypeDto": {
         "type": "object",
         "properties": {
           "bulk": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CreateContactTypeDto"
+              "$ref": "#/components/schemas/ContactTypeExcludeIdDto"
             }
           }
         },
@@ -6107,7 +6183,7 @@
           "dp_isHidden"
         ]
       },
-      "HelperContactTypeNoId": {
+      "HelperContactTypeExcludeIdDto": {
         "type": "object",
         "properties": {
           "dp_contactTypeId": {
@@ -6151,7 +6227,7 @@
           "dp_helperContactTypes": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/HelperContactTypeNoId"
+              "$ref": "#/components/schemas/HelperContactTypeExcludeIdDto"
             }
           }
         },
@@ -6163,53 +6239,7 @@
           "dp_helperContactTypes"
         ]
       },
-      "CreateBulkHelperDto": {
-        "type": "object",
-        "properties": {
-          "bulk": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CreateHelperDto"
-            }
-          }
-        },
-        "required": [
-          "bulk"
-        ]
-      },
-      "HelperContactTypeWithId": {
-        "type": "object",
-        "properties": {
-          "dp_contactTypeId": {
-            "type": "number",
-            "example": 1
-          },
-          "dp_value": {
-            "type": "string",
-            "example": "+111223334455"
-          },
-          "dp_isHidden": {
-            "type": "boolean",
-            "example": false
-          },
-          "dp_id": {
-            "type": "number",
-            "example": 1
-          },
-          "dp_helperId": {
-            "type": "string",
-            "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-          }
-        },
-        "required": [
-          "dp_contactTypeId",
-          "dp_value",
-          "dp_isHidden",
-          "dp_id",
-          "dp_helperId"
-        ]
-      },
-      "GetHelperDto": {
+      "HelperExcludeIdDto": {
         "type": "object",
         "properties": {
           "dp_name": {
@@ -6231,12 +6261,8 @@
           "dp_helperContactTypes": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/HelperContactTypeWithId"
+              "$ref": "#/components/schemas/HelperContactTypeExcludeIdDto"
             }
-          },
-          "dp_id": {
-            "type": "string",
-            "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
           }
         },
         "required": [
@@ -6244,8 +6270,92 @@
           "dp_text",
           "dp_sortingIndex",
           "dp_isHidden",
-          "dp_helperContactTypes",
-          "dp_id"
+          "dp_helperContactTypes"
+        ]
+      },
+      "CreateBulkHelperDto": {
+        "type": "object",
+        "properties": {
+          "bulk": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HelperExcludeIdDto"
+            }
+          }
+        },
+        "required": [
+          "bulk"
+        ]
+      },
+      "HelperContactTypeWithIdDto": {
+        "type": "object",
+        "properties": {
+          "dp_id": {
+            "type": "number",
+            "example": 1
+          },
+          "dp_helperId": {
+            "type": "string",
+            "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+          },
+          "dp_contactTypeId": {
+            "type": "number",
+            "example": 1
+          },
+          "dp_value": {
+            "type": "string",
+            "example": "+111223334455"
+          },
+          "dp_isHidden": {
+            "type": "boolean",
+            "example": false
+          }
+        },
+        "required": [
+          "dp_id",
+          "dp_helperId",
+          "dp_contactTypeId",
+          "dp_value",
+          "dp_isHidden"
+        ]
+      },
+      "GetHelperDto": {
+        "type": "object",
+        "properties": {
+          "dp_name": {
+            "type": "string",
+            "example": "Директор"
+          },
+          "dp_text": {
+            "type": "string",
+            "example": "текст"
+          },
+          "dp_sortingIndex": {
+            "type": "number",
+            "example": 10000
+          },
+          "dp_isHidden": {
+            "type": "boolean",
+            "example": false
+          },
+          "dp_id": {
+            "type": "string",
+            "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+          },
+          "dp_helperContactTypes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HelperContactTypeWithIdDto"
+            }
+          }
+        },
+        "required": [
+          "dp_name",
+          "dp_text",
+          "dp_sortingIndex",
+          "dp_isHidden",
+          "dp_id",
+          "dp_helperContactTypes"
         ]
       },
       "UpdateHelperDto": {
@@ -6270,7 +6380,7 @@
           "dp_helperContactTypes": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/HelperContactTypeNoId"
+              "$ref": "#/components/schemas/HelperContactTypeExcludeIdDto"
             }
           }
         },
@@ -6324,7 +6434,7 @@
           "dp_isHidden"
         ]
       },
-      "ItemBrandNoIdDto": {
+      "ItemBrandExcludeIdDto": {
         "type": "object",
         "properties": {
           "dp_name": {
@@ -6372,7 +6482,7 @@
           "bulk": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/ItemBrandNoIdDto"
+              "$ref": "#/components/schemas/ItemBrandExcludeIdDto"
             }
           }
         },

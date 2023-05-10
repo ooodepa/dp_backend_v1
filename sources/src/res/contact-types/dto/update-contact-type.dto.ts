@@ -1,3 +1,3 @@
-import ContactTypeNoId from './contact-type-no-id.dto';
+import ContactTypeExcludeIdDto from './contact-type-exclude-id.dto';
 
-export class UpdateContactTypeDto extends ContactTypeNoId {}
+export class UpdateContactTypeDto extends ContactTypeExcludeIdDto {}

@@ -1,13 +1,9 @@
-import { Exclude } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 import ItemBrandsApiProperty from '../item-brands.swagger';
 
-export default class ItemBrandNoIdDto {
-  @Exclude()
-  dp_id: number;
-
+export default class ItemBrandDto {
   @IsNotEmpty()
   @IsString()
   @ApiProperty(ItemBrandsApiProperty.dp_name)

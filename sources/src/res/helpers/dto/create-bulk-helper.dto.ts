@@ -2,12 +2,12 @@ import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { ArrayMinSize, IsArray } from 'class-validator';
 
-import { CreateHelperDto } from './create-helper.dto';
+import HelperExcludeIdDto from './helper-exclude-id.dto';
 
 export class CreateBulkHelperDto {
-  @ApiProperty({ type: [CreateHelperDto] })
+  @ApiProperty({ type: [HelperExcludeIdDto] })
   @IsArray()
   @ArrayMinSize(1)
-  @Type(() => CreateHelperDto)
-  bulk: [CreateHelperDto];
+  @Type(() => HelperExcludeIdDto)
+  bulk: [HelperExcludeIdDto];
 }

@@ -2,12 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, In, Repository } from 'typeorm';
 
-import ItemBrandNoIdDto from './dto/item-brand-no-id.dto';
 import CreateItemBrandDto from './dto/create-item-brand.dto';
 import ItemBrandWithIdDto from './dto/item-brand-with-id.dto';
 import { ItemBrandEntity } from './entities/item-brand.entity';
 import { UpdateItemBrandDto } from './dto/update-item-brand.dto';
 import HttpResponse from 'src/utils/HttpResponseDto/HttpResponse';
+import ItemBrandExcludeIdDto from './dto/item-brand-exclude-id.dto';
 import HttpExceptions from 'src/utils/HttpResponseDto/HttpException';
 import HttpResponseDto from 'src/utils/HttpResponseDto/HttpResponseDto.dto';
 
@@ -24,15 +24,13 @@ export class ItemBrandsService {
     return HttpResponse.successCreate();
   }
 
-  async createBulk(bulk: ItemBrandNoIdDto[]): Promise<HttpResponseDto> {
+  async createBulk(bulk: ItemBrandExcludeIdDto[]): Promise<HttpResponseDto> {
     await this.itemBrandEntity.insert(bulk);
     return HttpResponse.successBulkCreate();
   }
 
   async findAll(): Promise<ItemBrandWithIdDto[]> {
-    return await this.itemBrandEntity.find({
-      order: { dp_sortingIndex: 'ASC' },
-    });
+    return await this.itemBrandEntity.find();
   }
 
   async findOne(id: number): Promise<ItemBrandWithIdDto> {

@@ -1,20 +1,9 @@
-import {
-  IsArray,
-  IsBoolean,
-  IsNotEmpty,
-  IsNumber,
-  IsString,
-} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { Exclude, Type } from 'class-transformer';
+import { IsBoolean, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 import ArticleApiProperty from '../articles.swagger';
-import ArticleAttachedLinksNoId from './article-attached-links-no-id.dto';
 
-export default class ArticleNoId {
-  @Exclude()
-  dp_id: string;
-
+export default class ArticleDto {
   @IsNotEmpty()
   @IsString()
   @ApiProperty(ArticleApiProperty.dp_name)
@@ -54,9 +43,4 @@ export default class ArticleNoId {
   @IsBoolean()
   @ApiProperty(ArticleApiProperty.dp_isHidden)
   dp_isHidden: boolean;
-
-  @IsArray()
-  @Type(() => ArticleAttachedLinksNoId)
-  @ApiProperty({ type: [ArticleAttachedLinksNoId] })
-  dp_articleAttachedLinks: ArticleAttachedLinksNoId[];
 }

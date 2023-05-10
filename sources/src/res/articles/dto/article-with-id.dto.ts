@@ -1,19 +1,47 @@
+import {
+  IsArray,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsNotEmpty, IsNumber } from 'class-validator';
 
-import ArticleNoId from './article-no-id.dto';
+import ArticleDto from './article.dto';
 import ArticleApiProperty from '../articles.swagger';
-import ArticleAttachedLinksWithId from './article-attached-links-with-id.dto';
+import ArticleAttachedLinksApiProperty from '../articleAttachedLinks.swagger';
 
-export default class ArticleWithId extends ArticleNoId {
+class ArticleAttachedLinksWithIdDto {
+  @IsNumber()
+  @ApiProperty(ArticleAttachedLinksApiProperty.dp_id)
+  dp_id: number;
+
+  @IsUUID()
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty(ArticleAttachedLinksApiProperty.dp_articleId)
+  dp_articleId: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty(ArticleAttachedLinksApiProperty.dp_name)
+  dp_name: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty(ArticleAttachedLinksApiProperty.dp_url)
+  dp_url: string;
+}
+
+export default class ArticleWithIdDto extends ArticleDto {
   @IsNumber()
   @ApiProperty(ArticleApiProperty.dp_id)
   dp_id: string;
 
   @IsArray()
   @IsNotEmpty()
-  @Type(() => ArticleAttachedLinksWithId)
-  @ApiProperty({ type: [ArticleAttachedLinksWithId] })
-  dp_articleAttachedLinks: ArticleAttachedLinksWithId[];
+  @Type(() => ArticleAttachedLinksWithIdDto)
+  @ApiProperty({ type: [ArticleAttachedLinksWithIdDto] })
+  dp_articleAttachedLinks: ArticleAttachedLinksWithIdDto[];
 }

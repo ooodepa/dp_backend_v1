@@ -5,15 +5,11 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
-import { Exclude } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
 import ItemCategoriesApiProperty from '../item-categories.swagger';
 
-export default class ItemCategoryNoIdDto {
-  @Exclude()
-  dp_id: number;
-
+export default class ItemCategoryDto {
   @IsNotEmpty()
   @IsString()
   @ApiProperty(ItemCategoriesApiProperty.dp_name)

@@ -1,3 +1,3 @@
-import ItemCategoryNoIdDto from './item-category-no-id.dto';
+import ItemCategoryExcludeIdDto from './item-category-exclude-id.dto';
 
-export class UpdateItemCategoryDto extends ItemCategoryNoIdDto {}
+export class UpdateItemCategoryDto extends ItemCategoryExcludeIdDto {}

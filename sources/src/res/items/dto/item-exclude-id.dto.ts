@@ -10,10 +10,39 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Type } from 'class-transformer';
 
 import ItemsApiProperty from '../items.swagger';
-import LstItemGaleryNoIdDto from './lst-item-galery-no-id.dto';
-import LstItemCharacteristicNoIdDto from './lst-item-characteristic-no-id.dto';
+import LstItemGaleryApiProperty from '../lst-item-galery.swagger';
+import LstItemCharacteristicsApiProperty from '../lst-item-characteristics.swagger';
 
-export default class ItemNoIdDto {
+class LstItemCharacteristicExcludeIdDto {
+  @Exclude()
+  dp_id: number;
+
+  @Exclude()
+  dp_itemId: string;
+
+  @IsNumber()
+  @ApiProperty(LstItemCharacteristicsApiProperty.dp_characteristicId)
+  dp_characteristicId: number;
+
+  @IsString()
+  @ApiProperty(LstItemCharacteristicsApiProperty.dp_value)
+  dp_value: string;
+}
+
+class LstItemGaleryExcludeIdDto {
+  @Exclude()
+  dp_id: number;
+
+  @Exclude()
+  dp_itemId: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty(LstItemGaleryApiProperty.dp_photoUrl)
+  dp_photoUrl: string;
+}
+
+export default class ItemExcludeIdDto {
   @Exclude()
   dp_id: string;
 
@@ -51,15 +80,15 @@ export default class ItemNoIdDto {
   @IsNotEmpty()
   @ArrayMinSize(0)
   @ValidateNested({ each: true })
-  @Type(() => LstItemCharacteristicNoIdDto)
-  @ApiProperty({ type: [LstItemCharacteristicNoIdDto] })
-  dp_itemCharacteristics: LstItemCharacteristicNoIdDto[];
+  @Type(() => LstItemCharacteristicExcludeIdDto)
+  @ApiProperty({ type: [LstItemCharacteristicExcludeIdDto] })
+  dp_itemCharacteristics: LstItemCharacteristicExcludeIdDto[];
 
   @IsArray()
   @IsNotEmpty()
   @ArrayMinSize(0)
   @ValidateNested({ each: true })
-  @Type(() => LstItemGaleryNoIdDto)
-  @ApiProperty({ type: [LstItemGaleryNoIdDto] })
-  dp_itemGalery: LstItemGaleryNoIdDto[];
+  @Type(() => LstItemGaleryExcludeIdDto)
+  @ApiProperty({ type: [LstItemGaleryExcludeIdDto] })
+  dp_itemGalery: LstItemGaleryExcludeIdDto[];
 }

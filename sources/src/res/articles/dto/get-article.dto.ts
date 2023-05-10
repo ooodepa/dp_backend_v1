@@ -1,3 +1,3 @@
-import ArticleWithId from './article-with-id.dto';
+import ArticleWithIdDto from './article-with-id.dto';
 
-export class GetArticleDto extends ArticleWithId {}
+export class GetArticleDto extends ArticleWithIdDto {}

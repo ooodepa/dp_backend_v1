@@ -1,24 +1,16 @@
-import {
-  IsArray,
-  IsBoolean,
-  IsNotEmpty,
-  IsNumber,
-  IsString,
-} from 'class-validator';
-import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
+import { Exclude, Type } from 'class-transformer';
+import { IsArray, IsBoolean, IsNotEmpty, IsString } from 'class-validator';
 
 import HelperDto from './helper.dto';
 import HelpersApiProperty from '../helpers.swagger';
 import HelperContactTypesApiProperty from '../helperContactTypes.swagger';
 
-class HelperContactTypeWithIdDto {
-  @IsNumber()
-  @ApiProperty(HelperContactTypesApiProperty.dp_id)
+class HelperContactTypeExcludeIdDto {
+  @Exclude()
   dp_id: number;
 
-  @IsString()
-  @ApiProperty(HelperContactTypesApiProperty.dp_helperId)
+  @Exclude()
   dp_helperId: string;
 
   @IsNotEmpty()
@@ -36,15 +28,15 @@ class HelperContactTypeWithIdDto {
   dp_isHidden: boolean;
 }
 
-export default class HelperWithIdDto extends HelperDto {
-  @ApiProperty(HelpersApiProperty.dp_id)
+export default class HelperExcludeIdDto extends HelperDto {
+  @Exclude()
   dp_id: string;
 
   @IsArray()
-  @Type(() => HelperContactTypeWithIdDto)
+  @Type(() => HelperContactTypeExcludeIdDto)
   @ApiProperty({
     ...HelpersApiProperty.dp_helperContactTypes,
-    type: [HelperContactTypeWithIdDto],
+    type: [HelperContactTypeExcludeIdDto],
   })
-  dp_helperContactTypes: HelperContactTypeWithIdDto[];
+  dp_helperContactTypes: HelperContactTypeExcludeIdDto[];
 }

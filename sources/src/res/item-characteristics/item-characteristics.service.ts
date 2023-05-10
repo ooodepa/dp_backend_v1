@@ -4,11 +4,11 @@ import { DataSource, In, Repository } from 'typeorm';
 
 import HttpResponse from 'src/utils/HttpResponseDto/HttpResponse';
 import HttpExceptions from 'src/utils/HttpResponseDto/HttpException';
-import ItemCharacteristicNoIdDto from './dto/item-characteristic-no-id.dto';
 import ItemCharacteristicWithIdDto from './dto/item-characteristic-with-id.dto';
 import { ItemCharacteristicEntity } from './entities/item-characteristic.entity';
 import { CreateItemCharacteristicDto } from './dto/create-item-characteristic.dto';
 import { UpdateItemCharacteristicDto } from './dto/update-item-characteristic.dto';
+import ItemCharacteristicExcludeIdDto from './dto/item-characteristic-exclude-id.dto';
 
 @Injectable()
 export class ItemCharacteristicsService {
@@ -23,7 +23,7 @@ export class ItemCharacteristicsService {
     return HttpResponse.successCreate();
   }
 
-  async createBulk(bulk: ItemCharacteristicNoIdDto[]) {
+  async createBulk(bulk: ItemCharacteristicExcludeIdDto[]) {
     await this.itemCharacteristicEntity.insert(bulk);
     return HttpResponse.successBulkCreate();
   }

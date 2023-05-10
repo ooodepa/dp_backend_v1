@@ -1,3 +1,3 @@
-import ItemNoIdDto from './item-no-id.dto';
+import ItemExcludeIdDto from './item-exclude-id.dto';
 
-export class UpdateItemDto extends ItemNoIdDto {}
+export class UpdateItemDto extends ItemExcludeIdDto {}

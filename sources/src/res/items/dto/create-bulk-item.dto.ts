@@ -2,12 +2,12 @@ import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { ArrayMinSize, IsArray } from 'class-validator';
 
-import ItemNoIdDto from './item-no-id.dto';
+import ItemExcludeIdDto from './item-exclude-id.dto';
 
 export class CreateBulkItemDto {
-  @ApiProperty({ type: [ItemNoIdDto] })
+  @ApiProperty({ type: [ItemExcludeIdDto] })
   @IsArray()
   @ArrayMinSize(1)
-  @Type(() => ItemNoIdDto)
-  bulk: [ItemNoIdDto];
+  @Type(() => ItemExcludeIdDto)
+  bulk: [ItemExcludeIdDto];
 }

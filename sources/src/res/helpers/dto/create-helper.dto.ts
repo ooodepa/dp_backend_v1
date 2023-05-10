@@ -1,3 +1,3 @@
-import HelperNoId from './helper-no-id.dto';
+import HelperExcludeIdDto from './helper-exclude-id.dto';
 
-export class CreateHelperDto extends HelperNoId {}
+export class CreateHelperDto extends HelperExcludeIdDto {}

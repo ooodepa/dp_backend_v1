@@ -1,3 +1,3 @@
-import ItemBrandNoIdDto from './item-brand-no-id.dto';
+import ItemBrandExcludeIdDto from './item-brand-exclude-id.dto';
 
-export default class CreateItemBrandDto extends ItemBrandNoIdDto {}
+export default class CreateItemBrandDto extends ItemBrandExcludeIdDto {}

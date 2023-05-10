@@ -1,3 +1,3 @@
-import ItemCharacteristicNoIdDto from './item-characteristic-no-id.dto';
+import ItemCharacteristicExcludeIdDto from './item-characteristic-exclude-id.dto';
 
-export class CreateItemCharacteristicDto extends ItemCharacteristicNoIdDto {}
+export class CreateItemCharacteristicDto extends ItemCharacteristicExcludeIdDto {}

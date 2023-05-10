@@ -1,13 +1,9 @@
-import { Exclude } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 
 import ApkVersionsApiProperty from '../apk-versions.swagger';
 
-export default class ApkVersionsNoId {
-  @Exclude()
-  dp_id: number;
-
+export default class ApkVersionsDto {
   @IsNotEmpty()
   @IsString()
   @ApiProperty(ApkVersionsApiProperty.dp_date)

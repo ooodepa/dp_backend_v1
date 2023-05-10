@@ -6,7 +6,7 @@ import { ISendMailOptions, MailerService } from '@nestjs-modules/mailer';
 import { OrderEntity } from './entities/order.entity';
 import { UsersService } from '../users/users.service';
 import { CreateOrderDto } from './dto/create-order.dto';
-import EmailOrderItem from './dto/email-order-item.dto';
+import EmailOrderItemDto from './dto/email-order-item.dto';
 import { ItemEntity } from '../items/entities/item.entity';
 import { UserEntity } from '../users/entities/user.entity';
 import { OrderItemsEntity } from './entities/order-items.entity';
@@ -64,8 +64,8 @@ export class OrdersService {
 
       const uuid = savedItem.dp_id;
 
-      let orderItemsArray: OrderItemsEntity[] = [];
-      let dp_items_orderItems: EmailOrderItem[] = [];
+      const orderItemsArray: OrderItemsEntity[] = [];
+      const dp_items_orderItems: EmailOrderItemDto[] = [];
       let dp_totalSum = 0;
       for (let i = 0; i < createOrderDto.dp_orderItems.length; ++i) {
         for (let j = 0; j < items.length; ++j) {

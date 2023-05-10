@@ -1,4 +1,4 @@
-export default class EmailOrderItem {
+export default class EmailOrderItemDto {
   dp_name: string;
   dp_model: string;
   dp_photoUrl: string;

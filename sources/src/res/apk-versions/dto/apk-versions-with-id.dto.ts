@@ -1,10 +1,10 @@
 import { IsNumber } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-import ApkVersionsNoId from './apk-versions-no-id';
 import ApkVersionsApiProperty from '../apk-versions.swagger';
+import ApkVersionsExcludeIdDto from './apk-versions-exclude-id';
 
-export default class ApkVersionsWithId extends ApkVersionsNoId {
+export default class ApkVersionsWithIdDto extends ApkVersionsExcludeIdDto {
   @IsNumber()
   @ApiProperty(ApkVersionsApiProperty.dp_id)
   dp_id: number;

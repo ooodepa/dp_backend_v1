@@ -1,3 +1,3 @@
-import HelperWithId from './helper-with-id.dto';
+import HelperWithIdDto from './helper-with-id.dto';
 
-export class GetHelperDto extends HelperWithId {}
+export class GetHelperDto extends HelperWithIdDto {}

@@ -1,3 +1,3 @@
-import ContactTypeWithId from './contact-type-with-id.dto';
+import ContactTypeWithIdDto from './contact-type-with-id.dto';
 
-export class GetContactTypeDto extends ContactTypeWithId {}
+export class GetContactTypeDto extends ContactTypeWithIdDto {}

@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, In, Repository } from 'typeorm';
 
-import ItemCategoryNoIdDto from './dto/item-category-no-id.dto';
 import HttpResponse from 'src/utils/HttpResponseDto/HttpResponse';
 import ItemCategoryWithIdDto from './dto/item-category-with-id.dto';
 import HttpExceptions from 'src/utils/HttpResponseDto/HttpException';
@@ -10,6 +9,7 @@ import { ItemCategoryEntity } from './entities/item-category.entity';
 import { CreateItemCategoryDto } from './dto/create-item-category.dto';
 import { UpdateItemCategoryDto } from './dto/update-item-category.dto';
 import { FilterItemCategoryDto } from './dto/filter-item-category.dto';
+import ItemCategoryExcludeIdDto from './dto/item-category-exclude-id.dto';
 import { ItemBrandEntity } from '../item-brands/entities/item-brand.entity';
 
 @Injectable()
@@ -27,7 +27,7 @@ export class ItemCategoriesService {
     return HttpResponse.successCreate();
   }
 
-  async createBulk(bulk: ItemCategoryNoIdDto[]) {
+  async createBulk(bulk: ItemCategoryExcludeIdDto[]) {
     await this.itemCategoryEntity.insert(bulk);
     return HttpResponse.successBulkCreate();
   }
@@ -51,7 +51,6 @@ export class ItemCategoriesService {
           ? Number(filter.dp_itemBrandId)
           : undefined,
       },
-      order: { dp_sortingIndex: 'ASC' },
     });
   }
 

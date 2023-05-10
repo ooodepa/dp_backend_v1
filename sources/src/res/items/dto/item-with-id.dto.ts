@@ -2,6 +2,7 @@ import {
   ArrayMinSize,
   IsArray,
   IsNotEmpty,
+  IsNumber,
   IsString,
   IsUUID,
   ValidateNested,
@@ -9,12 +10,49 @@ import {
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
-import ItemNoIdDto from './item-no-id.dto';
+import ItemDto from './item.dto';
 import ItemsApiProperty from '../items.swagger';
-import LstItemGaleryWithIdDto from './lst-item-galery-with-id.dto';
-import LstItemCharacteristicWithIdDto from './lst-item-characteristic-with-id.dto';
+import LstItemGaleryApiProperty from '../lst-item-galery.swagger';
+import LstItemCharacteristicsApiProperty from '../lst-item-characteristics.swagger';
 
-export default class ItemWithIdDto extends ItemNoIdDto {
+class LstItemCharacteristicWithIdDto {
+  @IsNumber()
+  @ApiProperty(LstItemCharacteristicsApiProperty.dp_id)
+  dp_id: number;
+
+  @IsUUID()
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty(LstItemCharacteristicsApiProperty.dp_itemId)
+  dp_itemId: string;
+
+  @IsNumber()
+  @ApiProperty(LstItemCharacteristicsApiProperty.dp_characteristicId)
+  dp_characteristicId: number;
+
+  @IsString()
+  @ApiProperty(LstItemCharacteristicsApiProperty.dp_value)
+  dp_value: string;
+}
+
+class LstItemGaleryWithIdDto {
+  @IsNumber()
+  @ApiProperty(LstItemGaleryApiProperty.dp_id)
+  dp_id: number;
+
+  @IsNotEmpty()
+  @IsUUID()
+  @IsString()
+  @ApiProperty(LstItemGaleryApiProperty.dp_itemId)
+  dp_itemId: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty(LstItemGaleryApiProperty.dp_photoUrl)
+  dp_photoUrl: string;
+}
+
+export default class ItemWithIdDto extends ItemDto {
   @IsNotEmpty()
   @IsUUID()
   @IsString()
