@@ -1,14 +1,17 @@
 import * as bcrypt from 'bcryptjs';
-import { Repository } from 'typeorm';
+import { Response } from 'express';
+import { Not, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
+import GetSessionsDto from './dto/get-sessions.dto';
 import { UsersService } from '../users/users.service';
 import { SessionEntity } from './entities/session.entity';
 import { UserEntity } from '../users/entities/user.entity';
 import { CreateSessionDto } from './dto/create-session.dto';
 import HttpResponse from 'src/utils/HttpResponseDto/HttpResponse';
 import { UpdateSessionResponseDto } from './dto/update-session.dto';
+import HttpResponseDto from 'src/utils/HttpResponseDto/HttpResponseDto.dto';
 import { CreateSessionResponseDto } from './dto/create-session-response.dto';
 
 @Injectable()
@@ -81,7 +84,7 @@ export class SessionsService {
     };
   }
 
-  async logout(req: Request) {
+  async logout(req: Request, res: Response) {
     const accessToken = await this.usersService.getBearerToken(req);
     const payload = await this.usersService.getAccessTokenFromRequest(req);
 
@@ -90,22 +93,50 @@ export class SessionsService {
       dp_userId: payload.id,
     });
 
-    return HttpResponse.successDeleted();
+    const status = HttpStatus.OK;
+    const data: HttpResponseDto = {
+      statusCode: status,
+      message: 'Вы вышли из аккаунта',
+    };
+    return res.status(status).json(data);
   }
 
-  async findAll(req): Promise<SessionEntity[]> {
-    // const accessToken = await this.usersService.getBearerToken(req);
+  async findAll(req): Promise<GetSessionsDto> {
     const payload = await this.usersService.getAccessTokenFromRequest(req);
     const userId = payload.id;
 
-    return await this.sessionEntity.find({
+    const accessToken = await this.usersService.getBearerToken(req);
+    const currentSession = await this.sessionEntity.findOne({
       select: ['dp_id', 'dp_date', 'dp_ip', 'dp_agent'],
       where: {
         dp_userId: userId,
-        // dp_accessToken: Not(accessToken),
+        dp_accessToken: accessToken,
+      },
+    });
+
+    const otherSessions = await this.sessionEntity.find({
+      select: ['dp_id', 'dp_date', 'dp_ip', 'dp_agent'],
+      where: {
+        dp_userId: userId,
+        dp_accessToken: Not(accessToken),
       },
       order: { dp_date: 'DESC' },
     });
+
+    return {
+      dp_current: {
+        dp_id: currentSession.dp_id,
+        dp_date: currentSession.dp_date,
+        dp_ip: currentSession.dp_ip,
+        dp_agent: currentSession.dp_agent,
+      },
+      dp_other: otherSessions.map((e) => ({
+        dp_id: e.dp_id,
+        dp_date: e.dp_date,
+        dp_ip: e.dp_ip,
+        dp_agent: e.dp_agent,
+      })),
+    };
   }
 
   async update(req): Promise<UpdateSessionResponseDto> {

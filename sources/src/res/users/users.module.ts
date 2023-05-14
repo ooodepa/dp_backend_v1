@@ -10,8 +10,10 @@ import { UsersService } from './users.service';
 import { ScheduleModule } from '@nestjs/schedule';
 import { UserEntity } from './entities/user.entity';
 import { UsersController } from './users.controller';
+import { RoleEntity } from '../roles/entities/role.entity';
 import { ChangeEmailEntity } from './entities/change-email.entity';
 import { SessionEntity } from '../sessions/entities/session.entity';
+import { UserRolesEntity } from '../roles/entities/user-role.entity';
 import { ActivationAccountEntity } from './entities/activation-account.entity';
 
 @Module({
@@ -23,6 +25,10 @@ import { ActivationAccountEntity } from './entities/activation-account.entity';
       UserEntity,
       ActivationAccountEntity,
       ChangeEmailEntity,
+      SessionEntity,
+      RoleEntity,
+      UserRolesEntity,
+      ActivationAccountEntity,
       SessionEntity,
     ]),
     MailerModule.forRootAsync({

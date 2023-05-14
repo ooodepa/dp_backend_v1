@@ -85,21 +85,20 @@ export class ArticlesService {
 
   async findAll() {
     return await this.articleEntity.find({
-      order: { dp_date: 'ASC' },
+      relations: ['dp_articleAttachedLinks'],
+      order: { dp_sortingIndex: 'ASC', dp_date: 'ASC' },
     });
   }
 
   async findOneByUrl(url: string) {
-    await this.articleEntity.findOneOrFail({ where: { dp_urlSegment: url } });
-    return await this.articleEntity.findOne({
+    return await this.articleEntity.findOneOrFail({
       where: { dp_urlSegment: url },
       relations: ['dp_articleAttachedLinks'],
     });
   }
 
   async findOne(id: string) {
-    await this.articleEntity.findOneOrFail({ where: { dp_id: id } });
-    return await this.articleEntity.findOne({
+    return await this.articleEntity.findOneOrFail({
       where: { dp_id: id },
       relations: ['dp_articleAttachedLinks'],
     });

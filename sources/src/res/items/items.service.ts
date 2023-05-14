@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Response } from 'express';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable, HttpStatus } from '@nestjs/common';
 import { DataSource, In, Like, Repository } from 'typeorm';
 
 import ItemWithIdDto from './dto/item-with-id.dto';
@@ -136,40 +137,48 @@ export class ItemsService {
     });
   }
 
-  async findModels(dto: FindItemModelsDto) {
-    return await this.itemEntity.find({
+  async findModels(dto: FindItemModelsDto, res: Response) {
+    const status = HttpStatus.OK;
+    const json = await this.itemEntity.find({
       where: { dp_model: In(dto.models) },
       relations: ['dp_itemCharacteristics', 'dp_itemGalery'],
       order: { dp_model: 'DESC' },
     });
+    res.status(status).send(json);
   }
 
-  async findIds(dto: FindItemIdsDto) {
-    return await this.itemEntity.find({
+  async findIds(dto: FindItemIdsDto, res: Response) {
+    const status = HttpStatus.OK;
+    const json = await this.itemEntity.find({
       where: { dp_id: In(dto.ids) },
       relations: ['dp_itemCharacteristics', 'dp_itemGalery'],
       order: { dp_model: 'DESC' },
     });
+    res.status(status).send(json);
   }
 
-  async search(search: string) {
-    return await this.itemEntity.find({
+  async search(search: string, res: Response) {
+    const status = HttpStatus.OK;
+    const json = await this.itemEntity.find({
       where: [
         { dp_model: Like(`%${search}%`) },
         { dp_name: Like(`%${search}%`) },
       ],
       take: 5,
     });
+    res.status(status).send(json);
   }
 
-  async searchAll(search: string) {
-    return await this.itemEntity.find({
+  async searchAll(search: string, res: Response) {
+    const status = HttpStatus.OK;
+    const json = await this.itemEntity.find({
       where: [
         { dp_model: Like(`%${search}%`) },
         { dp_name: Like(`%${search}%`) },
       ],
       relations: ['dp_itemCharacteristics', 'dp_itemGalery'],
     });
+    res.status(status).send(json);
   }
 
   async findOne(id: string) {

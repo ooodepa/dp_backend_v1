@@ -9,6 +9,7 @@ import {
   UseGuards,
   Req,
   HttpStatus,
+  Res,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -17,7 +18,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-import GetSessionDto from './dto/get-session.dto';
+import GetSessionsDto from './dto/get-sessions.dto';
 import { SessionsService } from './sessions.service';
 import { CreateSessionDto } from './dto/create-session.dto';
 import { UpdateSessionResponseDto } from './dto/update-session.dto';
@@ -55,7 +56,7 @@ export class SessionsController {
   @ApiTags('user')
   @ApiOperation({ summary: 'Выход с аккаунта' })
   @ApiResponse({
-    status: HttpStatus.CREATED,
+    status: HttpStatus.OK,
     description: 'Пользователь вышел с аккаунта',
     type: CreateSessionResponseDto,
   })
@@ -63,13 +64,13 @@ export class SessionsController {
   @ApiBearerAuth('access-token')
   @UseGuards(VerifyAccessTokenGuard)
   @Post('logout')
-  logout(@Req() req) {
-    return this.sessionsService.logout(req);
+  logout(@Req() req, @Res() res) {
+    return this.sessionsService.logout(req, res);
   }
 
   @ApiTags('user')
   @ApiOperation({ summary: 'Получить список сессий' })
-  @ApiResponse({ ...SwaggerApiResponse.Finded, type: [GetSessionDto] })
+  @ApiResponse({ ...SwaggerApiResponse.Finded, type: GetSessionsDto })
   @ApiResponse(SwaggerApiResponse.Unauthorized)
   @ApiResponse(SwaggerApiResponse.ServerError)
   @ApiBearerAuth('access-token')

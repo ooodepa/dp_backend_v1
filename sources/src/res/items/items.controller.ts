@@ -9,6 +9,7 @@ import {
   Delete,
   Query,
   UseGuards,
+  Res,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -16,6 +17,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { Response } from 'express';
 
 import GetItemDto from './dto/get-item.dto';
 import { ItemsService } from './items.service';
@@ -92,8 +94,8 @@ export class ItemsController {
   @ApiResponse({ ...SwaggerApiResponse.Finded, type: [GetItemDto] })
   @ApiResponse(SwaggerApiResponse.ServerError)
   @Post('filter/models')
-  findModels(@Body() dto: FindItemModelsDto) {
-    return this.itemsService.findModels(dto);
+  findModels(@Body() dto: FindItemModelsDto, @Res() res: Response) {
+    return this.itemsService.findModels(dto, res);
   }
 
   @ApiTags('any')
@@ -101,8 +103,8 @@ export class ItemsController {
   @ApiResponse({ ...SwaggerApiResponse.Finded, type: [GetItemDto] })
   @ApiResponse(SwaggerApiResponse.ServerError)
   @Post('filter/ids')
-  findIds(@Body() dto: FindItemIdsDto) {
-    return this.itemsService.findIds(dto);
+  findIds(@Body() dto: FindItemIdsDto, @Res() res: Response) {
+    return this.itemsService.findIds(dto, res);
   }
 
   @ApiTags('any')
@@ -110,8 +112,8 @@ export class ItemsController {
   @ApiResponse({ ...SwaggerApiResponse.Finded, type: [GetItemDto] })
   @ApiResponse(SwaggerApiResponse.ServerError)
   @Post('search')
-  search(@Body() dto: SearchItemsDto) {
-    return this.itemsService.search(dto.search);
+  search(@Body() dto: SearchItemsDto, @Res() res: Response) {
+    return this.itemsService.search(dto.search, res);
   }
 
   @ApiTags('any')
@@ -119,8 +121,8 @@ export class ItemsController {
   @ApiResponse({ ...SwaggerApiResponse.Finded, type: [GetItemDto] })
   @ApiResponse(SwaggerApiResponse.ServerError)
   @Post('search-all')
-  searchAll(@Body() dto: SearchAllItemsDto) {
-    return this.itemsService.searchAll(dto.search);
+  searchAll(@Body() dto: SearchAllItemsDto, @Res() res: Response) {
+    return this.itemsService.searchAll(dto.search, res);
   }
 
   @ApiTags('any')

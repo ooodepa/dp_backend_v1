@@ -447,6 +447,47 @@
         ]
       }
     },
+    "/api/v1/users/is-admin": {
+      "post": {
+        "operationId": "UsersController_checkIsAdmin",
+        "summary": "Проверка роли админа",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "У пользователя роль администратора"
+          },
+          "401": {
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\nУ пользователя нет роли администратора \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_users",
+          "admin"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
     "/api/v1/sessions": {
       "post": {
         "operationId": "SessionsController_create",
@@ -509,10 +550,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/GetSessionDto"
-                  }
+                  "$ref": "#/components/schemas/GetSessionsDto"
                 }
               }
             }
@@ -647,7 +685,7 @@
         "summary": "Выход с аккаунта",
         "parameters": [],
         "responses": {
-          "201": {
+          "200": {
             "description": "Пользователь вышел с аккаунта",
             "content": {
               "application/json": {
@@ -4951,6 +4989,7 @@
             "example": 1
           },
           "dp_date": {
+            "format": "date-time",
             "type": "string",
             "example": "2023-01-01T00:00:00:000Z"
           },
@@ -4968,6 +5007,24 @@
           "dp_date",
           "dp_ip",
           "dp_agent"
+        ]
+      },
+      "GetSessionsDto": {
+        "type": "object",
+        "properties": {
+          "dp_current": {
+            "$ref": "#/components/schemas/GetSessionDto"
+          },
+          "dp_other": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetSessionDto"
+            }
+          }
+        },
+        "required": [
+          "dp_current",
+          "dp_other"
         ]
       },
       "UpdateSessionResponseDto": {

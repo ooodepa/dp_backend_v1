@@ -8,6 +8,7 @@ import {
   UseGuards,
   Req,
   HttpStatus,
+  Res,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -15,6 +16,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { Response } from 'express';
 
 import GetUserDto from './dto/get-user.dto';
 import { UsersService } from './users.service';
@@ -25,6 +27,7 @@ import { ForgetPasswordDto } from './dto/forget-password.dto';
 import CreateUserResponseDto from './dto/create-user-response.dto';
 import SwaggerApiResponse from 'src/utils/Swagger/SwaggerApiResponse';
 import HttpResponseDto from 'src/utils/HttpResponseDto/HttpResponseDto.dto';
+import { IsAdministratorGuard } from 'src/guards/IsAdministratorGuard.guard';
 import { VerifyAccessTokenGuard } from 'src/guards/VerifyAccessTokenGuard.guard';
 
 @ApiTags('api_v1_users')
@@ -242,5 +245,26 @@ export class UsersController {
   @Patch('/change-password')
   updatePassword(@Body() changePasswordDto: ChangePasswordDto, @Req() req) {
     return this.usersService.updatePassword(changePasswordDto, req);
+  }
+
+  @ApiTags('admin')
+  @ApiOperation({ summary: 'Проверка роли админа' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'У пользователя роль администратора',
+  })
+  @ApiResponse(SwaggerApiResponse.UnauthorizedAdmin)
+  @ApiResponse(SwaggerApiResponse.ServerError)
+  @ApiBearerAuth('access-token')
+  @UseGuards(IsAdministratorGuard)
+  @UseGuards(VerifyAccessTokenGuard)
+  @Post('is-admin')
+  checkIsAdmin(@Res() res: Response) {
+    const status = HttpStatus.OK;
+    const data: HttpResponseDto = {
+      statusCode: status,
+      message: 'Вы администратор',
+    };
+    return res.status(status).json(data);
   }
 }

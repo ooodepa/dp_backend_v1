@@ -72,6 +72,7 @@ export default class ItemExcludeIdDto {
   @ApiProperty(ItemsApiProperty.dp_seoKeywords)
   dp_seoKeywords: string;
 
+  @IsNotEmpty()
   @IsString()
   @ApiProperty(ItemsApiProperty.dp_seoDescription)
   dp_seoDescription: string;

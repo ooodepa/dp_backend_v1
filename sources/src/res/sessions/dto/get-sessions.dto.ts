@@ -2,16 +2,24 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import SessionsApiProperty from '../sessions.swagger';
 
-export default class GetSessionDto {
+class GetSessionDto {
   @ApiProperty(SessionsApiProperty.dp_id)
   dp_id: number;
 
   @ApiProperty(SessionsApiProperty.dp_date)
-  dp_date: string;
+  dp_date: Date;
 
   @ApiProperty(SessionsApiProperty.dp_ip)
   dp_ip: string;
 
   @ApiProperty(SessionsApiProperty.dp_agent)
   dp_agent: string;
+}
+
+export default class GetSessionsDto {
+  @ApiProperty()
+  dp_current: GetSessionDto;
+
+  @ApiProperty({ type: [GetSessionDto] })
+  dp_other: GetSessionDto[];
 }
