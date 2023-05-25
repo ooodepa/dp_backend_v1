@@ -107,7 +107,7 @@ export class OrdersService {
       const dp_items_totalSum = Number(dp_totalSum).toFixed(2);
 
       const manager_sendMailOptions: ISendMailOptions = {
-        to: dp_candidate_email,
+        to: process.env.APP__ORG_MANAGER_EMAIL,
         subject: `Заявка с данными | ${process.env.APP__SWAGGER_ORGANIZATION}`,
         template: 'order-manager',
         context: {
@@ -169,7 +169,7 @@ export class OrdersService {
         dp_userId: payload.id,
       },
       relations: ['dp_orderItems'],
-      order: { dp_date: 'ASC' },
+      order: { dp_date: 'DESC' },
     });
   }
 
