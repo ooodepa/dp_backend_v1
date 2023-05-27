@@ -17,6 +17,7 @@ import { OrdersModule } from './res/orders/orders.module';
 import { ApkVersionsModule } from './res/apk-versions/apk-versions.module';
 import { FavoriteItemsModule } from './res/favorite-items/favorite-items.module';
 import { ManagerModule } from './res/manager/manager.module';
+import { OrderStatusesModule } from './res/order-statuses/order-statuses.module';
 
 @Module({
   imports: [
@@ -56,6 +57,7 @@ import { ManagerModule } from './res/manager/manager.module';
     ApkVersionsModule,
     FavoriteItemsModule,
     ManagerModule,
+    OrderStatusesModule,
   ],
 })
 export class AppModule {}

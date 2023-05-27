@@ -5,11 +5,11 @@ class GetOrderItem {
   @ApiProperty()
   dp_id: number;
 
-  @ApiProperty()
+  @ApiProperty({ example: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx' })
   dp_orderId: string;
 
-  @ApiProperty()
-  dp_itemId: number;
+  @ApiProperty({ example: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx' })
+  dp_itemId: string;
 
   @ApiProperty()
   dp_count: number;

@@ -193,7 +193,7 @@ export class OrdersService {
       },
     });
 
-    await this.orderEntity.update(id, { dp_isCancelled: true });
+    await this.orderEntity.update(id, { dp_cancaledOn: new Date() });
 
     return HttpResponse.successUpdate();
   }

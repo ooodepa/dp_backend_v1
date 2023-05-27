@@ -17,7 +17,7 @@ export class OrderEntity {
   @PrimaryGeneratedColumn('uuid')
   dp_id: string;
 
-  @ApiProperty({ required: false, example: '2023-04-13T14:10:00.000Z' })
+  @ApiProperty({ required: false, example: '0000-00-00T00:00:00.000Z' })
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP()' })
   dp_date: Date;
 
@@ -29,16 +29,20 @@ export class OrderEntity {
   @Column()
   dp_userId: number;
 
-  @ApiProperty()
-  @Column({ default: false })
-  dp_isCancelled: boolean;
-
-  @ApiProperty()
-  @Column({ default: false })
-  dp_isCompleted: boolean;
-
   @ApiProperty({ type: [OrderItemsEntity] })
   @OneToMany(() => OrderItemsEntity, (e: OrderItemsEntity) => e.dp_orderId)
   @JoinColumn({ name: 'dp_id' })
   dp_orderItems: OrderItemsEntity[];
+
+  @ApiProperty({ example: '0000-00-00T00:00:00.000Z' })
+  @Column({ type: 'timestamp', nullable: true })
+  dp_cancaledOn: Date;
+
+  @ApiProperty({ example: '0000-00-00T00:00:00.000Z' })
+  @Column({ type: 'timestamp', nullable: true })
+  dp_fulfilledOn: Date;
+
+  @ApiProperty({ example: '0000-00-00T00:00:00.000Z' })
+  @Column({ type: 'timestamp', nullable: true })
+  dp_receivedOn: Date;
 }

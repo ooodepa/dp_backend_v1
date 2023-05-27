@@ -4959,9 +4959,9 @@
     },
     "/api/v1/manager/orders/{id}/completed": {
       "patch": {
-        "operationId": "ManagerController_updateCompleted",
+        "operationId": "ManagerController_UpdateOrderIsFulfilledByManager",
         "summary": "",
-        "description": "Пометка заявки отобранной",
+        "description": "Пометка заявки отправленной",
         "parameters": [
           {
             "name": "id",
@@ -5013,6 +5013,224 @@
           {
             "access-token": []
           }
+        ]
+      }
+    },
+    "/api/v1/manager/orders/{id}/canceled": {
+      "patch": {
+        "operationId": "ManagerController_UpdateOrderIsCanceled",
+        "summary": "",
+        "description": "Отмена заявки",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\nУ пользователя нет роли менеджера \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "MANAGER",
+          "api_v1_manager",
+          "MANAGER"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/api/v1/manager/order-statuses": {
+      "post": {
+        "operationId": "ManagerController_createOrderStatus",
+        "summary": "Создание записи",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrderStatusDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Запись создана успешно",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\nУ пользователя нет роли менеджера \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "MANAGER",
+          "api_v1_manager",
+          "MANAGER"
+        ]
+      }
+    },
+    "/api/v1/manager/order/{orderId}/order-statuses/{orderStatusId}": {
+      "delete": {
+        "operationId": "ManagerController_removeOrderStatus",
+        "summary": "Удаление записи по id",
+        "parameters": [
+          {
+            "name": "orderId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "orderStatusId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Удалили запись по id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\nУ пользователя нет роли менеджера \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "MANAGER",
+          "api_v1_manager",
+          "MANAGER"
+        ]
+      }
+    },
+    "/api/v1/order-statuses/{id}": {
+      "get": {
+        "operationId": "OrderStatusesController_findAll",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "api_v1_order-statuses",
+          "any"
         ]
       }
     }
@@ -7037,24 +7255,32 @@
             "type": "string"
           },
           "dp_date": {
-            "type": "string"
+            "type": "string",
+            "example": "0000-00-00T00:00:00.000Z"
           },
           "dp_userId": {
             "type": "number"
           },
-          "dp_isCancelled": {
-            "type": "boolean"
+          "dp_cancaledOn": {
+            "type": "string",
+            "example": "0000-00-00T00:00:00.000Z"
           },
-          "dp_isCompleted": {
-            "type": "boolean"
+          "dp_fulfilledOn": {
+            "type": "string",
+            "example": "0000-00-00T00:00:00.000Z"
+          },
+          "dp_receivedOn": {
+            "type": "string",
+            "example": "0000-00-00T00:00:00.000Z"
           }
         },
         "required": [
           "dp_id",
           "dp_date",
           "dp_userId",
-          "dp_isCancelled",
-          "dp_isCompleted"
+          "dp_cancaledOn",
+          "dp_fulfilledOn",
+          "dp_receivedOn"
         ]
       },
       "GetOrderItem": {
@@ -7064,10 +7290,12 @@
             "type": "number"
           },
           "dp_orderId": {
-            "type": "string"
+            "type": "string",
+            "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
           },
           "dp_itemId": {
-            "type": "number"
+            "type": "string",
+            "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
           },
           "dp_count": {
             "type": "number"
@@ -7091,16 +7319,23 @@
             "type": "string"
           },
           "dp_date": {
-            "type": "string"
+            "type": "string",
+            "example": "0000-00-00T00:00:00.000Z"
           },
           "dp_userId": {
             "type": "number"
           },
-          "dp_isCancelled": {
-            "type": "boolean"
+          "dp_cancaledOn": {
+            "type": "string",
+            "example": "0000-00-00T00:00:00.000Z"
           },
-          "dp_isCompleted": {
-            "type": "boolean"
+          "dp_fulfilledOn": {
+            "type": "string",
+            "example": "0000-00-00T00:00:00.000Z"
+          },
+          "dp_receivedOn": {
+            "type": "string",
+            "example": "0000-00-00T00:00:00.000Z"
           },
           "dp_orderItems": {
             "type": "array",
@@ -7113,8 +7348,9 @@
           "dp_id",
           "dp_date",
           "dp_userId",
-          "dp_isCancelled",
-          "dp_isCompleted",
+          "dp_cancaledOn",
+          "dp_fulfilledOn",
+          "dp_receivedOn",
           "dp_orderItems"
         ]
       },
@@ -7195,6 +7431,22 @@
           "totalPages",
           "skip",
           "data"
+        ]
+      },
+      "CreateOrderStatusDto": {
+        "type": "object",
+        "properties": {
+          "dp_status": {
+            "type": "string"
+          },
+          "dp_orderId": {
+            "type": "string",
+            "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+          }
+        },
+        "required": [
+          "dp_status",
+          "dp_orderId"
         ]
       }
     }

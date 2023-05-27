@@ -5,6 +5,9 @@ import {
   UseGuards,
   Param,
   Patch,
+  Post,
+  Delete,
+  Body,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -22,6 +25,8 @@ import SwaggerApiResponse from 'src/utils/Swagger/SwaggerApiResponse';
 import { GetOrderWithIdDto } from '../orders/dto/get-order-with-id.dto';
 import SwaggerApiOperation from 'src/utils/Swagger/SwaggerApiOperation';
 import { VerifyAccessTokenGuard } from 'src/guards/VerifyAccessTokenGuard.guard';
+import { CreateOrderStatusDto } from '../order-statuses/dto/create-order-status.dto';
+import { RemoveOrderStatusDto } from '../order-statuses/dto/remove-order-status.dto';
 
 @ApiTags('MANAGER', 'api_v1_manager')
 @Controller('api/v1/manager')
@@ -70,7 +75,7 @@ export class ManagerController {
   }
 
   @ApiTags('MANAGER')
-  @ApiOperation({ description: 'Пометка заявки отобранной' })
+  @ApiOperation({ description: 'Пометка заявки отправленной' })
   @ApiResponse(SwaggerApiResponse.UnauthorizedManager)
   @ApiResponse(SwaggerApiResponse.NotFound)
   @ApiResponse(SwaggerApiResponse.ServerError)
@@ -78,7 +83,45 @@ export class ManagerController {
   @UseGuards(VerifyAccessTokenGuard)
   @UseGuards(IsManagerGuard)
   @Patch('orders/:id/completed')
-  updateCompleted(@Param('id') id: string) {
-    return this.managerService.UpdateOrderIsCompleted(id);
+  UpdateOrderIsFulfilledByManager(@Param('id') id: string) {
+    return this.managerService.UpdateOrderIsFulfilledByManager(id);
+  }
+
+  @ApiTags('MANAGER')
+  @ApiOperation({ description: 'Отмена заявки' })
+  @ApiResponse(SwaggerApiResponse.UnauthorizedManager)
+  @ApiResponse(SwaggerApiResponse.NotFound)
+  @ApiResponse(SwaggerApiResponse.ServerError)
+  @ApiBearerAuth('access-token')
+  @UseGuards(VerifyAccessTokenGuard)
+  @UseGuards(IsManagerGuard)
+  @Patch('orders/:id/canceled')
+  UpdateOrderIsCanceled(@Param('id') id: string) {
+    return this.managerService.UpdateOrderIsCanceled(id);
+  }
+
+  @ApiTags('MANAGER')
+  @ApiOperation(SwaggerApiOperation.Create)
+  @ApiResponse({ ...SwaggerApiResponse.Created })
+  @ApiResponse(SwaggerApiResponse.UnauthorizedManager)
+  @ApiResponse(SwaggerApiResponse.NotFound)
+  @ApiResponse(SwaggerApiResponse.ServerError)
+  @Post('order-statuses')
+  createOrderStatus(@Body() dto: CreateOrderStatusDto) {
+    return this.managerService.createOrderStatus(dto);
+  }
+
+  @ApiTags('MANAGER')
+  @ApiOperation(SwaggerApiOperation.DeleteById)
+  @ApiResponse({ ...SwaggerApiResponse.DeletedById })
+  @ApiResponse(SwaggerApiResponse.UnauthorizedManager)
+  @ApiResponse(SwaggerApiResponse.NotFound)
+  @ApiResponse(SwaggerApiResponse.ServerError)
+  @Delete('order/:orderId/order-statuses/:orderStatusId')
+  removeOrderStatus(
+    @Param('orderId') orderId: string,
+    @Param('orderStatusId') orderStatusId: number,
+  ) {
+    return this.managerService.removeOrderStatus(orderId, orderStatusId);
   }
 }

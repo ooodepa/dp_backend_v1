@@ -70,3 +70,6 @@ yarn nest g res res/apk-versions
 yarn dev-migr-gen src/migrations/DP_DOC_ApkVersions
 
 yarn nest g res res/manager
+
+yarn nest g res res/order-statuses
+yarn dev-migr-gen src/migrations/DP_DOC_OrderStatuses

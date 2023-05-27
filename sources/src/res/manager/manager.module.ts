@@ -9,6 +9,7 @@ import { UserEntity } from '../users/entities/user.entity';
 import { OrderEntity } from '../orders/entities/order.entity';
 import { SessionEntity } from '../sessions/entities/session.entity';
 import { UserRolesEntity } from '../roles/entities/user-role.entity';
+import { OrderStatusEntity } from '../order-statuses/entities/order-status.entity';
 
 @Module({
   controllers: [ManagerController],
@@ -20,6 +21,7 @@ import { UserRolesEntity } from '../roles/entities/user-role.entity';
       UserRolesEntity,
       SessionEntity,
       UserEntity,
+      OrderStatusEntity,
     ]),
     UsersModule,
   ],
