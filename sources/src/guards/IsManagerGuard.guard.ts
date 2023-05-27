@@ -13,9 +13,9 @@ import { RoleEntity } from 'src/res/roles/entities/role.entity';
 import { UserRolesEntity } from 'src/res/roles/entities/user-role.entity';
 
 @Injectable()
-export class IsModeratorGuard implements CanActivate {
+export class IsManagerGuard implements CanActivate {
   constructor(
-    private readonly usersService: UsersService,
+    private readonly userService: UsersService,
     @InjectRepository(RoleEntity)
     private readonly roleEntity: Repository<RoleEntity>,
     @InjectRepository(UserRolesEntity)
@@ -24,15 +24,15 @@ export class IsModeratorGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest();
-    const payload = await this.usersService.getAccessTokenFromRequest(req);
+    const payload = await this.userService.getAccessTokenFromRequest(req);
     const userId = payload.id;
 
     const adminRole = await this.roleEntity.findOne({
-      where: { dp_name: 'MODER' },
+      where: { dp_name: 'MANAGER' },
     });
 
     if (!adminRole) {
-      const message = 'В БД не создана роль модератора';
+      const message = 'В БД не создана роль менеджера';
       const status = HttpStatus.INTERNAL_SERVER_ERROR;
       throw new HttpException(message, status);
     }
@@ -45,8 +45,8 @@ export class IsModeratorGuard implements CanActivate {
     });
 
     if (!candidate) {
-      const message = 'У пользователя нет роли модератора';
-      const status = HttpStatus.UNAUTHORIZED;
+      const message = 'У пользователя нет роли менеджера';
+      const status = HttpStatus.FORBIDDEN;
       throw new HttpException(message, status);
     }
 

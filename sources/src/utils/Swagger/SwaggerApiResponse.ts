@@ -89,6 +89,14 @@ const SwaggerApiResponse = {
       'У пользователя нет роли администратора \n\n',
     type: HttpResponseDto,
   },
+  UnauthorizedManager: {
+    status: HttpStatus.UNAUTHORIZED,
+    description:
+      'Access токен просрочен \n\n' +
+      'Access токен не передан \n\n' +
+      'У пользователя нет роли менеджера \n\n',
+    type: HttpResponseDto,
+  },
 };
 
 export default SwaggerApiResponse;

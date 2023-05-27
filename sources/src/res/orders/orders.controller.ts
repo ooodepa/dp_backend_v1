@@ -1,4 +1,3 @@
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import {
   Controller,
   Get,
@@ -9,10 +8,20 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { VerifyAccessTokenGuard } from 'src/guards/VerifyAccessTokenGuard.guard';
+import SwaggerApiResponse from 'src/utils/Swagger/SwaggerApiResponse';
+import SwaggerApiOperation from 'src/utils/Swagger/SwaggerApiOperation';
+import { GetOrderDto } from './dto/get-order.dto';
+import { GetOrderWithIdDto } from './dto/get-order-with-id.dto';
 
 @ApiTags('api_v1_orders')
 @Controller('/api/v1/orders')
@@ -28,6 +37,10 @@ export class OrdersController {
   }
 
   @ApiTags('user')
+  @ApiOperation(SwaggerApiOperation.Find)
+  @ApiResponse({ ...SwaggerApiResponse.Finded, type: [GetOrderDto] })
+  @ApiResponse(SwaggerApiResponse.UnauthorizedAdmin)
+  @ApiResponse(SwaggerApiResponse.ServerError)
   @ApiBearerAuth('access-token')
   @UseGuards(VerifyAccessTokenGuard)
   @Get()
@@ -36,19 +49,16 @@ export class OrdersController {
   }
 
   @ApiTags('user')
+  @ApiOperation(SwaggerApiOperation.FindById)
+  @ApiResponse({ ...SwaggerApiResponse.FindedById, type: GetOrderWithIdDto })
+  @ApiResponse(SwaggerApiResponse.UnauthorizedAdmin)
+  @ApiResponse(SwaggerApiResponse.NotFound)
+  @ApiResponse(SwaggerApiResponse.ServerError)
   @ApiBearerAuth('access-token')
   @UseGuards(VerifyAccessTokenGuard)
   @Get(':id')
   findOne(@Param('id') id: string, @Req() req) {
     return this.ordersService.findOne(id, req);
-  }
-
-  @ApiTags('MODER')
-  @ApiBearerAuth('access-token')
-  @UseGuards(VerifyAccessTokenGuard)
-  @Patch(':id/completed')
-  updateCompleted(@Param('id') id: string) {
-    return this.ordersService.updateCompleted(id);
   }
 
   @ApiTags('user')

@@ -24,6 +24,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { ChangeEmailDto } from './dto/change-email.dto';
 import { ChangePasswordDto } from './dto/change-password';
 import { ForgetPasswordDto } from './dto/forget-password.dto';
+import { IsManagerGuard } from 'src/guards/IsManagerGuard.guard';
 import CreateUserResponseDto from './dto/create-user-response.dto';
 import SwaggerApiResponse from 'src/utils/Swagger/SwaggerApiResponse';
 import HttpResponseDto from 'src/utils/HttpResponseDto/HttpResponseDto.dto';
@@ -247,7 +248,7 @@ export class UsersController {
     return this.usersService.updatePassword(changePasswordDto, req);
   }
 
-  @ApiTags('admin')
+  @ApiTags('ADMIN')
   @ApiOperation({ summary: 'Проверка роли админа' })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -264,6 +265,27 @@ export class UsersController {
     const data: HttpResponseDto = {
       statusCode: status,
       message: 'Вы администратор',
+    };
+    return res.status(status).json(data);
+  }
+
+  @ApiTags('MANAGER')
+  @ApiOperation({ summary: 'Проверка роли менеджера' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'У пользователя роль менеджера',
+  })
+  @ApiResponse(SwaggerApiResponse.UnauthorizedAdmin)
+  @ApiResponse(SwaggerApiResponse.ServerError)
+  @ApiBearerAuth('access-token')
+  @UseGuards(IsManagerGuard)
+  @UseGuards(VerifyAccessTokenGuard)
+  @Post('is-manager')
+  checkIsManager(@Res() res: Response) {
+    const status = HttpStatus.OK;
+    const data: HttpResponseDto = {
+      statusCode: status,
+      message: 'Вы менеджер',
     };
     return res.status(status).json(data);
   }

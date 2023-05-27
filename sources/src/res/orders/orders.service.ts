@@ -184,12 +184,6 @@ export class OrdersService {
     });
   }
 
-  async updateCompleted(id: string) {
-    await this.orderEntity.findOneOrFail({ where: { dp_id: id } });
-    await this.orderEntity.update(id, { dp_isCompleted: true });
-    return HttpResponse.successUpdate();
-  }
-
   async updateCancelled(id: string, req: Request) {
     const payload = await this.userService.getAccessTokenFromRequest(req);
     await this.orderEntity.findOneOrFail({

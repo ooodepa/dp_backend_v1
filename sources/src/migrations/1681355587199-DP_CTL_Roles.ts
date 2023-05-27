@@ -15,7 +15,7 @@ export class DPCTLRoles1681355587199 implements MigrationInterface {
     await queryRunner.query(`
         INSERT INTO \`DP_CTL_Roles\` (\`dp_id\`, \`dp_name\`) VALUES
         (1, 'ADMIN'),
-        (2, 'MODER')
+        (2, 'MANAGER')
     `);
   }
 
