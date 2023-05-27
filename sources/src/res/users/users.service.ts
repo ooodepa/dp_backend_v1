@@ -1,7 +1,7 @@
 import * as bcrypt from 'bcryptjs';
 import { Cron } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Raw, Repository } from 'typeorm';
+import { DataSource, In, Raw, Repository } from 'typeorm';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ISendMailOptions, MailerService } from '@nestjs-modules/mailer';
 import { JwtService, JwtSignOptions, JwtVerifyOptions } from '@nestjs/jwt';
@@ -214,12 +214,9 @@ export class UsersService {
     const ids = candidates.map((e) => e.dp_userId);
     if (ids.length == 0) return;
 
-    await this.userEntity
-      .createQueryBuilder()
-      .delete()
-      .from(UserEntity)
-      .where(`dp_id IN (${ids}) AND dp_isActivated = 0`)
-      .execute();
+    await this.userEntity.delete({
+      dp_id: In(ids),
+    });
   }
 
   async updateEmail(changeEmailDto: ChangeEmailDto, req) {
