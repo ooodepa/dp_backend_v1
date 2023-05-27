@@ -4528,9 +4528,38 @@
         ]
       }
     },
-    "/api/v1/orders/{id}/cancel": {
+    "/api/v1/orders/{id}/is-canceled": {
       "patch": {
-        "operationId": "OrdersController_updateCancelled",
+        "operationId": "OrdersController_patchIsCanceledByClient",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "api_v1_orders",
+          "user"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/api/v1/orders/{id}/is-received": {
+      "patch": {
+        "operationId": "OrdersController_patchIsReceivedByClient",
         "parameters": [
           {
             "name": "id",
@@ -4957,11 +4986,11 @@
         ]
       }
     },
-    "/api/v1/manager/orders/{id}/completed": {
+    "/api/v1/manager/orders/{id}/is-canceled": {
       "patch": {
-        "operationId": "ManagerController_UpdateOrderIsFulfilledByManager",
+        "operationId": "ManagerController_patchOrderIsCanceledByManager",
         "summary": "",
-        "description": "Пометка заявки отправленной",
+        "description": "Отмена заявки",
         "parameters": [
           {
             "name": "id",
@@ -5016,11 +5045,11 @@
         ]
       }
     },
-    "/api/v1/manager/orders/{id}/canceled": {
+    "/api/v1/manager/orders/{id}/is-sented": {
       "patch": {
-        "operationId": "ManagerController_UpdateOrderIsCanceled",
+        "operationId": "ManagerController_patchOrderIsSentedByManager",
         "summary": "",
-        "description": "Отмена заявки",
+        "description": "Пометка заявки отправленной",
         "parameters": [
           {
             "name": "id",
@@ -5139,25 +5168,25 @@
         ]
       }
     },
-    "/api/v1/manager/order/{orderId}/order-statuses/{orderStatusId}": {
+    "/api/v1/manager/order-statuses/{id}/orders/{orderId}": {
       "delete": {
         "operationId": "ManagerController_removeOrderStatus",
         "summary": "Удаление записи по id",
         "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          },
           {
             "name": "orderId",
             "required": true,
             "in": "path",
             "schema": {
               "type": "string"
-            }
-          },
-          {
-            "name": "orderStatusId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "number"
             }
           }
         ],

@@ -9,8 +9,6 @@ export class DPDOCOrders1681369109853 implements MigrationInterface {
             \`dp_id\` varchar(36) NOT NULL,
             \`dp_date\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
             \`dp_userId\` int NOT NULL,
-            \`dp_isCancelled\` tinyint NOT NULL DEFAULT 0,
-            \`dp_isCompleted\` tinyint NOT NULL DEFAULT 0,
             PRIMARY KEY (\`dp_id\`)
         ) ENGINE = InnoDB
     `);

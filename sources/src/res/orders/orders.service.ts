@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, In, Repository } from 'typeorm';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ISendMailOptions, MailerService } from '@nestjs-modules/mailer';
 
 import { OrderEntity } from './entities/order.entity';
@@ -168,7 +168,7 @@ export class OrdersService {
       where: {
         dp_userId: payload.id,
       },
-      relations: ['dp_orderItems'],
+      relations: ['dp_orderItems', 'dp_orderStatuses'],
       order: { dp_date: 'DESC' },
     });
   }
@@ -180,20 +180,83 @@ export class OrdersService {
         dp_id: id,
         dp_userId: payload.id,
       },
-      relations: ['dp_orderItems'],
+      relations: ['dp_orderItems', 'dp_orderStatuses'],
     });
   }
 
-  async updateCancelled(id: string, req: Request) {
+  async patchIsCanceledByClient(id: string, req: Request) {
     const payload = await this.userService.getAccessTokenFromRequest(req);
-    await this.orderEntity.findOneOrFail({
+    const candidate = await this.orderEntity.findOneOrFail({
       where: {
         dp_id: id,
         dp_userId: payload.id,
       },
     });
 
-    await this.orderEntity.update(id, { dp_cancaledOn: new Date() });
+    if (candidate.dp_canceledByManagerOn) {
+      const message =
+        'Вы не можите отменить заявку, так как заявка уже отменена менеджером.';
+      const status = HttpStatus.CONFLICT;
+      throw new HttpException(message, status);
+    }
+
+    if (candidate.dp_sentedByManagerOn) {
+      const message =
+        'Вы не можите отменить заявку, так как заявка уже отправлена менеджером.';
+      const status = HttpStatus.CONFLICT;
+      throw new HttpException(message, status);
+    }
+
+    if (candidate.dp_receivedByClientOn) {
+      const message =
+        'Вы не можите отменить заявку, так как заявка уже получена вами.';
+      const status = HttpStatus.CONFLICT;
+      throw new HttpException(message, status);
+    }
+
+    await this.orderEntity.update(id, { dp_canceledByClientOn: new Date() });
+
+    return HttpResponse.successUpdate();
+  }
+
+  async patchIsReceivedByClient(id: string, req: Request) {
+    const payload = await this.userService.getAccessTokenFromRequest(req);
+    const candidate = await this.orderEntity.findOneOrFail({
+      where: {
+        dp_id: id,
+        dp_userId: payload.id,
+      },
+    });
+
+    if (candidate.dp_canceledByClientOn) {
+      const message =
+        'Вы не можите подтвердить приход заявки, так как отказались от неё.';
+      const status = HttpStatus.CONFLICT;
+      throw new HttpException(message, status);
+    }
+
+    if (candidate.dp_canceledByManagerOn) {
+      const message =
+        'Вы не можите подтвердить приход заявки, так как менеджер отменил её.';
+      const status = HttpStatus.CONFLICT;
+      throw new HttpException(message, status);
+    }
+
+    if (!candidate.dp_sentedByManagerOn) {
+      const message =
+        'Вы не можите подтвердить заявку, так как заявка ещё не отправлена менеджером.';
+      const status = HttpStatus.CONFLICT;
+      throw new HttpException(message, status);
+    }
+
+    if (candidate.dp_receivedByClientOn) {
+      const message =
+        'Вы не можите подтвердить заявку, так как заявка уже вами подтверждена.';
+      const status = HttpStatus.CONFLICT;
+      throw new HttpException(message, status);
+    }
+
+    await this.orderEntity.update(id, { dp_receivedByClientOn: new Date() });
 
     return HttpResponse.successUpdate();
   }

@@ -64,8 +64,16 @@ export class OrdersController {
   @ApiTags('user')
   @ApiBearerAuth('access-token')
   @UseGuards(VerifyAccessTokenGuard)
-  @Patch(':id/cancel')
-  updateCancelled(@Param('id') id: string, @Req() req) {
-    return this.ordersService.updateCancelled(id, req);
+  @Patch(':id/is-canceled')
+  patchIsCanceledByClient(@Param('id') id: string, @Req() req) {
+    return this.ordersService.patchIsCanceledByClient(id, req);
+  }
+
+  @ApiTags('user')
+  @ApiBearerAuth('access-token')
+  @UseGuards(VerifyAccessTokenGuard)
+  @Patch(':id/is-received')
+  patchIsReceivedByClient(@Param('id') id: string, @Req() req) {
+    return this.ordersService.patchIsReceivedByClient(id, req);
   }
 }

@@ -10,6 +10,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { OrderItemsEntity } from './order-items.entity';
 import { UserEntity } from 'src/res/users/entities/user.entity';
+import { OrderStatusEntity } from 'src/res/order-statuses/entities/order-status.entity';
 
 @Entity('DP_DOC_Orders')
 export class OrderEntity {
@@ -36,13 +37,21 @@ export class OrderEntity {
 
   @ApiProperty({ example: '0000-00-00T00:00:00.000Z' })
   @Column({ type: 'timestamp', nullable: true })
-  dp_cancaledOn: Date;
+  dp_canceledByClientOn: Date;
 
   @ApiProperty({ example: '0000-00-00T00:00:00.000Z' })
   @Column({ type: 'timestamp', nullable: true })
-  dp_fulfilledOn: Date;
+  dp_canceledByManagerOn: Date;
 
   @ApiProperty({ example: '0000-00-00T00:00:00.000Z' })
   @Column({ type: 'timestamp', nullable: true })
-  dp_receivedOn: Date;
+  dp_sentedByManagerOn: Date;
+
+  @ApiProperty({ example: '0000-00-00T00:00:00.000Z' })
+  @Column({ type: 'timestamp', nullable: true })
+  dp_receivedByClientOn: Date;
+
+  @OneToMany(() => OrderStatusEntity, (e: OrderStatusEntity) => e.dp_orderId)
+  @JoinColumn({ name: 'dp_id' })
+  dp_orderStatuses: OrderStatusEntity[];
 }
