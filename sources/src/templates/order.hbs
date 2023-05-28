@@ -1,16 +1,4 @@
 <style>
-  .content {
-    width: 466px;
-    margin: 0 auto;
-    background-color: #ffffff;
-    border:
-      1px solid #06c;
-    border-radius: 8px;
-    padding: 16px;
-    color: #24292f;
-    font-family: Arial, Helvetica, sans-serif;
-  }
-
   table {
     width: 100%;
   }
@@ -22,13 +10,7 @@
 
   .items__td {
     border: 1px solid black;
-    border-collapse: collapse;
     padding: 2px;
-  }
-
-  .items__totalSum {
-    font-weight: bold;
-    text-align: right;
   }
 
   .footer__text {
@@ -37,38 +19,67 @@
   }
 </style>
 
-<div class='content'>
-  <table class='items__table'>
-    <caption><b>Таблица - Заявка</b></caption>
-    <thead>
-      <tr>
-        <th class='items__td'>Картинка</th>
-        <th class='items__td'>Наименование | модель</th>
-        <th class='items__td'>Количество</th>
-        <th class='items__td'>Цена, BYN <br/> (без НДС)</th>
-        <th class='items__td'>Цена, BYN <br/> (с НДС)</th>
-        <th class='items__td'>Сумма, BYN <br/> (c НДС)</th>
-      </tr>
-    </thead>
-    <tbody>
-      {{#each dp_items_orderItems}}
-      <tr>
-        <td class='items__td'><img width='48' src='{{this.dp_photoUrl}}' /></td>
-        <td class='items__td'>{{this.dp_name}} | {{this.dp_model}}</td>
-        <td class='items__td' align='right'>{{this.dp_count}}</td>
-        <td class='items__td' align='right'>{{this.dp_costNoNds}}</td>
-        <td class='items__td' align='right'>{{this.dp_costNds}}</td>
-        <td class='items__td' align='right'>{{this.dp_sum}}</td>
-      </tr>
-      {{/each}}
-      <tr>
-        <td class='items__td items__totalSum' colspan='6'>Итого: Br {{this.dp_items_totalSum}}</td>
-      </tr>
-    </tbody>
-  </table>
+<p>{{APP__MY_ORGANIZATION}}</p>
 
-</div>
+<p>Р/сч: {{APP__MY_CHECKING_ACCOUNT}} в {{APP__MY_BANK}} код {{APP__MY_BIK}}, УНП: {{APP__MY_UNP}}</p>
+
+<p>Адрес: {{APP__MY_ADDRESS}}</p>
+
+<p style="text-align: center;">Счет №{{order.dp_number}} от {{stringDate}}</p>
+
+<p>Закачик: {{user.dp_shortNameLegalEntity}}</p>
+
+<p>Плательщик: {{user.dp_shortNameLegalEntity}}, адрес: {{user.dp_address}}</p>
+
+<p>Р/сч: &lt;Ваш_расчётный_счёт&gt; в &lt;Ваш_банк&gt; код &lt;Ваш_БИК&gt;, УНП: {{user.dp_unp}}</p>
+
+<table class='items__table'>
+  <thead>
+    <tr>
+      <th class='items__td'>№</th>
+      <th class='items__td'>Картинка</th>
+      <th class='items__td'>Товары (работы, услуги)</th>
+      <th class='items__td'>Единица измерения</th>
+      <th class='items__td'>Количество</th>
+      <th class='items__td'>Цена, руб. коп.</th>
+      <th class='items__td'>Сумма, руб. коп.</th>
+      <th class='items__td'>Ставка НДС, %</th>
+      <th class='items__td'>Сумма НДС, руб. коп.</th>
+      <th class='items__td'>Всего с НДС, руб. коп.</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each emailOrderItems}}
+    <tr>
+      <td class='items__td' style="text-align:right;">{{this.index}}</td>
+      <td class='items__td'><img width='64' src='{{this.dp_photoUrl}}' /></td>
+      <td class='items__td'>{{this.dp_name}}, {{this.dp_model}}</td>
+      <td class='items__td' style="text-align:center;">{{this.dp_edIzm}}</td>
+      <td class='items__td' style="text-align:right;">{{this.dp_count}}</td>
+      <td class='items__td' style="text-align:right;">{{this.dp_cost}}</td>
+      <td class='items__td' style="text-align:right;">{{this.dp_sum}}</td>
+      <td class='items__td' style="text-align:right;">{{this.dp_stavkaNds}}</td>
+      <td class='items__td' style="text-align:right;">{{this.dp_sumNds}}</td>
+      <td class='items__td' style="text-align:right;">{{this.dp_totalSumNds}}</td>
+    </tr>
+    {{/each}}
+    <tr>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td class='items__td' style="text-align:right;">Итого</td>
+      <td class='items__td' style="text-align:right;">{{countSum}}</td>
+      <td class='items__td' style="text-align:center;">x</td>
+      <td class='items__td' style="text-align:right;">{{countSumNds}}</td>
+      <td class='items__td' style="text-align:right;">{{countSumTotal}}</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Сумма НДС: {{sumNdsText}}</p>
+
+<p>Всего к оплате на сумму с НДС: {{sumTotalText}}</p>
 
 <p class='footer__text'>Заявка номенклатуры</p>
-
-<p class='footer__text'>{{dp_org}}</p>

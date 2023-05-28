@@ -168,8 +168,8 @@ export class UsersController {
     type: HttpResponseDto,
   })
   @Get('/change-email/:token/confirm')
-  confirmChangeEmail(@Param('token') token) {
-    return this.usersService.confirmChangeEmail(token);
+  confirmChangeEmail(@Param('token') token, @Res() res) {
+    return this.usersService.confirmChangeEmail(token, res);
   }
 
   @ApiTags('any')

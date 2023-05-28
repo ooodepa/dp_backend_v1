@@ -25,6 +25,8 @@ yarn add --dev pug@^3.0.1
 yarn add --dev express@4.0.0
 yarn add --dev webpack@^5.0.0
 yarn add preview-email
+yarn add exceljs
+yarn add number-to-words-ru
 
 
 yarn nest g res res/users

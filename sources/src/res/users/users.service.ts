@@ -1,4 +1,5 @@
 import * as bcrypt from 'bcryptjs';
+import { Response } from 'express';
 import { Cron } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, In, Raw, Repository } from 'typeorm';
@@ -236,10 +237,11 @@ export class UsersService {
     const candidate = await this.ChangeEmailEntity.findOne({
       where: {
         dp_userId: userId,
+        dp_isClosed: false,
       },
     });
 
-    if (!candidate.dp_isClosed) {
+    if (candidate && !candidate.dp_isClosed) {
       let message =
         'Cлишком много запросов о смене электроной почты за не прошедшие 3 часа.';
       message += 'Отмените заявку по ссылке на старой почте. ';
@@ -263,36 +265,17 @@ export class UsersService {
         dp_userId: userId,
       });
 
-      const newEmail_sendMailOptions: ISendMailOptions = {
-        to: new_email,
-        subject: 'Уведомление о смене электронной почты',
-        template: 'new-email',
-        context: {
-          dp_url_confirm_change_email: `${process.env.APP__SWAGGER_HOST}/api/v1/users/change-email/${newEmailToken}/confirm`,
-          dp_org: process.env.APP__SWAGGER_ORGANIZATION,
-        },
-      };
-
       try {
-        await this.mailerService.sendMail(newEmail_sendMailOptions);
-      } catch (err) {
-        const message = `Уведомление о смене почты не отправлено на новую почту: ${err}`;
-        throw new Error(message);
-      }
-
-      const oldEmail_sendMailOptions: ISendMailOptions = {
-        to: old_email,
-        subject: 'Уведомление о смене электронной почты',
-        template: 'old-email',
-        context: {
-          dp_newEmail: new_email,
-          dp_url_delete_change_email: `${process.env.APP__SWAGGER_HOST}/api/v1/users/change-email/${newEmailToken}/delete`,
-          dp_org: process.env.APP__SWAGGER_ORGANIZATION,
-        },
-      };
-
-      try {
-        await this.mailerService.sendMail(oldEmail_sendMailOptions);
+        await this.mailerService.sendMail({
+          to: old_email,
+          subject: 'Уведомление о смене электронной почты',
+          template: 'old-email',
+          context: {
+            dp_newEmail: new_email,
+            dp_url_confirm_change_email: `${process.env.APP__SWAGGER_HOST}/api/v1/users/change-email/${newEmailToken}/confirm`,
+            dp_url_delete_change_email: `${process.env.APP__SWAGGER_HOST}/api/v1/users/change-email/${newEmailToken}/delete`,
+          },
+        });
       } catch (err) {
         const message = `Уведомление о смене почты не отправлено на старую почту: ${err}`;
         throw new Error(message);
@@ -314,7 +297,7 @@ export class UsersService {
     throw new HttpException(message, status);
   }
 
-  async confirmChangeEmail(token) {
+  async confirmChangeEmail(token: string, res: Response) {
     let payload: any = {};
     try {
       payload = await this.verifyToken(token, 'new-email');
@@ -340,14 +323,17 @@ export class UsersService {
     });
 
     if (!candidate) {
-      const message = `Токена не зарегистрирован в БД`;
+      let message = '';
+      message += 'Ссылка не действительна, ';
+      message += 'так как токен не зарегистрирован в БД. ';
+      message += 'Возможно, владелец отменил заявку на смену e-mail. ';
       const status = HttpStatus.UNAUTHORIZED;
       throw new HttpException(message, status);
     }
 
     if (candidate.dp_isClosed) {
-      const message =
-        'Ссылка не действительна, так как почта была сменена, либо заявка на смену почты была отклонена';
+      let message = '';
+      message += 'Ссылка не действительна, так как почта была сменена.';
       const status = HttpStatus.UNAUTHORIZED;
       throw new HttpException(message, status);
     }
@@ -375,7 +361,7 @@ export class UsersService {
         `Электронная почта <a href="mailto:${old_email}">${old_email}</a> ` +
         `изменена на <a href="mailto:${new_email}">${new_email}</a>`;
       const status = HttpStatus.OK;
-      throw new HttpException(message, status);
+      res.status(status).send(message);
     } catch (err) {
       await queryRunner.rollbackTransaction();
       const message = `Транзакция не совершена err=${err}`;
@@ -408,8 +394,10 @@ export class UsersService {
     });
 
     if (!candidate) {
-      const message =
-        'Ссылка не действительна, так как токен не зарегистрирован в БД';
+      let message = '';
+      message += 'Ссылка не действительна, ';
+      message += 'так как токен не зарегистрирован в БД. ';
+      message += 'Возможно, вы уже отменили заявку. ';
       const status = HttpStatus.NOT_FOUND;
       throw new HttpException(message, status);
     }

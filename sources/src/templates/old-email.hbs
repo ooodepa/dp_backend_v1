@@ -29,14 +29,23 @@
     <b>{{dp_newEmail}}</b>
   </p>
 
-  <p>Если вы не запрашивали изменение электронной почты, пожалуйста,</p>
+  <p>Если это были вы, то для продолжения пройдите по ссылке:</p>
 
-  <ul>
-    <li>закройте все сеансы</li>
-    <li>смените пароль</li>
-  </ul>
+  <p style='word-wrap: break-word;'>
+    <a target='_blank' href='{{dp_url_confirm_change_email}}'>
+      {{dp_url_confirm_change_email}}
+    </a>
+  </p>
+
+  <p>Если вы не запрашивали изменение электронной почты, то кто-то имеет доступ к вашему аккауту.</p>
+  <p>1. Закройте заявку на смену электронной почты по ссылке:</p>
+  <p style='word-wrap: break-word;'>
+    <a target='_blank' href='{{dp_url_delete_change_email}}'>
+      {{dp_url_delete_change_email}}
+    </a>
+  </p>
+  <p>2. Закройте все сеаны в аккаунте мобильного приложения.</p>
+  <p>3. Смените пароль учётной записи. </p>
 </div>
 
 <p class='footer__text'>Уведомление о смене электронной почты</p>
-
-<p class='footer__text'>{{dp_org}}</p>
