@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Req,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -15,13 +16,14 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
+import SendCheckDto from './dto/sendCheckDto';
 import { OrdersService } from './orders.service';
+import { GetOrderDto } from './dto/get-order.dto';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { VerifyAccessTokenGuard } from 'src/guards/VerifyAccessTokenGuard.guard';
+import { GetOrderWithIdDto } from './dto/get-order-with-id.dto';
 import SwaggerApiResponse from 'src/utils/Swagger/SwaggerApiResponse';
 import SwaggerApiOperation from 'src/utils/Swagger/SwaggerApiOperation';
-import { GetOrderDto } from './dto/get-order.dto';
-import { GetOrderWithIdDto } from './dto/get-order-with-id.dto';
+import { VerifyAccessTokenGuard } from 'src/guards/VerifyAccessTokenGuard.guard';
 
 @ApiTags('api_v1_orders')
 @Controller('/api/v1/orders')
@@ -29,6 +31,10 @@ export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
   @ApiTags('user')
+  @ApiOperation(SwaggerApiOperation.CreateUuid)
+  @ApiResponse({ ...SwaggerApiResponse.CreatedUuid, type: GetOrderDto })
+  @ApiResponse(SwaggerApiResponse.Unauthorized)
+  @ApiResponse(SwaggerApiResponse.ServerError)
   @ApiBearerAuth('access-token')
   @UseGuards(VerifyAccessTokenGuard)
   @Post()
@@ -39,7 +45,7 @@ export class OrdersController {
   @ApiTags('user')
   @ApiOperation(SwaggerApiOperation.Find)
   @ApiResponse({ ...SwaggerApiResponse.Finded, type: [GetOrderDto] })
-  @ApiResponse(SwaggerApiResponse.UnauthorizedAdmin)
+  @ApiResponse(SwaggerApiResponse.Unauthorized)
   @ApiResponse(SwaggerApiResponse.ServerError)
   @ApiBearerAuth('access-token')
   @UseGuards(VerifyAccessTokenGuard)
@@ -51,7 +57,7 @@ export class OrdersController {
   @ApiTags('user')
   @ApiOperation(SwaggerApiOperation.FindById)
   @ApiResponse({ ...SwaggerApiResponse.FindedById, type: GetOrderWithIdDto })
-  @ApiResponse(SwaggerApiResponse.UnauthorizedAdmin)
+  @ApiResponse(SwaggerApiResponse.Unauthorized)
   @ApiResponse(SwaggerApiResponse.NotFound)
   @ApiResponse(SwaggerApiResponse.ServerError)
   @ApiBearerAuth('access-token')
@@ -75,5 +81,18 @@ export class OrdersController {
   @Patch(':id/is-received')
   patchIsReceivedByClient(@Param('id') id: string, @Req() req) {
     return this.ordersService.patchIsReceivedByClient(id, req);
+  }
+
+  @ApiTags('user')
+  @ApiBearerAuth('access-token')
+  @UseGuards(VerifyAccessTokenGuard)
+  @Post(':id/send-check')
+  sendToEmailCheck(
+    @Param('id') id: string,
+    @Req() req,
+    @Res() res,
+    @Body() dto: SendCheckDto,
+  ) {
+    return this.ordersService.sendToEmailCheck(id, req, dto, res);
   }
 }

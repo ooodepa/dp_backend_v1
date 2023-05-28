@@ -4385,6 +4385,7 @@
     "/api/v1/orders": {
       "post": {
         "operationId": "OrdersController_create",
+        "summary": "Создание записи транзакцией",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -4398,7 +4399,34 @@
         },
         "responses": {
           "201": {
-            "description": ""
+            "description": "Запись создана успешно. Транзакция выполнена.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetOrderDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -4430,7 +4458,7 @@
             }
           },
           "401": {
-            "description": "Access токен просрочен \n\nAccess токен не передан \n\nУ пользователя нет роли администратора \n\n",
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\n",
             "content": {
               "application/json": {
                 "schema": {
@@ -4487,7 +4515,7 @@
             }
           },
           "401": {
-            "description": "Access токен просрочен \n\nAccess токен не передан \n\nУ пользователя нет роли администратора \n\n",
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\n",
             "content": {
               "application/json": {
                 "schema": {
@@ -4572,6 +4600,45 @@
         ],
         "responses": {
           "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "api_v1_orders",
+          "user"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/api/v1/orders/{id}/send-check": {
+      "post": {
+        "operationId": "OrdersController_sendToEmailCheck",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendCheckDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
             "description": ""
           }
         },
@@ -7381,6 +7448,25 @@
           "dp_fulfilledOn",
           "dp_receivedOn",
           "dp_orderItems"
+        ]
+      },
+      "SendCheckDto": {
+        "type": "object",
+        "properties": {
+          "dp_checkingAccount": {
+            "type": "string"
+          },
+          "dp_bank": {
+            "type": "string"
+          },
+          "dp_bik": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "dp_checkingAccount",
+          "dp_bank",
+          "dp_bik"
         ]
       },
       "GetApkVersionsDto": {

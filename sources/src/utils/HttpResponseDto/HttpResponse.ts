@@ -3,6 +3,18 @@ import { HttpStatus } from '@nestjs/common';
 import HttpResponseDto from '../HttpResponseDto/HttpResponseDto.dto';
 
 export default class HttpResponse {
+  static successSendEmail() {
+    const message = `Сообщение отправлено на электронную почту`;
+    const status = HttpStatus.OK;
+
+    const answer: HttpResponseDto = {
+      statusCode: status,
+      message: message,
+    };
+
+    return answer;
+  }
+
   static successCreate() {
     const message = `Сущность успешно создана`;
     const status = HttpStatus.OK;
