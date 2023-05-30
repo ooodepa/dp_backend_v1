@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 import SessionsApiProperty from '../sessions.swagger';
+import HttpResponseDto from 'src/utils/HttpResponseDto/HttpResponseDto.dto';
 
 class GetSessionDto {
   @ApiProperty(SessionsApiProperty.dp_id)
@@ -16,7 +17,7 @@ class GetSessionDto {
   dp_agent: string;
 }
 
-export default class GetSessionsDto {
+export default class GetSessionsDto extends HttpResponseDto {
   @ApiProperty()
   dp_current: GetSessionDto;
 

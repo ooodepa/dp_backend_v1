@@ -16,6 +16,7 @@ import { ChangeEmailEntity } from './entities/change-email.entity';
 import CreateUserResponseDto from './dto/create-user-response.dto';
 import { SessionEntity } from '../sessions/entities/session.entity';
 import TokenPayloadDto from 'src/utils/TokenPayloadDto/token-payload.dto';
+import HttpResponseDto from 'src/utils/HttpResponseDto/HttpResponseDto.dto';
 import { ActivationAccountEntity } from './entities/activation-account.entity';
 
 @Injectable()
@@ -96,9 +97,12 @@ export class UsersService {
         dp_userId: userId,
       });
 
+      const salt = 2;
+      const accessTokenHash = bcrypt.hashSync(accessToken, salt);
+      const refreshTokenHash = bcrypt.hashSync(refreshToken, salt);
       await queryRunner.manager.getRepository(SessionEntity).save({
-        dp_accessToken: accessToken,
-        dp_refreshToken: refreshToken,
+        dp_accessHash: accessTokenHash,
+        dp_refreshHash: refreshTokenHash,
         dp_agent: agent,
         dp_ip: ip,
         dp_userId: userId,
@@ -153,7 +157,7 @@ export class UsersService {
     });
   }
 
-  async activateAccount(dp_token: string) {
+  async activateAccount(dp_token: string, res: Response) {
     try {
       await this.verifyToken(dp_token, 'activation');
     } catch (err) {
@@ -189,9 +193,12 @@ export class UsersService {
       dp_isActivated: true,
     });
 
-    const message = 'Аккаунт активирован';
     const status = HttpStatus.OK;
-    throw new HttpException(message, status);
+    const json: HttpResponseDto = {
+      statusCode: status,
+      message: 'Аккаунт активирован',
+    };
+    res.status(status).json(json);
   }
 
   @Cron('0 * * * *') // At minute 0 (00:00, 01:00, 02:00, .. 22:00, 23:00)
@@ -220,7 +227,7 @@ export class UsersService {
     });
   }
 
-  async updateEmail(changeEmailDto: ChangeEmailDto, req) {
+  async updateEmail(changeEmailDto: ChangeEmailDto, req, res: Response) {
     const payload = await this.getAccessTokenFromRequest(req);
     const userId = payload.id;
 
@@ -291,10 +298,13 @@ export class UsersService {
       await queryRunner.release();
     }
 
-    const message =
-      'Заявка отправлена на новую почту и предупреждение отправлено на старую почту';
     const status = HttpStatus.OK;
-    throw new HttpException(message, status);
+    const json: HttpResponseDto = {
+      statusCode: status,
+      message:
+        'Подтвердите смены электронной почты, на старой электронной почте',
+    };
+    res.status(status).json(json);
   }
 
   async confirmChangeEmail(token: string, res: Response) {
@@ -372,7 +382,7 @@ export class UsersService {
     }
   }
 
-  async deleteChangeEmail(token) {
+  async deleteChangeEmail(token, res: Response) {
     try {
       await this.verifyToken(token, 'new-email');
     } catch (err) {
@@ -413,12 +423,15 @@ export class UsersService {
       dp_token: token,
     });
 
-    const message = 'Заявка на смену электронной почты отменена';
     const status = HttpStatus.OK;
-    throw new HttpException(message, status);
+    const json: HttpResponseDto = {
+      statusCode: status,
+      message: 'Заявка на смену электронной почты отменена',
+    };
+    res.status(status).json(json);
   }
 
-  async forgetPassword(forgetPasswordDto: ForgetPasswordDto) {
+  async forgetPassword(forgetPasswordDto: ForgetPasswordDto, res: Response) {
     const candidate = await this.userEntity.findOne({
       where: [
         { dp_email: forgetPasswordDto.emailOrLogin },
@@ -475,13 +488,16 @@ export class UsersService {
       await queryRunner.release();
     }
 
-    const message =
-      'На электронную почту отправлен логин и новый сгенерированный пароль';
     const status = HttpStatus.OK;
-    throw new HttpException(message, status);
+    const json: HttpResponseDto = {
+      statusCode: status,
+      message:
+        'На электронную почту отправлен логин и новый сгенерированный пароль',
+    };
+    res.status(status).json(json);
   }
 
-  async updatePassword(changePasswordDto: ChangePasswordDto, req) {
+  async updatePassword(dto: ChangePasswordDto, req, res: Response) {
     const payload = await this.getAccessTokenFromRequest(req);
     const userId = payload.id;
 
@@ -491,7 +507,7 @@ export class UsersService {
       },
     });
 
-    const password = changePasswordDto.dp_oldPassword;
+    const password = dto.dp_oldPassword;
     const hash = candidate.dp_passwordHash;
     const isVerifyPassword = await bcrypt.compare(password, hash);
 
@@ -501,7 +517,7 @@ export class UsersService {
       throw new HttpException(message, status);
     }
 
-    const newPasswordStr = changePasswordDto.dp_newPassword;
+    const newPasswordStr = dto.dp_newPassword;
     const newPasswordSalt = 5;
     const newPasswordHash = await bcrypt.hash(newPasswordStr, newPasswordSalt);
 
@@ -526,9 +542,13 @@ export class UsersService {
     } finally {
       await queryRunner.release();
     }
-    const message = 'Пароль изменен';
+
     const status = HttpStatus.OK;
-    throw new HttpException(message, status);
+    const json: HttpResponseDto = {
+      statusCode: status,
+      message: 'Пароль изменен',
+    };
+    res.status(status).json(json);
   }
 
   async generateToken(dto: TokenPayloadDto) {

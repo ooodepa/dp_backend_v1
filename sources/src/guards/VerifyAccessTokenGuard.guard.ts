@@ -5,6 +5,7 @@ import {
   HttpStatus,
   Injectable,
 } from '@nestjs/common';
+import * as bcrypt from 'bcryptjs';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -21,20 +22,26 @@ export class VerifyAccessTokenGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest();
+    const payload = await this.usersService.getAccessTokenFromRequest(req);
     const accessToken = this.usersService.getBearerToken(req);
 
     await this.usersService.verifyToken(accessToken, 'access');
 
-    const candidate = await this.sessionEntity.findOne({
-      where: { dp_accessToken: accessToken },
+    const sessions = await this.sessionEntity.find({
+      select: { dp_accessHash: true },
+      where: { dp_userId: payload.id },
     });
 
-    if (!candidate) {
-      const message = 'Нет сеанса с таким токеном доступа';
-      const status = HttpStatus.UNAUTHORIZED;
-      throw new HttpException(message, status);
+    for (let i = 0; i < sessions.length; ++i) {
+      if (bcrypt.compareSync(accessToken, sessions[i].dp_accessHash)) {
+        req.custom__accessHash = sessions[i].dp_accessHash;
+        req.custom__userId = payload.id;
+        return true;
+      }
     }
 
-    return true;
+    const message = 'Нет сеанса с таким токеном доступа';
+    const status = HttpStatus.UNAUTHORIZED;
+    throw new HttpException(message, status);
   }
 }

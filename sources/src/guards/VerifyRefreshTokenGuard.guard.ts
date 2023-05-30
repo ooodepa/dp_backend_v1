@@ -5,6 +5,7 @@ import {
   Injectable,
   HttpStatus,
 } from '@nestjs/common';
+import * as bcrypt from 'bcryptjs';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SessionEntity } from 'src/res/sessions/entities/session.entity';
@@ -21,19 +22,26 @@ export class VerifyRefreshTokenGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest();
+    const payload = await this.usersService.getRefreshTokenFromRequest(req);
     const refreshToken = this.usersService.getBearerToken(req);
 
     await this.usersService.verifyToken(refreshToken, 'refresh');
 
-    const candidate = await this.sessionEntity.findOne({
-      where: { dp_refreshToken: refreshToken },
+    const sessions = await this.sessionEntity.find({
+      select: { dp_refreshHash: true },
+      where: { dp_userId: payload.id },
     });
 
-    if (!candidate) {
-      const message = 'Нет сеанса с таким токеном обновления';
-      const status = HttpStatus.UNAUTHORIZED;
-      throw new HttpException(message, status);
+    for (let i = 0; i < sessions.length; ++i) {
+      if (bcrypt.compareSync(refreshToken, sessions[i].dp_refreshHash)) {
+        req.custom__accessHash = sessions[i].dp_refreshHash;
+        req.custom__userId = payload.id;
+        return true;
+      }
     }
-    return true;
+
+    const message = 'Нет сеанса с таким токеном обновления';
+    const status = HttpStatus.UNAUTHORIZED;
+    throw new HttpException(message, status);
   }
 }

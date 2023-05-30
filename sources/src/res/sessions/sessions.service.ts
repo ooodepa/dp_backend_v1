@@ -9,7 +9,7 @@ import { UsersService } from '../users/users.service';
 import { SessionEntity } from './entities/session.entity';
 import { UserEntity } from '../users/entities/user.entity';
 import { CreateSessionDto } from './dto/create-session.dto';
-import HttpResponse from 'src/utils/HttpResponseDto/HttpResponse';
+import AppRequestDto from 'src/utils/AppRequest/AppRequestDto';
 import { UpdateSessionResponseDto } from './dto/update-session.dto';
 import HttpResponseDto from 'src/utils/HttpResponseDto/HttpResponseDto.dto';
 import { CreateSessionResponseDto } from './dto/create-session-response.dto';
@@ -24,10 +24,7 @@ export class SessionsService {
     private readonly userEntity: Repository<UserEntity>,
   ) {}
 
-  async create(
-    createSessionDto: CreateSessionDto,
-    req,
-  ): Promise<CreateSessionResponseDto> {
+  async create(createSessionDto: CreateSessionDto, req, res: Response) {
     const candidate = await this.userEntity.findOne({
       where: [
         { dp_login: createSessionDto.emailOrLogin },
@@ -43,7 +40,7 @@ export class SessionsService {
 
     const str = createSessionDto.dp_password;
     const hash = candidate.dp_passwordHash;
-    const isVerifyPassword = await bcrypt.compare(str, hash);
+    const isVerifyPassword = bcrypt.compareSync(str, hash);
 
     if (!isVerifyPassword) {
       const message = 'Не тот пароль';
@@ -68,29 +65,32 @@ export class SessionsService {
       type: 'refresh',
     });
 
+    const salt = 2;
+    const accessTokenHash = bcrypt.hashSync(access, salt);
+    const refreshTokenHash = bcrypt.hashSync(refresh, salt);
+
     await this.sessionEntity.save({
-      dp_accessToken: access,
-      dp_refreshToken: refresh,
+      dp_accessHash: accessTokenHash,
+      dp_refreshHash: refreshTokenHash,
       dp_ip: ip,
       dp_agent: agent,
       dp_userId: userId,
     });
 
-    return {
-      statusCode: 201,
-      message: 'Вы авторизовались',
+    const status = HttpStatus.CREATED;
+    const data: CreateSessionResponseDto = {
+      statusCode: status,
+      message: 'Вы вышли из аккаунта',
       dp_accessToken: access,
       dp_refreshToken: refresh,
     };
+    res.status(status).json(data);
   }
 
-  async logout(req: Request, res: Response) {
-    const accessToken = await this.usersService.getBearerToken(req);
-    const payload = await this.usersService.getAccessTokenFromRequest(req);
-
+  async logout(req: AppRequestDto, res: Response) {
     await this.sessionEntity.delete({
-      dp_accessToken: accessToken,
-      dp_userId: payload.id,
+      dp_accessHash: req.custom__accessHash,
+      dp_userId: req.custom__userId,
     });
 
     const status = HttpStatus.OK;
@@ -101,29 +101,28 @@ export class SessionsService {
     return res.status(status).json(data);
   }
 
-  async findAll(req): Promise<GetSessionsDto> {
-    const payload = await this.usersService.getAccessTokenFromRequest(req);
-    const userId = payload.id;
-
-    const accessToken = await this.usersService.getBearerToken(req);
+  async findAll(req: AppRequestDto, res: Response) {
     const currentSession = await this.sessionEntity.findOne({
       select: ['dp_id', 'dp_date', 'dp_ip', 'dp_agent'],
       where: {
-        dp_userId: userId,
-        dp_accessToken: accessToken,
+        dp_userId: req.custom__userId,
+        dp_accessHash: req.custom__accessHash,
       },
     });
 
     const otherSessions = await this.sessionEntity.find({
       select: ['dp_id', 'dp_date', 'dp_ip', 'dp_agent'],
       where: {
-        dp_userId: userId,
-        dp_accessToken: Not(accessToken),
+        dp_userId: req.custom__userId,
+        dp_accessHash: Not(req.custom__accessHash),
       },
       order: { dp_date: 'DESC' },
     });
 
-    return {
+    const status = HttpStatus.OK;
+    const json: GetSessionsDto = {
+      statusCode: status,
+      message: 'Вы получили список сессий',
       dp_current: {
         dp_id: currentSession.dp_id,
         dp_date: currentSession.dp_date,
@@ -137,48 +136,65 @@ export class SessionsService {
         dp_agent: e.dp_agent,
       })),
     };
+    res.status(status).json(json);
   }
 
-  async update(req): Promise<UpdateSessionResponseDto> {
-    const refreshToken = this.usersService.getBearerToken(req);
-    const payload = await this.usersService.getRefreshTokenFromRequest(req);
-    const userId = payload.id;
-
+  async update(req: AppRequestDto, res: Response) {
     const accessToken = await this.usersService.generateToken({
-      id: userId,
+      id: req.custom__userId,
       type: 'access',
     });
+    const salt = 2;
+    const accessTokenHash = bcrypt.hashSync(accessToken, salt);
 
     await this.sessionEntity.update(
-      { dp_refreshToken: refreshToken, dp_userId: userId },
-      { dp_accessToken: accessToken },
+      {
+        dp_userId: req.custom__userId,
+        dp_refreshHash: req.custom__refreshHash,
+      },
+      { dp_accessHash: accessTokenHash },
     );
 
-    return {
+    const status = HttpStatus.OK;
+    const json: UpdateSessionResponseDto = {
+      statusCode: status,
+      message: 'Вы получили новый access токен',
       dp_accessToken: accessToken,
     };
+    res.status(status).json(json);
   }
 
-  async remove(id: number, req) {
-    const payload = await this.usersService.getAccessTokenFromRequest(req);
-    const userId = payload.id;
+  async remove(id: number, req: AppRequestDto, res: Response) {
+    await this.sessionEntity.findOneOrFail({
+      where: {
+        dp_id: id,
+        dp_userId: req.custom__userId,
+      },
+    });
 
     await this.sessionEntity.delete({
       dp_id: id,
-      dp_userId: userId,
+      dp_userId: req.custom__userId,
     });
 
-    return HttpResponse.successDeleted();
+    const status = HttpStatus.OK;
+    const json: HttpResponseDto = {
+      statusCode: status,
+      message: 'Вы закрыли сессию по id',
+    };
+    res.status(status).json(json);
   }
 
-  async removeAll(req) {
-    const payload = await this.usersService.getAccessTokenFromRequest(req);
-    const userId = payload.id;
-
+  async removeAll(req: AppRequestDto, res: Response) {
     await this.sessionEntity.delete({
-      dp_userId: userId,
+      dp_userId: req.custom__userId,
     });
 
-    return HttpResponse.successDeleted();
+    const status = HttpStatus.OK;
+    const json: HttpResponseDto = {
+      statusCode: status,
+      message: 'Вы закрыли все сессии',
+    };
+    res.status(status).json(json);
   }
 }

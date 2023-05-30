@@ -5675,6 +5675,14 @@
       "GetSessionsDto": {
         "type": "object",
         "properties": {
+          "statusCode": {
+            "type": "number",
+            "example": 0
+          },
+          "message": {
+            "type": "string",
+            "example": "сообщение"
+          },
           "dp_current": {
             "$ref": "#/components/schemas/GetSessionDto"
           },
@@ -5686,6 +5694,8 @@
           }
         },
         "required": [
+          "statusCode",
+          "message",
           "dp_current",
           "dp_other"
         ]
@@ -5693,12 +5703,22 @@
       "UpdateSessionResponseDto": {
         "type": "object",
         "properties": {
+          "statusCode": {
+            "type": "number",
+            "example": 0
+          },
+          "message": {
+            "type": "string",
+            "example": "сообщение"
+          },
           "dp_accessToken": {
             "type": "string",
             "example": "jwt"
           }
         },
         "required": [
+          "statusCode",
+          "message",
           "dp_accessToken"
         ]
       },

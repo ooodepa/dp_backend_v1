@@ -103,8 +103,8 @@ export class UsersController {
     type: HttpResponseDto,
   })
   @Get('/activate-account/:token')
-  activateAccount(@Param('token') token: string) {
-    return this.usersService.activateAccount(token);
+  activateAccount(@Param('token') token: string, @Res() res) {
+    return this.usersService.activateAccount(token, res);
   }
 
   @ApiTags('user')
@@ -140,8 +140,8 @@ export class UsersController {
   @ApiBearerAuth('access-token')
   @UseGuards(VerifyAccessTokenGuard)
   @Patch('/change-email')
-  updateEmail(@Body() changeEmailDto: ChangeEmailDto, @Req() req) {
-    return this.usersService.updateEmail(changeEmailDto, req);
+  updateEmail(@Body() changeEmailDto: ChangeEmailDto, @Req() req, @Res() res) {
+    return this.usersService.updateEmail(changeEmailDto, req, res);
   }
 
   @ApiTags('any')
@@ -190,8 +190,8 @@ export class UsersController {
   })
   @ApiResponse(SwaggerApiResponse.ServerError)
   @Get('/change-email/:token/delete')
-  deleteChangeEmail(@Param('token') token) {
-    return this.usersService.deleteChangeEmail(token);
+  deleteChangeEmail(@Param('token') token, @Res() res) {
+    return this.usersService.deleteChangeEmail(token, res);
   }
 
   @ApiTags('any')
@@ -216,8 +216,8 @@ export class UsersController {
     type: HttpResponseDto,
   })
   @Post('/forget-password')
-  forgetPassword(@Body() forgetPasswordDto: ForgetPasswordDto) {
-    return this.usersService.forgetPassword(forgetPasswordDto);
+  forgetPassword(@Body() dto: ForgetPasswordDto, @Res() res) {
+    return this.usersService.forgetPassword(dto, res);
   }
 
   @ApiTags('user')
@@ -244,8 +244,8 @@ export class UsersController {
   @ApiBearerAuth('access-token')
   @UseGuards(VerifyAccessTokenGuard)
   @Patch('/change-password')
-  updatePassword(@Body() changePasswordDto: ChangePasswordDto, @Req() req) {
-    return this.usersService.updatePassword(changePasswordDto, req);
+  updatePassword(@Body() dto: ChangePasswordDto, @Req() req, @Res() res) {
+    return this.usersService.updatePassword(dto, req, res);
   }
 
   @ApiTags('ADMIN')

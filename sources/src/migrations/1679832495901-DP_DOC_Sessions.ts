@@ -10,8 +10,8 @@ export class DPDOCSessions1679832495901 implements MigrationInterface {
             \`dp_date\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
             \`dp_ip\` varchar(255) NOT NULL,
             \`dp_agent\` varchar(255) NOT NULL,
-            \`dp_accessToken\` varchar(255) NOT NULL,
-            \`dp_refreshToken\` varchar(255) NOT NULL,
+            \`dp_accessHash\` varchar(60) NOT NULL,
+            \`dp_refreshHash\` varchar(60) NOT NULL,
             \`dp_userId\` int NOT NULL,
             PRIMARY KEY (\`dp_id\`)
         ) ENGINE = InnoDB

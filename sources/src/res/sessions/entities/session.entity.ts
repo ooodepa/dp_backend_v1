@@ -27,11 +27,11 @@ export class SessionEntity {
   @Column()
   dp_agent: string;
 
-  @Column()
-  dp_accessToken: string;
+  @Column({ length: 60 })
+  dp_accessHash: string;
 
-  @Column()
-  dp_refreshToken: string;
+  @Column({ length: 60 })
+  dp_refreshHash: string;
 
   @ManyToOne(() => UserEntity, (e: UserEntity) => e.dp_id, {
     onDelete: 'CASCADE',

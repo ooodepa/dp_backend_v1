@@ -49,8 +49,8 @@ export class SessionsController {
   })
   @ApiResponse(SwaggerApiResponse.ServerError)
   @Post()
-  create(@Body() createSessionDto: CreateSessionDto, @Req() req) {
-    return this.sessionsService.create(createSessionDto, req);
+  create(@Body() createSessionDto: CreateSessionDto, @Req() req, @Res() res) {
+    return this.sessionsService.create(createSessionDto, req, res);
   }
 
   @ApiTags('user')
@@ -76,8 +76,8 @@ export class SessionsController {
   @ApiBearerAuth('access-token')
   @UseGuards(VerifyAccessTokenGuard)
   @Get()
-  findAll(@Req() req) {
-    return this.sessionsService.findAll(req);
+  findAll(@Req() req, @Res() res) {
+    return this.sessionsService.findAll(req, res);
   }
 
   @ApiTags('any')
@@ -99,8 +99,8 @@ export class SessionsController {
   @ApiBearerAuth('refresh-token')
   @UseGuards(VerifyRefreshTokenGuard)
   @Patch()
-  update(@Req() req) {
-    return this.sessionsService.update(req);
+  update(@Req() req, @Res() res) {
+    return this.sessionsService.update(req, res);
   }
 
   @ApiTags('user')
@@ -116,8 +116,8 @@ export class SessionsController {
   @ApiBearerAuth('access-token')
   @UseGuards(VerifyAccessTokenGuard)
   @Delete(':id')
-  remove(@Param('id') id: string, @Req() req) {
-    return this.sessionsService.remove(+id, req);
+  remove(@Param('id') id: string, @Req() req, @Res() res) {
+    return this.sessionsService.remove(+id, req, res);
   }
 
   @ApiTags('user')
@@ -132,7 +132,7 @@ export class SessionsController {
   @ApiBearerAuth('access-token')
   @UseGuards(VerifyAccessTokenGuard)
   @Delete()
-  removeAll(@Req() req) {
-    return this.sessionsService.removeAll(req);
+  removeAll(@Req() req, @Res() res) {
+    return this.sessionsService.removeAll(req, res);
   }
 }
