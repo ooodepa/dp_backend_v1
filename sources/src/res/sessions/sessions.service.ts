@@ -80,7 +80,7 @@ export class SessionsService {
     const status = HttpStatus.CREATED;
     const data: CreateSessionResponseDto = {
       statusCode: status,
-      message: 'Вы вышли из аккаунта',
+      message: 'Вы авторизовались',
       dp_accessToken: access,
       dp_refreshToken: refresh,
     };

@@ -392,15 +392,15 @@ export class OrdersService {
         '',
         '',
         'Итого',
-        `${countSum}`,
+        `${Number(countSum).toFixed(2)}`,
         'x',
-        `${countSumNds}`,
-        `${countSumTotal}`,
+        `${Number(countSumNds).toFixed(2)}`,
+        `${Number(countSumTotal).toFixed(2)}`,
       ]);
       array.push(['']);
 
-      const sumNdsText = numberToWordsRu(countSumNds);
-      const sumTotalText = numberToWordsRu(countSumTotal);
+      const sumNdsText = numberToWordsRu(Number(countSumNds).toFixed(2));
+      const sumTotalText = numberToWordsRu(Number(countSumTotal).toFixed(2));
       array.push([`Сумма НДС: ${sumNdsText}`]);
       array.push([`Всего к оплате на сумму с НДС: ${sumTotalText}`]);
 

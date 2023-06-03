@@ -203,9 +203,12 @@ export class UsersService {
 
   @Cron('0 * * * *') // At minute 0 (00:00, 01:00, 02:00, .. 22:00, 23:00)
   async deleteUnactivatedAccounts() {
-    console.log(
-      ` > ${new Date().toJSON()}: Запущен CRON по удалению пользователей, которые не нажали ссылку активации за 24 часа`,
-    );
+    let message = '';
+    message += ` > ${new Date().toJSON()}: `;
+    message += 'Запущен CRON по удалению пользователей, ';
+    message += 'которые не нажали ссылку активации за 24 часа';
+
+    console.log(message);
 
     const candidates = await this.activationAccountEntity.find({
       select: ['dp_userId'],
@@ -237,6 +240,16 @@ export class UsersService {
 
     if (old_email == new_email) {
       const message = 'Новая почта совпадает с текущей';
+      const status = HttpStatus.CONFLICT;
+      throw new HttpException(message, status);
+    }
+
+    const emailCandidate = await this.userEntity.findOne({
+      where: { dp_email: changeEmailDto.dp_email },
+    });
+
+    if (emailCandidate) {
+      const message = 'Эта почта занята другим аккаунтом';
       const status = HttpStatus.CONFLICT;
       throw new HttpException(message, status);
     }
@@ -307,6 +320,21 @@ export class UsersService {
     res.status(status).json(json);
   }
 
+  @Cron('0 * * * *') // At minute 0 (00:00, 01:00, 02:00, .. 22:00, 23:00)
+  async deleteNotChangedEmails() {
+    let message = '';
+    message += ` > ${new Date().toJSON()}: `;
+    message += 'Запущен CRON по удалению заявок смены e-mail, ';
+    message += 'которые не нажали ссылку за 3 часа';
+
+    console.log(message);
+
+    await this.ChangeEmailEntity.delete({
+      dp_date: Raw((alias) => `${alias} <= DATE_SUB(NOW(), INTERVAL 3 HOUR)`),
+      dp_isClosed: false,
+    });
+  }
+
   async confirmChangeEmail(token: string, res: Response) {
     let payload: any = {};
     try {
@@ -325,14 +353,14 @@ export class UsersService {
 
     const userId = payload.id;
 
-    const candidate = await this.ChangeEmailEntity.findOne({
+    const documentCandidate = await this.ChangeEmailEntity.findOne({
       where: {
         dp_token: token,
         dp_userId: userId,
       },
     });
 
-    if (!candidate) {
+    if (!documentCandidate) {
       let message = '';
       message += 'Ссылка не действительна, ';
       message += 'так как токен не зарегистрирован в БД. ';
@@ -341,15 +369,15 @@ export class UsersService {
       throw new HttpException(message, status);
     }
 
-    if (candidate.dp_isClosed) {
+    if (documentCandidate.dp_isClosed) {
       let message = '';
       message += 'Ссылка не действительна, так как почта была сменена.';
       const status = HttpStatus.UNAUTHORIZED;
       throw new HttpException(message, status);
     }
 
-    const old_email = candidate.dp_oldEmail;
-    const new_email = candidate.dp_newEmail;
+    const old_email = documentCandidate.dp_oldEmail;
+    const new_email = documentCandidate.dp_newEmail;
 
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
@@ -357,13 +385,17 @@ export class UsersService {
     try {
       await queryRunner.manager
         .getRepository(ChangeEmailEntity)
-        .update(candidate.dp_id, {
+        .update(documentCandidate.dp_id, {
           dp_isClosed: true,
         });
 
       await queryRunner.manager.getRepository(UserEntity).update(userId, {
         dp_email: new_email,
       });
+
+      await queryRunner.manager
+        .getRepository(ChangeEmailEntity)
+        .delete({ dp_userId: userId, dp_isClosed: false });
 
       await queryRunner.commitTransaction();
 
@@ -383,8 +415,9 @@ export class UsersService {
   }
 
   async deleteChangeEmail(token, res: Response) {
+    let payload: any = {};
     try {
-      await this.verifyToken(token, 'new-email');
+      payload = await this.verifyToken(token, 'new-email');
     } catch (err) {
       if (err.name === 'TokenExpiredError') {
         const message = `Ссылка не действительна, так как прошло 3 часа (токен просрочен) err=(${err})`;
@@ -397,13 +430,13 @@ export class UsersService {
       throw new HttpException(message, status);
     }
 
-    const candidate = await this.ChangeEmailEntity.findOne({
+    const documentCandidate = await this.ChangeEmailEntity.findOne({
       where: {
         dp_token: token,
       },
     });
 
-    if (!candidate) {
+    if (!documentCandidate) {
       let message = '';
       message += 'Ссылка не действительна, ';
       message += 'так как токен не зарегистрирован в БД. ';
@@ -412,15 +445,18 @@ export class UsersService {
       throw new HttpException(message, status);
     }
 
-    if (candidate.dp_isClosed) {
+    if (documentCandidate.dp_isClosed) {
       const message =
         'Ссылка не действительна, так как почта была сменена, либо заявка на смену почты была отклонена';
       const status = HttpStatus.UNAUTHORIZED;
       throw new HttpException(message, status);
     }
 
+    const userId = payload.id;
+
     await this.ChangeEmailEntity.delete({
-      dp_token: token,
+      dp_userId: userId,
+      dp_isClosed: false,
     });
 
     const status = HttpStatus.OK;
