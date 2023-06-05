@@ -124,10 +124,10 @@ export class OrdersService {
         .getRepository(OrderItemsEntity)
         .insert(orderItemsArray);
 
-      const emails = [user.dp_email, process.env.APP__ORG_MANAGER_EMAIL];
+      const emails = [user.dp_email, process.env.APP__MY_MANAGER_EMAIL];
       const candidate_sendMailOptions: ISendMailOptions = {
         to: emails.join(),
-        subject: `Заявка | ${process.env.APP__SWAGGER_ORGANIZATION}`,
+        subject: `Заявка | ${process.env.APP__MY_ORGANIZATION}`,
         template: 'order',
         context: {
           emailOrderItems,
@@ -496,11 +496,12 @@ export class OrdersService {
       const unpName = user.dp_shortNameLegalEntity.replace(/\s/g, '-');
       const unp = user.dp_unp;
       const filename = `Счёт-№${order.dp_number}-от-${stringDate}-${unpName}-${unp}.xlsx`;
+      const emails = [user.dp_email, process.env.APP__MY_MANAGER_EMAIL];
 
       try {
         await this.mailerService.sendMail({
-          to: user.dp_email,
-          subject: `Счёт-фактура №${order.dp_number} от ${stringDate} | ${process.env.APP__SWAGGER_ORGANIZATION}`,
+          to: emails.join(),
+          subject: `Счёт-фактура №${order.dp_number} от ${stringDate} | ${process.env.APP__MY_ORGANIZATION}`,
           template: 'check',
           context: {
             order,

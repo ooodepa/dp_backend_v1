@@ -114,7 +114,7 @@ export class UsersService {
         template: 'confirmation',
         context: {
           dp_url: `${process.env.APP__SWAGGER_HOST}/api/v1/users/activate-account/${activationToken}`,
-          dp_org: process.env.APP__SWAGGER_ORGANIZATION,
+          dp_org: process.env.APP__MY_ORGANIZATION,
         },
       };
 
@@ -503,7 +503,7 @@ export class UsersService {
         context: {
           dp_login: candidate.dp_login,
           dp_password: newPasswordStr,
-          dp_org: process.env.APP__SWAGGER_ORGANIZATION,
+          dp_org: process.env.APP__MY_ORGANIZATION,
         },
       };
 
