@@ -320,8 +320,8 @@ export class OrdersService {
         [
           '№',
           'Товары (работы, услуги)',
-          'Единица измерения',
-          'Количество',
+          'Единица изме- рения',
+          'Коли- чество',
           'Цена, руб. коп.',
           'Сумма, руб. коп.',
           'Ставка НДС, %',
@@ -404,6 +404,16 @@ export class OrdersService {
       array.push([`Сумма НДС: ${sumNdsText}`]);
       array.push([`Всего к оплате на сумму с НДС: ${sumTotalText}`]);
 
+      array.push(['']);
+      array.push([
+        `${process.env.APP__MY_CHECK_POSITION} `,
+        '',
+        '',
+        '',
+        ` ${process.env.APP__MY_CHECK_INITIALS} ${process.env.APP__MY_CHECK_SURNAME}`,
+      ]);
+      const directorLine = array.length;
+
       const workbook = new ExcelJS.Workbook();
       const worksheet = workbook.addWorksheet('Лист 1');
 
@@ -421,32 +431,36 @@ export class OrdersService {
       // Выравнивание текста в ячейке по центру
       worksheet.getCell('A6').alignment = { horizontal: 'center' };
 
-      // Выравнивание текста в ячейке по центру для строки 13 (с заголовками)
-      ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'].forEach((e) => {
-        worksheet.getCell(`${e}13`).alignment = {
-          vertical: 'middle',
-          horizontal: 'center',
-        };
-      });
-
       // Установка ширины столбцов
       worksheet.getColumn('A').width = 5;
       worksheet.getColumn('B').width = 30;
-      worksheet.getColumn('C').width = 20;
-      worksheet.getColumn('D').width = 20;
-      worksheet.getColumn('E').width = 20;
-      worksheet.getColumn('F').width = 20;
-      worksheet.getColumn('G').width = 20;
-      worksheet.getColumn('H').width = 20;
-      worksheet.getColumn('I').width = 20;
+      worksheet.getColumn('C').width = 8;
+      worksheet.getColumn('D').width = 8;
+      worksheet.getColumn('E').width = 9;
+      worksheet.getColumn('F').width = 9;
+      worksheet.getColumn('G').width = 6;
+      worksheet.getColumn('H').width = 9;
+      worksheet.getColumn('I').width = 9;
 
-      // Установка рамки для ячеек 13 строки
+      for (let i = 1; i <= 12; ++i) {
+        worksheet.getRow(i).eachCell((cell) => {
+          cell.font = {
+            size: 8,
+          };
+        });
+      }
+
       worksheet.getRow(13).eachCell((cell) => {
         cell.border = {
           top: { style: 'thin' },
           bottom: { style: 'thin' },
           left: { style: 'thin' },
           right: { style: 'thin' },
+        };
+        cell.alignment = {
+          wrapText: true,
+          horizontal: 'center',
+          vertical: 'middle',
         };
       });
       for (let i = 1; i <= length; ++i) {
@@ -456,6 +470,11 @@ export class OrdersService {
             bottom: { style: 'thin' },
             left: { style: 'thin' },
             right: { style: 'thin' },
+          };
+          cell.alignment = {
+            wrapText: true,
+            // vertical: 'top',
+            // horizontal: 'left',
           };
         });
 
@@ -491,6 +510,26 @@ export class OrdersService {
         horizontal: 'center',
       };
 
+      // Строка с должностью, подписью, инициалами и фамилией
+      worksheet.mergeCells(`A${directorLine}:B${directorLine}`);
+      worksheet.mergeCells(`C${directorLine}:D${directorLine}`);
+      worksheet.mergeCells(`E${directorLine}:I${directorLine}`);
+      worksheet.getCell(`A${directorLine}`).alignment = {
+        horizontal: 'right',
+      };
+      worksheet.getCell(`C${directorLine}`).border = {
+        bottom: { style: 'thin' },
+      };
+
+      // Установка размера шрифта для всего документа
+      for (let i = 0; i < array.length; ++i) {
+        worksheet.getRow(13 + i).eachCell((cell) => {
+          cell.font = {
+            size: 8,
+          };
+        });
+      }
+
       const buffer = await workbook.xlsx.writeBuffer();
 
       const unpName = user.dp_shortNameLegalEntity.replace(/\s/g, '-');
@@ -522,6 +561,9 @@ export class OrdersService {
             bank: dto.dp_bank,
             bik: dto.dp_bik,
             checkingAccount: dto.dp_checkingAccount,
+            APP__MY_CHECK_POSITION: process.env.APP__MY_CHECK_POSITION,
+            APP__MY_CHECK_SURNAME: process.env.APP__MY_CHECK_SURNAME,
+            APP__MY_CHECK_INITIALS: process.env.APP__MY_CHECK_INITIALS,
           },
           attachments: [{ filename, content: buffer }],
         });
