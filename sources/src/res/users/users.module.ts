@@ -44,7 +44,9 @@ import { ActivationAccountEntity } from './entities/activation-account.entity';
           },
         },
         defaults: {
-          from: `"Server" <${configService.get<string>('APP__EMAIL_USER')}>`,
+          from: `"${configService.get<string>(
+            'APP__MY_MANAGER_EMAIL_NAME',
+          )}" <${configService.get<string>('APP__EMAIL_USER')}>`,
         },
         template: {
           dir: path.join(__dirname, '../..', 'templates'),
