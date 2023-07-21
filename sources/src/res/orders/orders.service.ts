@@ -64,6 +64,7 @@ export class OrdersService {
       uuid = order.dp_id;
 
       let length = 0;
+      let quantity = 0;
       let countSum = 0;
       let countSumNds = 0;
       let countSumTotal = 0;
@@ -86,6 +87,8 @@ export class OrdersService {
 
             const totalSumNds = sum + sumNds;
             const totalSumNdsStr = Number(totalSumNds).toFixed(2);
+
+            quantity += orderItem.dp_count;
 
             countSum += Number(sumStr);
             countSumNds += Number(sumNdsStr);
@@ -134,6 +137,7 @@ export class OrdersService {
           countSum: Number(countSum).toFixed(2),
           countSumNds: Number(countSumNds).toFixed(2),
           countSumTotal: Number(countSumTotal).toFixed(2),
+          quantity: quantity,
           sumNdsText,
           sumTotalText,
         },
@@ -318,19 +322,20 @@ export class OrdersService {
         ],
         [],
         [
-          '№',
+          '№ \nп/п',
           'Товары (работы, услуги)',
-          'Единица изме- рения',
-          'Коли- чество',
-          'Цена, руб. коп.',
-          'Сумма, руб. коп.',
-          'Ставка НДС, %',
-          'Сумма НДС, руб. коп.',
-          'Всего с НДС, руб. коп.',
+          'Единица изме- \nрения',
+          'Цена, \nруб. коп.',
+          'Коли- \nчество',
+          'Сумма, \nруб. коп.',
+          'Ставка НДС, \n%',
+          'Сумма НДС, \nруб. коп.',
+          'Всего с НДС, \nруб. коп.',
         ],
       ];
 
       let length = 0;
+      let quantity = 0;
       let countSum = 0;
       let countSumNds = 0;
       let countSumTotal = 0;
@@ -353,16 +358,18 @@ export class OrdersService {
             const totalSumNds = sum + sumNds;
             const totalSumNdsStr = Number(totalSumNds).toFixed(2);
 
+            quantity += orderItem.dp_count;
+
             countSum += Number(sumStr);
             countSumNds += Number(sumNdsStr);
             countSumTotal += Number(totalSumNdsStr);
 
             array.push([
               `${i + 1}`,
-              `${item.dp_name}, ${item.dp_model}`,
+              `${item.dp_model} \n${item.dp_name}`,
               'шт.',
-              `${count}`,
               `${costStr}`,
+              `${count}`,
               `${sumStr}`,
               '20%',
               `${sumNdsStr}`,
@@ -390,8 +397,8 @@ export class OrdersService {
         '',
         '',
         '',
-        '',
         'Итого',
+        `${quantity}`,
         `${Number(countSum).toFixed(2)}`,
         'x',
         `${Number(countSumNds).toFixed(2)}`,
@@ -484,14 +491,14 @@ export class OrdersService {
           };
         });
 
-        ['D', 'E', 'F', 'H', 'I'].forEach((e) => {
+        ['A', 'D', 'E', 'F', 'H', 'I'].forEach((e) => {
           worksheet.getCell(`${e}${13 + i}`).alignment = {
             horizontal: 'right',
           };
         });
       }
 
-      ['E', 'F', 'G', 'H', 'I'].forEach((e) => {
+      ['D', 'E', 'F', 'G', 'H', 'I'].forEach((e) => {
         worksheet.getCell(`${e}${13 + length + 1}`).border = {
           top: { style: 'thin' },
           bottom: { style: 'thin' },
@@ -500,7 +507,7 @@ export class OrdersService {
         };
       });
 
-      ['E', 'F', 'H', 'I'].forEach((e) => {
+      ['D', 'E', 'F', 'H', 'I'].forEach((e) => {
         worksheet.getCell(`${e}${13 + length + 1}`).alignment = {
           horizontal: 'right',
         };
@@ -534,7 +541,11 @@ export class OrdersService {
 
       const unpName = user.dp_shortNameLegalEntity.replace(/\s/g, '-');
       const unp = user.dp_unp;
-      const filename = `Счёт-№${order.dp_number}-от-${stringDate}-${unpName}-${unp}.xlsx`;
+      const filename =
+        `Счёт-№${order.dp_number}-от-${stringDate}-${unpName}-${unp}.xlsx`.replace(
+          /\s/g,
+          '-',
+        );
       const emails = [user.dp_email, process.env.APP__MY_MANAGER_EMAIL];
 
       try {
@@ -550,6 +561,7 @@ export class OrdersService {
             countSum: Number(countSum).toFixed(2),
             countSumNds: Number(countSumNds).toFixed(2),
             countSumTotal: Number(countSumTotal).toFixed(2),
+            quantity: quantity,
             APP__MY_ORGANIZATION: process.env.APP__MY_ORGANIZATION,
             APP__MY_CHECKING_ACCOUNT: process.env.APP__MY_CHECKING_ACCOUNT,
             APP__MY_BANK: process.env.APP__MY_BANK,

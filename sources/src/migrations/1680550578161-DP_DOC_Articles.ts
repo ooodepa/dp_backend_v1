@@ -27,6 +27,7 @@ export class DPDOCArticles1680550578161 implements MigrationInterface {
             \`dp_id\` int NOT NULL AUTO_INCREMENT,
             \`dp_name\` varchar(255) NOT NULL,
             \`dp_url\` varchar(255) NOT NULL,
+            \`dp_photoUrl\` varchar(255) NOT NULL DEFAULT '',
             \`dp_articleId\` varchar(255) NOT NULL,
             PRIMARY KEY (\`dp_id\`)
         ) ENGINE = InnoDB

@@ -8,6 +8,7 @@ import {
   Req,
   Res,
   UseGuards,
+  HttpStatus,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -23,6 +24,7 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { GetOrderWithIdDto } from './dto/get-order-with-id.dto';
 import SwaggerApiResponse from 'src/utils/Swagger/SwaggerApiResponse';
 import SwaggerApiOperation from 'src/utils/Swagger/SwaggerApiOperation';
+import HttpResponseDto from 'src/utils/HttpResponseDto/HttpResponseDto.dto';
 import { VerifyAccessTokenGuard } from 'src/guards/VerifyAccessTokenGuard.guard';
 
 @ApiTags('api_v1_orders')
@@ -84,6 +86,11 @@ export class OrdersController {
   }
 
   @ApiTags('user')
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Документ счёт-фактура отправлен на электронную почту',
+    type: HttpResponseDto,
+  })
   @ApiBearerAuth('access-token')
   @UseGuards(VerifyAccessTokenGuard)
   @Post(':id/send-check')

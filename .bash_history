@@ -28,6 +28,9 @@ yarn add -D webpack@^5.0.0
 yarn add preview-email
 yarn add exceljs
 yarn add number-to-words-ru
+yarn add crypto-js
+yarn add -D @types/cryptojs
+yarn add axios
 
 
 yarn nest g res res/users

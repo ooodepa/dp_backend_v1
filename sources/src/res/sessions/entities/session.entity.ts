@@ -27,10 +27,10 @@ export class SessionEntity {
   @Column()
   dp_agent: string;
 
-  @Column({ length: 60 })
+  @Column({ length: 64 })
   dp_accessHash: string;
 
-  @Column({ length: 60 })
+  @Column({ length: 64 })
   dp_refreshHash: string;
 
   @ManyToOne(() => UserEntity, (e: UserEntity) => e.dp_id, {

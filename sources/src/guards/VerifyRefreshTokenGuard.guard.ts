@@ -5,7 +5,7 @@ import {
   Injectable,
   HttpStatus,
 } from '@nestjs/common';
-import * as bcrypt from 'bcryptjs';
+import { SHA256 } from 'crypto-js';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SessionEntity } from 'src/res/sessions/entities/session.entity';
@@ -32,9 +32,12 @@ export class VerifyRefreshTokenGuard implements CanActivate {
       where: { dp_userId: payload.id },
     });
 
+    const hash1 = SHA256(refreshToken).toString();
+
     for (let i = 0; i < sessions.length; ++i) {
-      if (bcrypt.compareSync(refreshToken, sessions[i].dp_refreshHash)) {
-        req.custom__accessHash = sessions[i].dp_refreshHash;
+      const hash2 = sessions[i].dp_refreshHash;
+      if (hash1 === hash2) {
+        req.custom__refreshHash = hash2;
         req.custom__userId = payload.id;
         return true;
       }

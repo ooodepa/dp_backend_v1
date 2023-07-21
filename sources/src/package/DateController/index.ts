@@ -2,7 +2,7 @@ export default class DateController {
   static getDate__DD_MMMMMM_YYYY(d: Date = new Date()) {
     const dy = d.getFullYear();
 
-    const tdm = d.getMonth();
+    const tdm = d.getMonth() - 1;
     // const dm = tdm < 10 ? `0${tdm}` : `${tdm}`;
     const dm = DateController.getMonth(tdm);
 

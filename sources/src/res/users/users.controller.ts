@@ -248,6 +248,26 @@ export class UsersController {
     return this.usersService.updatePassword(dto, req, res);
   }
 
+  @ApiTags('USER')
+  @ApiOperation({ summary: 'Проверка access токена' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Пользователь авторизован',
+  })
+  @ApiResponse(SwaggerApiResponse.UnauthorizedAdmin)
+  @ApiResponse(SwaggerApiResponse.ServerError)
+  @ApiBearerAuth('access-token')
+  @UseGuards(VerifyAccessTokenGuard)
+  @Post('is-login')
+  checkIsLogin(@Res() res: Response) {
+    const status = HttpStatus.OK;
+    const data: HttpResponseDto = {
+      statusCode: status,
+      message: 'Вы авторизованы',
+    };
+    return res.status(status).json(data);
+  }
+
   @ApiTags('ADMIN')
   @ApiOperation({ summary: 'Проверка роли админа' })
   @ApiResponse({

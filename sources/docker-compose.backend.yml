@@ -6,11 +6,11 @@ services:
     container_name: dockerfile-backend
     restart: always
     build:
-      context: ./../../../sources
+      context: ./
       dockerfile: Dockerfile
     volumes:
-      - ./.env:/app/prod.env
-      - ./.env:/app/dev.env
+      - ./.docker-compose.backend.env:/app/prod.env
+      - ./.docker-compose.backend.env:/app/dev.env
     ports:
       - ${APP__PORT}:${APP__PORT}
       - 9229:9229
@@ -30,7 +30,7 @@ services:
     restart: always
     image: mysql:8.0
     volumes:
-      - ./temp/mysql/var/lib/mysql:/var/lib/mysql
+      - ./docker/backend/mysql/var/lib/mysql:/var/lib/mysql
     # ports:
       # - 33332:3306
     environment:

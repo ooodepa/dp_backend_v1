@@ -1,5 +1,6 @@
 import * as bcrypt from 'bcryptjs';
 import { Response } from 'express';
+import { SHA256 } from 'crypto-js';
 import { Cron } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, In, Raw, Repository } from 'typeorm';
@@ -97,9 +98,8 @@ export class UsersService {
         dp_userId: userId,
       });
 
-      const salt = 2;
-      const accessTokenHash = bcrypt.hashSync(accessToken, salt);
-      const refreshTokenHash = bcrypt.hashSync(refreshToken, salt);
+      const accessTokenHash = SHA256(accessToken).toString();
+      const refreshTokenHash = SHA256(refreshToken).toString();
       await queryRunner.manager.getRepository(SessionEntity).save({
         dp_accessHash: accessTokenHash,
         dp_refreshHash: refreshTokenHash,
@@ -152,6 +152,7 @@ export class UsersService {
         'dp_nameLegalEntity',
         'dp_shortNameLegalEntity',
         'dp_address',
+        'dp_email',
       ],
       where: { dp_id: payload.id },
     });
@@ -482,7 +483,7 @@ export class UsersService {
     }
 
     const randomString: string = await bcrypt.hash(new Date().toJSON(), 5);
-    const newPasswordStr = randomString.slice(10, 26);
+    const newPasswordStr = randomString.slice(10, 26).replace(/\//g, 'x');
     const newPasswordSalt = 5;
     const newPasswordHash = await bcrypt.hash(newPasswordStr, newPasswordSalt);
 

@@ -5,7 +5,7 @@ import {
   HttpStatus,
   Injectable,
 } from '@nestjs/common';
-import * as bcrypt from 'bcryptjs';
+import { SHA256 } from 'crypto-js';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -32,9 +32,12 @@ export class VerifyAccessTokenGuard implements CanActivate {
       where: { dp_userId: payload.id },
     });
 
+    const hash1 = SHA256(accessToken).toString();
+
     for (let i = 0; i < sessions.length; ++i) {
-      if (bcrypt.compareSync(accessToken, sessions[i].dp_accessHash)) {
-        req.custom__accessHash = sessions[i].dp_accessHash;
+      const hash2 = sessions[i].dp_accessHash;
+      if (hash2 === hash1) {
+        req.custom__accessHash = hash2;
         req.custom__userId = payload.id;
         return true;
       }

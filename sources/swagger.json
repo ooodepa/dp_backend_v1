@@ -447,6 +447,47 @@
         ]
       }
     },
+    "/api/v1/users/is-login": {
+      "post": {
+        "operationId": "UsersController_checkIsLogin",
+        "summary": "Проверка access токена",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Пользователь авторизован"
+          },
+          "401": {
+            "description": "Access токен просрочен \n\nAccess токен не передан \n\nУ пользователя нет роли администратора \n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_users",
+          "USER"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
     "/api/v1/users/is-admin": {
       "post": {
         "operationId": "UsersController_checkIsAdmin",
@@ -4638,8 +4679,15 @@
           }
         },
         "responses": {
-          "201": {
-            "description": ""
+          "200": {
+            "description": "Документ счёт-фактура отправлен на электронную почту",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -5327,6 +5375,36 @@
         "tags": [
           "api_v1_order-statuses",
           "any"
+        ]
+      }
+    },
+    "/api/v1/portal-nalog-gov-by/{unp}": {
+      "get": {
+        "operationId": "PortalNalogGovByController_findOne",
+        "parameters": [
+          {
+            "name": "unp",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetUnpDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_portal-nalog-gov-by"
         ]
       }
     }
@@ -7582,6 +7660,89 @@
         "required": [
           "dp_status",
           "dp_orderId"
+        ]
+      },
+      "UnpDataDto": {
+        "type": "object",
+        "properties": {
+          "VUNP": {
+            "type": "string",
+            "description": "УНП",
+            "example": "100582333"
+          },
+          "VNAIMP": {
+            "type": "string",
+            "description": "Наименование юридического лица",
+            "example": "Министерство по налогам и сборам Республики Беларусь"
+          },
+          "VNAIMK": {
+            "type": "string",
+            "description": "Краткое наименование юридического лица",
+            "example": "МНС"
+          },
+          "VPADRES": {
+            "type": "string",
+            "description": "Место нахождения юридического лица",
+            "example": "г.Минск,ул.Советская,9"
+          },
+          "DREG": {
+            "type": "string",
+            "description": "Дата постановки на учет",
+            "example": "30.06.1994"
+          },
+          "NMNS": {
+            "type": "string",
+            "description": "Наименование инспекции МНС",
+            "example": "Инспекция МНС по Московскому району г.Минска "
+          },
+          "VMNS": {
+            "type": "string",
+            "description": "Наименование инспекции МНС",
+            "example": "Инспекция МНС по Московскому району г.Минска "
+          },
+          "CKODSOST": {
+            "type": "string",
+            "description": "Состояние (1 | L)",
+            "example": "1"
+          },
+          "VKODS": {
+            "type": "string",
+            "description": "Состояние (Действующий|Ликвидирован)",
+            "example": "Действующий"
+          },
+          "DLIKV": {
+            "type": "string",
+            "description": "Дата изменения состояния (DD.MM.YYYY | null)",
+            "example": null
+          },
+          "VLIKV": {
+            "type": "string",
+            "example": null
+          }
+        },
+        "required": [
+          "VUNP",
+          "VNAIMP",
+          "VNAIMK",
+          "VPADRES",
+          "DREG",
+          "NMNS",
+          "VMNS",
+          "CKODSOST",
+          "VKODS",
+          "DLIKV",
+          "VLIKV"
+        ]
+      },
+      "GetUnpDto": {
+        "type": "object",
+        "properties": {
+          "ROW": {
+            "$ref": "#/components/schemas/UnpDataDto"
+          }
+        },
+        "required": [
+          "ROW"
         ]
       }
     }

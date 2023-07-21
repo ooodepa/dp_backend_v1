@@ -1,4 +1,5 @@
 import * as bcrypt from 'bcryptjs';
+import { SHA256 } from 'crypto-js';
 import { Response } from 'express';
 import { Not, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -65,9 +66,8 @@ export class SessionsService {
       type: 'refresh',
     });
 
-    const salt = 2;
-    const accessTokenHash = bcrypt.hashSync(access, salt);
-    const refreshTokenHash = bcrypt.hashSync(refresh, salt);
+    const accessTokenHash = SHA256(access).toString();
+    const refreshTokenHash = SHA256(refresh).toString();
 
     await this.sessionEntity.save({
       dp_accessHash: accessTokenHash,
@@ -144,8 +144,8 @@ export class SessionsService {
       id: req.custom__userId,
       type: 'access',
     });
-    const salt = 2;
-    const accessTokenHash = bcrypt.hashSync(accessToken, salt);
+
+    const accessTokenHash = SHA256(accessToken).toString();
 
     await this.sessionEntity.update(
       {

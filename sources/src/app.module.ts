@@ -18,6 +18,7 @@ import { ApkVersionsModule } from './res/apk-versions/apk-versions.module';
 import { FavoriteItemsModule } from './res/favorite-items/favorite-items.module';
 import { ManagerModule } from './res/manager/manager.module';
 import { OrderStatusesModule } from './res/order-statuses/order-statuses.module';
+import { PortalNalogGovByModule } from './res/portal-nalog-gov-by/portal-nalog-gov-by.module';
 
 @Module({
   imports: [
@@ -58,6 +59,7 @@ import { OrderStatusesModule } from './res/order-statuses/order-statuses.module'
     FavoriteItemsModule,
     ManagerModule,
     OrderStatusesModule,
+    PortalNalogGovByModule,
   ],
 })
 export class AppModule {}
