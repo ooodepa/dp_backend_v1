@@ -7665,84 +7665,84 @@
       "UnpDataDto": {
         "type": "object",
         "properties": {
-          "VUNP": {
+          "vunp": {
             "type": "string",
             "description": "УНП",
             "example": "100582333"
           },
-          "VNAIMP": {
+          "vnaimp": {
             "type": "string",
             "description": "Наименование юридического лица",
             "example": "Министерство по налогам и сборам Республики Беларусь"
           },
-          "VNAIMK": {
+          "vnaimk": {
             "type": "string",
             "description": "Краткое наименование юридического лица",
             "example": "МНС"
           },
-          "VPADRES": {
+          "vpadres": {
             "type": "string",
             "description": "Место нахождения юридического лица",
             "example": "г.Минск,ул.Советская,9"
           },
-          "DREG": {
+          "dreg": {
             "type": "string",
             "description": "Дата постановки на учет",
             "example": "30.06.1994"
           },
-          "NMNS": {
+          "nmns": {
             "type": "string",
             "description": "Наименование инспекции МНС",
             "example": "Инспекция МНС по Московскому району г.Минска "
           },
-          "VMNS": {
+          "vmns": {
             "type": "string",
             "description": "Наименование инспекции МНС",
             "example": "Инспекция МНС по Московскому району г.Минска "
           },
-          "CKODSOST": {
+          "ckodsost": {
             "type": "string",
             "description": "Состояние (1 | L)",
             "example": "1"
           },
-          "VKODS": {
+          "vkods": {
             "type": "string",
             "description": "Состояние (Действующий|Ликвидирован)",
             "example": "Действующий"
           },
-          "DLIKV": {
+          "dlikv": {
             "type": "string",
             "description": "Дата изменения состояния (DD.MM.YYYY | null)",
             "example": null
           },
-          "VLIKV": {
+          "vlikv": {
             "type": "string",
             "example": null
           }
         },
         "required": [
-          "VUNP",
-          "VNAIMP",
-          "VNAIMK",
-          "VPADRES",
-          "DREG",
-          "NMNS",
-          "VMNS",
-          "CKODSOST",
-          "VKODS",
-          "DLIKV",
-          "VLIKV"
+          "vunp",
+          "vnaimp",
+          "vnaimk",
+          "vpadres",
+          "dreg",
+          "nmns",
+          "vmns",
+          "ckodsost",
+          "vkods",
+          "dlikv",
+          "vlikv"
         ]
       },
       "GetUnpDto": {
         "type": "object",
         "properties": {
-          "ROW": {
+          "row": {
             "$ref": "#/components/schemas/UnpDataDto"
           }
         },
         "required": [
-          "ROW"
+          "row"
         ]
       }
     }

@@ -4,40 +4,40 @@ import { UnpDataApiProperty } from '../portal-nalog-gov-by.swagger';
 
 class UnpDataDto {
   @ApiProperty(UnpDataApiProperty.VUNP)
-  VUNP: string;
+  vunp: string;
 
   @ApiProperty(UnpDataApiProperty.VNAIMP)
-  VNAIMP: string;
+  vnaimp: string;
 
   @ApiProperty(UnpDataApiProperty.VNAIMK)
-  VNAIMK: string;
+  vnaimk: string;
 
   @ApiProperty(UnpDataApiProperty.VPADRES)
-  VPADRES: string;
+  vpadres: string;
 
   @ApiProperty(UnpDataApiProperty.DREG)
-  DREG: string;
+  dreg: string;
 
   @ApiProperty(UnpDataApiProperty.VMNS)
-  NMNS: string;
+  nmns: string;
 
   @ApiProperty(UnpDataApiProperty.VMNS)
-  VMNS: string;
+  vmns: string;
 
   @ApiProperty(UnpDataApiProperty.CKODSOST)
-  CKODSOST: string;
+  ckodsost: string;
 
   @ApiProperty(UnpDataApiProperty.VKODS)
-  VKODS: string;
+  vkods: string;
 
   @ApiProperty(UnpDataApiProperty.DLIKV)
-  DLIKV: string | null;
+  dlikv: string | null;
 
   @ApiProperty(UnpDataApiProperty.VLIKV)
-  VLIKV: string | null;
+  vlikv: string | null;
 }
 
 export default class GetUnpDto {
   @ApiProperty()
-  ROW: UnpDataDto;
+  row: UnpDataDto;
 }
