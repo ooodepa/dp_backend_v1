@@ -8,6 +8,9 @@ import {
   Put,
   Delete,
   UseGuards,
+  Res,
+  Query,
+  HttpStatus,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -15,13 +18,16 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { Response } from 'express';
 
 import SwaggerApiResponse from 'src/utils/Swagger/SwaggerApiResponse';
 import SwaggerApiOperation from 'src/utils/Swagger/SwaggerApiOperation';
+import ItemCharacteristicsApiProperty from './item-characteristics.swagger';
 import { ItemCharacteristicsService } from './item-characteristics.service';
 import { IsAdministratorGuard } from 'src/guards/IsAdministratorGuard.guard';
 import ItemCharacteristicWithIdDto from './dto/item-characteristic-with-id.dto';
 import { VerifyAccessTokenGuard } from 'src/guards/VerifyAccessTokenGuard.guard';
+import { ParamsItemCharacteristics } from './dto/params-item-characteristics.dto';
 import { CreateItemCharacteristicDto } from './dto/create-item-characteristic.dto';
 import { UpdateItemCharacteristicDto } from './dto/update-item-characteristic.dto';
 import { CreateBulkItemCharacteristicDto } from './dto/create-bulk-item-characteristic.dto';
@@ -67,13 +73,26 @@ export class ItemCharacteristicsController {
   @ApiTags('any')
   @ApiOperation(SwaggerApiOperation.Find)
   @ApiResponse({
-    ...SwaggerApiResponse.Finded,
+    status: HttpStatus.OK,
+    description: `Получили список записей\n\n
+Пример XML:\n\n
+- \`<?xml version="1.0" encoding="UTF-8"?>\`
+- \`<ARRAY>\`
+  - \`<OBJECT>\`
+    - \`<dp_id>${ItemCharacteristicsApiProperty.dp_id.example}</dp_id>\`
+    - \`<dp_name>${ItemCharacteristicsApiProperty.dp_name.example}</dp_name>\`
+    - \`<dp_isHidden>${ItemCharacteristicsApiProperty.dp_isHidden.example}</dp_isHidden>\`
+  - \`<OBJECT>\`
+  - \`<OBJECT>\`
+    - \`<!-- Аналогично как и первый элемент массива -->\`
+  - \`</OBJECT>\`
+- \`<ARRAY>\``,
     type: [ItemCharacteristicWithIdDto],
   })
   @ApiResponse(SwaggerApiResponse.ServerError)
   @Get()
-  findAll() {
-    return this.itemCharacteristicsService.findAll();
+  findAll(@Res() res: Response, @Query() params: ParamsItemCharacteristics) {
+    return this.itemCharacteristicsService.findAll(res, params);
   }
 
   @ApiTags('any')

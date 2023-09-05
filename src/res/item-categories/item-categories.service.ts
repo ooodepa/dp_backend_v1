@@ -1,7 +1,9 @@
+import { Response } from 'express';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, In, Repository } from 'typeorm';
 
+import XmlController from 'src/packages/XmlController';
 import HttpResponse from 'src/utils/HttpResponseDto/HttpResponse';
 import ItemCategoryWithIdDto from './dto/item-category-with-id.dto';
 import HttpExceptions from 'src/utils/HttpResponseDto/HttpException';
@@ -32,26 +34,40 @@ export class ItemCategoriesService {
     return HttpResponse.successBulkCreate();
   }
 
-  async findAll(filter: FilterItemCategoryDto) {
+  async findAll(res: Response, filter: FilterItemCategoryDto) {
     if (filter.brand) {
       const candidate = await this.itemBrandEntity.findOne({
         where: { dp_urlSegment: filter.brand },
       });
 
       if (!candidate) {
-        return [];
+        if (filter.format === 'xml') {
+          res.set('Content-Type', 'application/xml');
+          res.send(XmlController.JSObject2XmlString([]));
+        } else {
+          res.set('Content-Type', 'application/json');
+          res.send([]);
+        }
       }
 
       filter.dp_itemBrandId = `${candidate.dp_id}`;
     }
 
-    return await this.itemCategoryEntity.find({
+    const jsObject = await this.itemCategoryEntity.find({
       where: {
         dp_itemBrandId: filter.dp_itemBrandId
           ? Number(filter.dp_itemBrandId)
           : undefined,
       },
     });
+
+    if (filter.format === 'xml') {
+      res.set('Content-Type', 'application/xml');
+      res.send(XmlController.JSObject2XmlString(jsObject));
+    } else {
+      res.set('Content-Type', 'application/json');
+      res.send(jsObject);
+    }
   }
 
   async findOne(id: number) {

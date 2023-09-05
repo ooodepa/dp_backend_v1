@@ -9,6 +9,7 @@ import { RoleEntity } from '../roles/entities/role.entity';
 import { SessionEntity } from '../sessions/entities/session.entity';
 import { LstItemGaleryEntity } from './entities/item-galery.entity';
 import { UserRolesEntity } from '../roles/entities/user-role.entity';
+import { ItemBrandEntity } from '../item-brands/entities/item-brand.entity';
 import { LstItemCharacteristicEntity } from './entities/item-characteristics.entity';
 import { ItemCategoryEntity } from '../item-categories/entities/item-category.entity';
 import { ActivationAccountEntity } from '../users/entities/activation-account.entity';
@@ -19,6 +20,7 @@ import { ActivationAccountEntity } from '../users/entities/activation-account.en
   imports: [
     TypeOrmModule.forFeature([
       ItemEntity,
+      ItemBrandEntity,
       LstItemCharacteristicEntity,
       LstItemGaleryEntity,
       ItemCategoryEntity,

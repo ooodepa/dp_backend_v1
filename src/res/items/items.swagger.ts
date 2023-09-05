@@ -9,6 +9,7 @@ interface IProps {
   dp_itemCategoryId: ApiPropertyOptions;
   dp_seoKeywords: ApiPropertyOptions;
   dp_seoDescription: ApiPropertyOptions;
+  dp_isHidden: ApiPropertyOptions;
 }
 
 const ItemsApiProperty: IProps = {
@@ -35,6 +36,9 @@ const ItemsApiProperty: IProps = {
   },
   dp_seoDescription: {
     example: 'Розетка тройная встравая с заземлением. 10012',
+  },
+  dp_isHidden: {
+    example: 'false',
   },
 };
 

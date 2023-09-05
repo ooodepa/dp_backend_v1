@@ -941,6 +941,7 @@
             "name": "dp_itemBrandId",
             "required": false,
             "in": "query",
+            "description": "Например: `1`, `2`, `3` ...",
             "schema": {
               "type": "string"
             }
@@ -950,6 +951,17 @@
             "required": false,
             "in": "query",
             "example": "de-pa-electric",
+            "description": "Например: `de-pa-electric`, `mono-electric`, `mega`...",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "format",
+            "required": false,
+            "in": "query",
+            "example": "xml",
+            "description": "Например: `xml`, `json`.",
             "schema": {
               "type": "string"
             }
@@ -957,7 +969,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Получили список записей",
+            "description": "Получили список записей\n\n\nПример XML:\n\n\n- `<?xml version=\"1.0\" encoding=\"UTF-8\"?>`\n- `<ARRAY>`\n  - `<OBJECT>`\n    - `<dp_id>0</dp_id>`\n    - `<dp_itemBrandId>0</dp_itemBrandId>`\n    - `<dp_name>Аксессуары</dp_name>`\n    - `<dp_photoUrl>https://example.com/img.png</dp_photoUrl>`\n    - `<dp_urlSegment>dp-accessories</dp_urlSegment>`\n    - `<dp_sortingIndex>10000</dp_sortingIndex>`\n    - `<dp_seoKeywords>вилка вилки патроны патрон</dp_seoKeywords>`\n    - `<dp_seoDescription>Продукты DE-PA Electric. Аксессуары</dp_seoDescription>`\n    - `<dp_isHidden>false</dp_isHidden>`\n  - `</OBJECT>`\n  - `<OBJECT>`\n    - `<!-- Аналогично как и первый элемент массива -->`\n  - `</OBJECT>`\n- `</ARRAY>`",
             "content": {
               "application/json": {
                 "schema": {
@@ -1494,10 +1506,21 @@
       "get": {
         "operationId": "ItemCharacteristicsController_findAll",
         "summary": "Получить список записей",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "format",
+            "required": false,
+            "in": "query",
+            "description": "Например: `xml`, `json`.",
+            "schema": {
+              "default": "xml",
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Получили список записей",
+            "description": "Получили список записей\n\n\nПример XML:\n\n\n- `<?xml version=\"1.0\" encoding=\"UTF-8\"?>`\n- `<ARRAY>`\n  - `<OBJECT>`\n    - `<dp_id>0</dp_id>`\n    - `<dp_name>В коробке</dp_name>`\n    - `<dp_isHidden>false</dp_isHidden>`\n  - `<OBJECT>`\n  - `<OBJECT>`\n    - `<!-- Аналогично как и первый элемент массива -->`\n  - `</OBJECT>`\n- `<ARRAY>`",
             "content": {
               "application/json": {
                 "schema": {
@@ -1987,6 +2010,7 @@
             "name": "dp_itemCategoryId",
             "required": false,
             "in": "query",
+            "description": "Например: `1`, `2`, `3`...",
             "schema": {
               "type": "string"
             }
@@ -1995,6 +2019,7 @@
             "name": "dp_model",
             "required": false,
             "in": "query",
+            "description": "Например: `10012`...",
             "schema": {
               "type": "string"
             }
@@ -2003,15 +2028,35 @@
             "name": "category",
             "required": false,
             "in": "query",
+            "description": "Например: `dp-accessories`...",
             "schema": {
-              "default": "dp-accessories",
+              "type": "string"
+            }
+          },
+          {
+            "name": "brand",
+            "required": false,
+            "in": "query",
+            "example": "de-pa-electric",
+            "description": "Например: `de-pa-electric`, `mono-electric`, `mega`...",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "format",
+            "required": false,
+            "in": "query",
+            "example": "xml",
+            "description": "Например: `xml`, `json`.",
+            "schema": {
               "type": "string"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Получили список записей",
+            "description": "Получили список записей\n\n\nПример XML:\n\n\n- `<?xml version=\"1.0\" encoding=\"UTF-8\"?>`\n- `<ARRAY>`\n  - `<OBJECT>`\n    - `<dp_id>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</dp_id>`\n    - `<dp_itemCategoryId>1</dp_itemCategoryId>`\n    - `<dp_name>Розетка тройная встравая с заземлением</dp_name>`\n    - `<dp_photoUrl>https://example.com/img.png</dp_photoUrl>`\n    - `<dp_model>10012</dp_model>`\n    - `<dp_seoKeywords>розетка розетки</dp_seoKeywords>`\n    - `<dp_seoDescription>Розетка тройная встравая с заземлением. 10012</dp_seoDescription>`\n    - `<dp_isHidden>false</dp_isHidden>`\n    - Массив характеристик:\n      - `<dp_itemCharacteristics>`\n        - `<dp_id></dp_id>`\n        - `<dp_itemId></dp_itemId>`\n        - `<dp_characteristicId></dp_characteristicId>`\n        - `<dp_value></dp_value>`\n      - `</dp_itemCharacteristics>`\n      - `<dp_itemCharacteristics>`\n        - `<!-- Второй элемент массива по аналогии -->`\n      - `</dp_itemCharacteristics>`\n    - Галерея картинок:\n      - `<dp_itemGalery>`\n        - `<dp_id></dp_id>`\n        - `<dp_itemId></dp_itemId>`\n        - `<dp_photoUrl></dp_photoUrl>`\n      - `</dp_itemGalery>`\n      - `<dp_itemGalery>`\n        - `<!-- Второй элемент массива по аналогии -->`\n      - `</dp_itemGalery>`\n  - `</OBJECT>`\n  - `<OBJECT>`\n    - `<!-- Аналогично как и первый элемент массива -->`\n  - `</OBJECT>`\n- `</ARRAY>`",
             "content": {
               "application/json": {
                 "schema": {
@@ -3963,10 +4008,21 @@
       "get": {
         "operationId": "ItemBrandsController_findAll",
         "summary": "Получить список записей",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "format",
+            "required": false,
+            "in": "query",
+            "example": "xml",
+            "description": "Например: `xml`, `json`.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Получили список записей",
+            "description": "Получили список записей\n\n\nПример XML:\n\n\n- `<?xml version=\"1.0\" encoding=\"UTF-8\"?>`\n- `<ARRAY>`\n  - `<OBJECT>`\n    - `<dp_id>1</dp_id>`\n    - `<dp_name>DE-PA Electric</dp_name>`\n    - `<dp_photoUrl>https://example.com/img.png</dp_photoUrl>`\n    - `<dp_urlSegment>de-pa-electric</dp_urlSegment>`\n    - `<dp_sortingIndex>10000</dp_sortingIndex>`\n    - `<dp_seoKeywords>de-pa electric</dp_seoKeywords>`\n    - `<dp_seoDescription>Продукция DE-PA Electric</dp_seoDescription>`\n    - `<dp_isHidden>false</dp_isHidden>`\n  - `</OBJECT>`\n  - `<OBJECT>`\n    - `<!-- Аналогично как и первый элемент массива -->`\n  - `</OBJECT>`\n- `</ARRAY>`",
             "content": {
               "application/json": {
                 "schema": {

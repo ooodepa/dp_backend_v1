@@ -8,11 +8,13 @@ import { ItemEntity } from './entities/item.entity';
 import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
 import { FilterItemDto } from './dto/filter-item.dto';
+import XmlController from 'src/packages/XmlController';
 import { FindItemIdsDto } from './dto/find-item-ids.dto';
 import { FindItemModelsDto } from './dto/find-item-models.dto';
 import HttpResponse from 'src/utils/HttpResponseDto/HttpResponse';
 import { LstItemGaleryEntity } from './entities/item-galery.entity';
 import HttpExceptions from 'src/utils/HttpResponseDto/HttpException';
+import { ItemBrandEntity } from '../item-brands/entities/item-brand.entity';
 import { LstItemCharacteristicEntity } from './entities/item-characteristics.entity';
 import { ItemCategoryEntity } from '../item-categories/entities/item-category.entity';
 
@@ -22,6 +24,8 @@ export class ItemsService {
     private readonly dataSource: DataSource,
     @InjectRepository(ItemEntity)
     private readonly itemEntity: Repository<ItemEntity>,
+    @InjectRepository(ItemBrandEntity)
+    private readonly itemBrandEntity: Repository<ItemBrandEntity>,
     @InjectRepository(ItemCategoryEntity)
     private readonly itemCategoryEntity: Repository<ItemCategoryEntity>,
   ) {}
@@ -103,30 +107,65 @@ export class ItemsService {
     return HttpResponse.successTransactionCreate();
   }
 
-  async findAll(filter: FilterItemDto) {
+  async findAll(filter: FilterItemDto, res: Response) {
     if (filter.category) {
       const candidate = await this.itemCategoryEntity.findOne({
         where: { dp_urlSegment: filter.category },
       });
 
       if (!candidate) {
-        return [];
+        if (filter.format === 'xml') {
+          res.set('Content-Type', 'application/xml');
+          res.send(XmlController.JSObject2XmlString([]));
+        } else {
+          res.set('Content-Type', 'application/json');
+          res.send([]);
+        }
       }
 
       filter.dp_itemCategoryId = `${candidate.dp_id}`;
     }
 
-    return await this.itemEntity.find({
+    const categoriesId: number[] = [];
+    if (filter.brand) {
+      const brand = await this.itemBrandEntity.findOne({
+        where: {
+          dp_urlSegment: filter.brand,
+        },
+      });
+      const brandId = brand.dp_id;
+
+      const categories = await this.itemCategoryEntity.find({
+        where: {
+          dp_itemBrandId: brandId,
+        },
+      });
+
+      for (let i = 0; i < categories.length; ++i) {
+        categoriesId.push(categories[i].dp_id);
+      }
+    }
+
+    if (filter.dp_itemCategoryId) {
+      categoriesId.push(Number(filter.dp_itemCategoryId));
+    }
+
+    const jsObject = await this.itemEntity.find({
       where: {
         dp_model: filter.dp_model,
-
-        dp_itemCategoryId: filter.dp_itemCategoryId
-          ? Number(filter.dp_itemCategoryId)
-          : undefined,
+        dp_itemCategoryId: categoriesId.length ? In(categoriesId) : undefined,
       },
       relations: ['dp_itemCharacteristics', 'dp_itemGalery'],
-      order: { dp_model: 'ASC' },
+      order: { dp_model: 'ASC', dp_itemCategoryId: 'ASC' },
     });
+
+    if (filter.format === 'xml') {
+      res.set('Content-Type', 'application/xml');
+      res.send(XmlController.JSObject2XmlString(jsObject));
+    } else {
+      res.set('Content-Type', 'application/json');
+      res.send(jsObject);
+    }
   }
 
   async findOneByModel(model: string) {

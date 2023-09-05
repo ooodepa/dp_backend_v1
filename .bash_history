@@ -31,6 +31,7 @@ yarn add number-to-words-ru
 yarn add crypto-js
 yarn add -D @types/cryptojs
 yarn add axios
+yarn add js2xmlparser
 
 
 yarn nest g res res/users
