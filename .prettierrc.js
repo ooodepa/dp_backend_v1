@@ -6,6 +6,7 @@ module.exports = {
   bracketSameLine: true,
   // bracketSpacing - нужны ли пробелы между фигурными скобками.
   bracketSpacing: true,
+  endOfLine: 'lf',
   // singleQuote - нужно ли использовать одинарные кавычки вместо двойных кавычек для строковых литералов.
   singleQuote: true,
   // trailingComma - нужна ли запятая после последнего элемента в массивах или объектах.
