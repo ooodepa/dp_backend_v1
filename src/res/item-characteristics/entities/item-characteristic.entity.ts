@@ -9,6 +9,9 @@ export class ItemCharacteristicEntity {
   @Column()
   dp_name: string;
 
+  @Column({ default: 10000 })
+  dp_sortingIndex: number;
+
   @Column({ default: false })
   dp_isHidden: boolean;
 }
