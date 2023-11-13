@@ -202,8 +202,14 @@ export class ItemsService {
       where: [
         { dp_model: Like(`%${search}%`) },
         { dp_name: Like(`%${search}%`) },
+        { dp_seoKeywords: Like(`%${search}%`) },
+        {
+          dp_itemCharacteristics: {
+            dp_value: Like(`%${search}%`),
+          },
+        },
       ],
-      take: 5,
+      take: 10,
     });
     res.status(status).send(json);
   }
