@@ -6170,6 +6170,10 @@
       "CreateItemCharacteristicDto": {
         "type": "object",
         "properties": {
+          "dp_sortingIndex": {
+            "type": "number",
+            "example": 0
+          },
           "dp_name": {
             "type": "string",
             "example": "В коробке"
@@ -6180,6 +6184,7 @@
           }
         },
         "required": [
+          "dp_sortingIndex",
           "dp_name",
           "dp_isHidden"
         ]
@@ -6187,6 +6192,10 @@
       "ItemCharacteristicExcludeIdDto": {
         "type": "object",
         "properties": {
+          "dp_sortingIndex": {
+            "type": "number",
+            "example": 0
+          },
           "dp_name": {
             "type": "string",
             "example": "В коробке"
@@ -6197,6 +6206,7 @@
           }
         },
         "required": [
+          "dp_sortingIndex",
           "dp_name",
           "dp_isHidden"
         ]
@@ -6218,6 +6228,10 @@
       "ItemCharacteristicWithIdDto": {
         "type": "object",
         "properties": {
+          "dp_sortingIndex": {
+            "type": "number",
+            "example": 0
+          },
           "dp_name": {
             "type": "string",
             "example": "В коробке"
@@ -6232,6 +6246,7 @@
           }
         },
         "required": [
+          "dp_sortingIndex",
           "dp_name",
           "dp_isHidden",
           "dp_id"
@@ -6240,6 +6255,10 @@
       "UpdateItemCharacteristicDto": {
         "type": "object",
         "properties": {
+          "dp_sortingIndex": {
+            "type": "number",
+            "example": 0
+          },
           "dp_name": {
             "type": "string",
             "example": "В коробке"
@@ -6250,6 +6269,7 @@
           }
         },
         "required": [
+          "dp_sortingIndex",
           "dp_name",
           "dp_isHidden"
         ]

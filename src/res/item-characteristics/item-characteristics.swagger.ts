@@ -2,12 +2,16 @@ import { ApiPropertyOptions } from '@nestjs/swagger';
 
 interface IProps {
   dp_id: ApiPropertyOptions;
+  dp_sortingIndex: ApiPropertyOptions;
   dp_name: ApiPropertyOptions;
   dp_isHidden: ApiPropertyOptions;
 }
 
 const ItemCharacteristicsApiProperty: IProps = {
   dp_id: {
+    example: 0,
+  },
+  dp_sortingIndex: {
     example: 0,
   },
   dp_name: {
