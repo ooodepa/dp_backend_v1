@@ -25,3 +25,5 @@ services:
     environment:
       PMA_HOST: dev-mysql
       #PMA_ARBITRARY: 1 # показывать поле "Server" для ввода хоста
+      #MAX_EXECUTION_TIME: 300
+      UPLOAD_LIMIT: 1000M

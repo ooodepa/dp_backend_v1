@@ -57,5 +57,5 @@ export class ItemEntity {
   dp_seoDescription: string;
 
   @Column({ default: false })
-  dp_isHidden: string;
+  dp_isHidden: boolean;
 }

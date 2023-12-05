@@ -17,6 +17,7 @@ import { UserEntity } from '../users/entities/user.entity';
 import { OrderItemsEntity } from './entities/order-items.entity';
 import HttpResponse from 'src/utils/HttpResponseDto/HttpResponse';
 import HttpExceptions from 'src/utils/HttpResponseDto/HttpException';
+import { CreateNoAuthOrderDto } from './dto/create-no-auth-order.dto';
 
 @Injectable()
 export class OrdersService {
@@ -133,6 +134,142 @@ export class OrdersService {
         subject: `Заявка | ${process.env.APP__MY_ORGANIZATION}`,
         template: 'order',
         context: {
+          DP_FIRST_NAME: user.dp_firstName,
+          DP_LAST_NAME: user.dp_lastName,
+          DP_MIDDLE_NAME: user.dp_middleName,
+          DP_ORG_NAME: user.dp_nameLegalEntity,
+          DP_ORG_SHORT_NAME: user.dp_shortNameLegalEntity,
+          DP_EMAIL: user.dp_email,
+          DP_PHONE: user.dp_receptionPhone,
+          emailOrderItems,
+          countSum: Number(countSum).toFixed(2),
+          countSumNds: Number(countSumNds).toFixed(2),
+          countSumTotal: Number(countSumTotal).toFixed(2),
+          quantity: quantity,
+          sumNdsText,
+          sumTotalText,
+        },
+      };
+
+      try {
+        await this.mailerService.sendMail(candidate_sendMailOptions);
+      } catch (err) {
+        const message = `Сообщение не отправлено на почту пользователю err=(${err})`;
+        throw new Error(message);
+      }
+
+      await queryRunner.commitTransaction();
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      HttpExceptions.exceptionTransaction(err);
+    } finally {
+      await queryRunner.release();
+    }
+
+    return await this.orderEntity.findOneOrFail({
+      where: {
+        dp_id: uuid,
+      },
+    });
+  }
+
+  async createAsAnonim(dto: CreateNoAuthOrderDto) {
+    const items = await this.itemEntity.find({
+      where: {
+        dp_id: In(dto.dp_orderItems.map((e) => e.dp_itemId)),
+      },
+    });
+
+    if (items.length === 0) {
+      const message = 'Ни одной номенклатуры не найдено в БД.';
+      const status = HttpStatus.NOT_FOUND;
+      throw new HttpException(message, status);
+    }
+
+    let uuid = '';
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const order = await queryRunner.manager
+        .getRepository(OrderEntity)
+        .save({ dp_userId: -1 });
+
+      uuid = order.dp_id;
+
+      let length = 0;
+      let quantity = 0;
+      let countSum = 0;
+      let countSumNds = 0;
+      let countSumTotal = 0;
+      const orderItemsArray: OrderItemsEntity[] = [];
+      const emailOrderItems: EmailOrderItemDto[] = [];
+      for (let i = 0; i < dto.dp_orderItems.length; ++i) {
+        const orderItem = dto.dp_orderItems[i];
+        for (let j = 0; j < items.length; ++j) {
+          const item = items[j];
+          if (item.dp_id === orderItem.dp_itemId) {
+            const count = orderItem.dp_count;
+            const cost = item.dp_cost;
+            const costStr = Number(cost).toFixed(2);
+
+            const sum = count * cost;
+            const sumStr = Number(sum).toFixed(2);
+
+            const sumNds = sum * 0.2;
+            const sumNdsStr = Number(sumNds).toFixed(2);
+
+            const totalSumNds = sum + sumNds;
+            const totalSumNdsStr = Number(totalSumNds).toFixed(2);
+
+            quantity += orderItem.dp_count;
+
+            countSum += Number(sumStr);
+            countSumNds += Number(sumNdsStr);
+            countSumTotal += Number(totalSumNdsStr);
+
+            length += 1;
+
+            orderItemsArray.push({
+              dp_itemId: orderItem.dp_itemId,
+              dp_orderId: uuid,
+              dp_cost: item.dp_cost,
+              dp_count: orderItem.dp_count,
+            });
+
+            emailOrderItems.push({
+              index: length,
+              dp_name: item.dp_name,
+              dp_model: item.dp_model,
+              dp_photoUrl: item.dp_photoUrl,
+              dp_cost: costStr,
+              dp_count: orderItem.dp_count,
+              dp_sum: sumStr,
+              dp_edIzm: 'шт.',
+              dp_stavkaNds: '20%',
+              dp_sumNds: sumNdsStr,
+              dp_totalSumNds: totalSumNdsStr,
+            });
+          }
+        }
+      }
+
+      const sumNdsText = numberToWordsRu(countSumNds);
+      const sumTotalText = numberToWordsRu(countSumTotal);
+
+      await queryRunner.manager
+        .getRepository(OrderItemsEntity)
+        .insert(orderItemsArray);
+
+      const emails = [dto.dp_email, process.env.APP__MY_MANAGER_EMAIL];
+      const candidate_sendMailOptions: ISendMailOptions = {
+        to: emails.join(),
+        subject: `Заявка | ${process.env.APP__MY_ORGANIZATION}`,
+        template: 'order-no-auth',
+        context: {
+          DP_NAME: dto.dp_name,
+          DP_EMAIL: dto.dp_email,
+          DP_PHONE: dto.dp_phone,
           emailOrderItems,
           countSum: Number(countSum).toFixed(2),
           countSumNds: Number(countSumNds).toFixed(2),

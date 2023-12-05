@@ -4586,6 +4586,49 @@
         ]
       }
     },
+    "/api/v1/orders/no-auth": {
+      "post": {
+        "operationId": "OrdersController_createAsAnonim",
+        "summary": "Создание записи транзакцией",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNoAuthOrderDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Запись создана успешно. Транзакция выполнена.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_orders",
+          "any"
+        ]
+      }
+    },
     "/api/v1/orders/{id}": {
       "get": {
         "operationId": "OrdersController_findOne",
@@ -7531,6 +7574,33 @@
           "dp_cancaledOn",
           "dp_fulfilledOn",
           "dp_receivedOn"
+        ]
+      },
+      "CreateNoAuthOrderDto": {
+        "type": "object",
+        "properties": {
+          "dp_name": {
+            "type": "string"
+          },
+          "dp_email": {
+            "type": "string"
+          },
+          "dp_phone": {
+            "type": "string",
+            "example": "+375331112233"
+          },
+          "dp_orderItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderItemDto"
+            }
+          }
+        },
+        "required": [
+          "dp_name",
+          "dp_email",
+          "dp_phone",
+          "dp_orderItems"
         ]
       },
       "GetOrderItem": {

@@ -14,7 +14,7 @@ export class DPCTLItems1680469415362 implements MigrationInterface {
             \`dp_itemCategoryId\` int NOT NULL,
             \`dp_seoKeywords\` varchar(255) NOT NULL DEFAULT '',
             \`dp_seoDescription\` varchar(255) NOT NULL DEFAULT '',
-            \`dp_isHidden\` varchar(255) NOT NULL DEFAULT 0,
+            \`dp_isHidden\` tinyint NOT NULL DEFAULT 0,
             UNIQUE INDEX \`UNI_ctlItems_name\` (\`dp_name\`),
             UNIQUE INDEX \`UNI_ctlItems_model\` (\`dp_model\`),
             UNIQUE INDEX \`UNI_ctlItems_seoDescription\` (\`dp_seoDescription\`),

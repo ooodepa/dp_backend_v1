@@ -38,7 +38,7 @@ const ItemsApiProperty: IProps = {
     example: 'Розетка тройная встравая с заземлением. 10012',
   },
   dp_isHidden: {
-    example: 'false',
+    example: false,
   },
 };
 

@@ -22,6 +22,7 @@ import { OrdersService } from './orders.service';
 import { GetOrderDto } from './dto/get-order.dto';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { GetOrderWithIdDto } from './dto/get-order-with-id.dto';
+import { CreateNoAuthOrderDto } from './dto/create-no-auth-order.dto';
 import SwaggerApiResponse from 'src/utils/Swagger/SwaggerApiResponse';
 import SwaggerApiOperation from 'src/utils/Swagger/SwaggerApiOperation';
 import HttpResponseDto from 'src/utils/HttpResponseDto/HttpResponseDto.dto';
@@ -42,6 +43,15 @@ export class OrdersController {
   @Post()
   create(@Body() createOrderDto: CreateOrderDto, @Req() req) {
     return this.ordersService.create(createOrderDto, req);
+  }
+
+  @ApiTags('any')
+  @ApiOperation(SwaggerApiOperation.CreateUuid)
+  @ApiResponse({ ...SwaggerApiResponse.CreatedUuid })
+  @ApiResponse(SwaggerApiResponse.ServerError)
+  @Post('no-auth')
+  createAsAnonim(@Body() dto: CreateNoAuthOrderDto) {
+    return this.ordersService.createAsAnonim(dto);
   }
 
   @ApiTags('user')
