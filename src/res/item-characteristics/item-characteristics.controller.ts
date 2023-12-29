@@ -80,7 +80,9 @@ export class ItemCharacteristicsController {
 - \`<ARRAY>\`
   - \`<OBJECT>\`
     - \`<dp_id>${ItemCharacteristicsApiProperty.dp_id.example}</dp_id>\`
+    - \`<dp_sortingIndex>${ItemCharacteristicsApiProperty.dp_sortingIndex.example}</dp_sortingIndex>\`
     - \`<dp_name>${ItemCharacteristicsApiProperty.dp_name.example}</dp_name>\`
+    - \`<dp_unit>${ItemCharacteristicsApiProperty.dp_unit.example}</dp_unit>\`
     - \`<dp_isHidden>${ItemCharacteristicsApiProperty.dp_isHidden.example}</dp_isHidden>\`
   - \`<OBJECT>\`
   - \`<OBJECT>\`

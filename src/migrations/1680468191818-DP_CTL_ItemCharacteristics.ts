@@ -10,6 +10,7 @@ export class DPCTLItemCharacteristics1680468191818
         CREATE TABLE \`DP_CTL_ItemCharacteristics\` (
             \`dp_id\` int NOT NULL AUTO_INCREMENT,
             \`dp_name\` varchar(255) NOT NULL,
+            \`dp_unit\` varchar(16) DEFAULT '',
             \`dp_sortingIndex\` int NOT NULL DEFAULT '10000',
             \`dp_isHidden\` tinyint NOT NULL DEFAULT 0,
             UNIQUE INDEX \`UNI_ctlItemCharacteristics_name\` (\`dp_name\`),

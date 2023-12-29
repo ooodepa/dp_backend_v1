@@ -13,6 +13,10 @@ export default class ItemCharacteristicDto {
   @ApiProperty(ItemCharacteristicsApiProperty.dp_name)
   dp_name: string;
 
+  @IsString()
+  @ApiProperty(ItemCharacteristicsApiProperty.dp_unit)
+  dp_unit: string;
+
   @IsBoolean()
   @ApiProperty(ItemCharacteristicsApiProperty.dp_isHidden)
   dp_isHidden: boolean;

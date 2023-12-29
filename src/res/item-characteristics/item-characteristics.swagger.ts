@@ -4,6 +4,7 @@ interface IProps {
   dp_id: ApiPropertyOptions;
   dp_sortingIndex: ApiPropertyOptions;
   dp_name: ApiPropertyOptions;
+  dp_unit: ApiPropertyOptions;
   dp_isHidden: ApiPropertyOptions;
 }
 
@@ -15,7 +16,10 @@ const ItemCharacteristicsApiProperty: IProps = {
     example: 0,
   },
   dp_name: {
-    example: 'В коробке',
+    example: 'Высота',
+  },
+  dp_unit: {
+    example: 'см',
   },
   dp_isHidden: {
     example: false,

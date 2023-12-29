@@ -1520,7 +1520,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Получили список записей\n\n\nПример XML:\n\n\n- `<?xml version=\"1.0\" encoding=\"UTF-8\"?>`\n- `<ARRAY>`\n  - `<OBJECT>`\n    - `<dp_id>0</dp_id>`\n    - `<dp_name>В коробке</dp_name>`\n    - `<dp_isHidden>false</dp_isHidden>`\n  - `<OBJECT>`\n  - `<OBJECT>`\n    - `<!-- Аналогично как и первый элемент массива -->`\n  - `</OBJECT>`\n- `<ARRAY>`",
+            "description": "Получили список записей\n\n\nПример XML:\n\n\n- `<?xml version=\"1.0\" encoding=\"UTF-8\"?>`\n- `<ARRAY>`\n  - `<OBJECT>`\n    - `<dp_id>0</dp_id>`\n    - `<dp_sortingIndex>0</dp_sortingIndex>`\n    - `<dp_name>Высота</dp_name>`\n    - `<dp_unit>см</dp_unit>`\n    - `<dp_isHidden>false</dp_isHidden>`\n  - `<OBJECT>`\n  - `<OBJECT>`\n    - `<!-- Аналогично как и первый элемент массива -->`\n  - `</OBJECT>`\n- `<ARRAY>`",
             "content": {
               "application/json": {
                 "schema": {
@@ -6176,7 +6176,11 @@
           },
           "dp_name": {
             "type": "string",
-            "example": "В коробке"
+            "example": "Высота"
+          },
+          "dp_unit": {
+            "type": "string",
+            "example": "см"
           },
           "dp_isHidden": {
             "type": "boolean",
@@ -6186,6 +6190,7 @@
         "required": [
           "dp_sortingIndex",
           "dp_name",
+          "dp_unit",
           "dp_isHidden"
         ]
       },
@@ -6198,7 +6203,11 @@
           },
           "dp_name": {
             "type": "string",
-            "example": "В коробке"
+            "example": "Высота"
+          },
+          "dp_unit": {
+            "type": "string",
+            "example": "см"
           },
           "dp_isHidden": {
             "type": "boolean",
@@ -6208,6 +6217,7 @@
         "required": [
           "dp_sortingIndex",
           "dp_name",
+          "dp_unit",
           "dp_isHidden"
         ]
       },
@@ -6234,7 +6244,11 @@
           },
           "dp_name": {
             "type": "string",
-            "example": "В коробке"
+            "example": "Высота"
+          },
+          "dp_unit": {
+            "type": "string",
+            "example": "см"
           },
           "dp_isHidden": {
             "type": "boolean",
@@ -6248,6 +6262,7 @@
         "required": [
           "dp_sortingIndex",
           "dp_name",
+          "dp_unit",
           "dp_isHidden",
           "dp_id"
         ]
@@ -6261,7 +6276,11 @@
           },
           "dp_name": {
             "type": "string",
-            "example": "В коробке"
+            "example": "Высота"
+          },
+          "dp_unit": {
+            "type": "string",
+            "example": "см"
           },
           "dp_isHidden": {
             "type": "boolean",
@@ -6271,6 +6290,7 @@
         "required": [
           "dp_sortingIndex",
           "dp_name",
+          "dp_unit",
           "dp_isHidden"
         ]
       },
