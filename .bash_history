@@ -86,3 +86,7 @@ yarn dev-migr-gen src/migrations/DP_DOC_Orders
 yarn nest g res api/v2/languages --no-spec
 yarn dev-migr-gen src/migrations/dp_ctl_languages
 yarn dev-migr-run
+
+yarn nest g res api/v2/seo-pages --no-spec
+yarn dev-migr-gen src/migrations/dp_ctl_seo_pages
+yarn dev-migr-run

@@ -3,7 +3,7 @@ import { plainToClass } from 'class-transformer';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, In, Repository } from 'typeorm';
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { LanguageEntity } from 'src/entity/language.entity';
+import { LanguageEntity } from 'src/entities/language.entity';
 import HttpResponseDto from '../../../dto/http-response.dto';
 import { CreateLanguageDto } from './dto/create-language.dto';
 import { UpdateLanguageDto } from './dto/update-language.dto';

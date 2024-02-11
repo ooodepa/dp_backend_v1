@@ -196,6 +196,117 @@
           "api|v2|languages"
         ]
       }
+    },
+    "/api/v2/seo-pages": {
+      "post": {
+        "operationId": "SeoPagesController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSeoPageDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "api|v2|seo-pages"
+        ]
+      },
+      "get": {
+        "operationId": "SeoPagesController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "api|v2|seo-pages"
+        ]
+      }
+    },
+    "/api/v2/seo-pages/{id}": {
+      "get": {
+        "operationId": "SeoPagesController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "api|v2|seo-pages"
+        ]
+      },
+      "patch": {
+        "operationId": "SeoPagesController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSeoPageDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "api|v2|seo-pages"
+        ]
+      },
+      "delete": {
+        "operationId": "SeoPagesController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "api|v2|seo-pages"
+        ]
+      }
     }
   },
   "info": {
@@ -327,6 +438,14 @@
         "required": [
           "bulk"
         ]
+      },
+      "CreateSeoPageDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "UpdateSeoPageDto": {
+        "type": "object",
+        "properties": {}
       }
     }
   }
