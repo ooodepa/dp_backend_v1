@@ -9,7 +9,7 @@ import {
 
 import { ItemBrandEntity } from 'src/res/item-brands/entities/item-brand.entity';
 
-@Entity('DP_CTL_ItemCategories')
+// @Entity('dp_ctl_itemcategories')
 export class ItemCategoryEntity {
   @PrimaryGeneratedColumn()
   dp_id: number;

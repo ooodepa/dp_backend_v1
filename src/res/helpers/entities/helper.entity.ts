@@ -9,7 +9,7 @@ import {
 
 import { LstHelperCommunicationTypeEntity } from './LstHelperCommunicationTypeEntity.entity';
 
-@Entity('DP_CTL_Helpers')
+// @Entity('dp_ctl_helpers')
 export class HelperEntity {
   @PrimaryGeneratedColumn('uuid')
   dp_id: string;

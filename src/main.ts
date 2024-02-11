@@ -48,11 +48,11 @@ async function bootstrap() {
   );
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('/api/v1', app, document);
+  SwaggerModule.setup('/api', app, document);
   fs.writeFileSync('./swagger.json', JSON.stringify(document, null, 2));
 
   await app.listen(PORT, () => {
-    console.log(`Server started: http://localhost:${PORT}/api/v1`);
+    console.log(`Server started: http://localhost:${PORT}/api`);
   });
 }
 bootstrap();

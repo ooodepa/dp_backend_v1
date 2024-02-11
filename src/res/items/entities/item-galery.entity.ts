@@ -8,7 +8,7 @@ import {
 
 import { ItemEntity } from './item.entity';
 
-@Entity('DP_LST_ItemGalery')
+// @Entity('dp_lst_itemgalery')
 export class LstItemGaleryEntity {
   @PrimaryGeneratedColumn()
   dp_id: number;

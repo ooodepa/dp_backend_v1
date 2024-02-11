@@ -12,7 +12,7 @@ import { LstItemGaleryEntity } from './item-galery.entity';
 import { LstItemCharacteristicEntity } from './item-characteristics.entity';
 import { ItemCategoryEntity } from 'src/res/item-categories/entities/item-category.entity';
 
-@Entity('DP_CTL_Items')
+// @Entity('dp_ctl_items')
 export class ItemEntity {
   @PrimaryGeneratedColumn('uuid')
   dp_id: string;

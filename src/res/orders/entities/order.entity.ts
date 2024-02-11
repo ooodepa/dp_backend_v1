@@ -14,7 +14,7 @@ import { OrderItemsEntity } from './order-items.entity';
 import { UserEntity } from 'src/res/users/entities/user.entity';
 import { OrderStatusEntity } from 'src/res/order-statuses/entities/order-status.entity';
 
-@Entity('DP_DOC_Orders')
+// @Entity('dp_doc_orders')
 export class OrderEntity {
   @ApiProperty({ example: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx' })
   @PrimaryGeneratedColumn('uuid')

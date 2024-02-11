@@ -9,7 +9,7 @@ import {
 import { ItemEntity } from './item.entity';
 import { ItemCharacteristicEntity } from 'src/res/item-characteristics/entities/item-characteristic.entity';
 
-@Entity('DP_LST_ItemCharacteristics')
+// @Entity('dp_lst_itemcharacteristics')
 export class LstItemCharacteristicEntity {
   @PrimaryGeneratedColumn()
   dp_id: number;

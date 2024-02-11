@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('DP_DOC_ApkVersions')
+// @Entity('dp_doc_apkversions')
 export class ApkVersionEntity {
   @PrimaryGeneratedColumn()
   dp_id: number;

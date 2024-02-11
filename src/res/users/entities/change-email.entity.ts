@@ -8,7 +8,7 @@ import {
 
 import { UserEntity } from './user.entity';
 
-@Entity('DP_DOC_ChangeEmail')
+// @Entity('dp_doc_changeemail')
 export class ChangeEmailEntity {
   @PrimaryGeneratedColumn()
   dp_id: number;

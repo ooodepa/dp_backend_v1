@@ -1,6 +1,6 @@
 import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('DP_CTL_Roles')
+// @Entity('dp_ctl_roles')
 export class RoleEntity {
   @PrimaryGeneratedColumn()
   dp_id: number;

@@ -2,28 +2,80 @@ version: '3'
 
 services:
 
-  dev-mysql:
-    container_name: dev-mysql
-    image: mysql:8.0
+  db_dev:
+    container_name: mariadb_dev
+    image: mariadb:10.6.16
     restart: always
     volumes:
       - ./docker/db-dev/mysql/var/lib/mysql:/var/lib/mysql
     ports:
       - 11113:3306
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASS}
-      MYSQL_DATABASE: ${DB_NAME}
-      MYSQL_USER: ${DB_USER}
-      MYSQL_PASSWORD: ${DB_PASS}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASS}
+      MARIADB_DATABASE: dev
+      MARIADB_USER: ${DB_USER}
+      MARIADB_PASSWORD: ${DB_PASS}
 
-  dev-phpmyadmin:
-    container_name: dev-phpmyadmin
+  db_prod:
+    container_name: mariadb_prod
+    image: mariadb:10.6.16
+    restart: always
+    volumes:
+      - ./docker/db-prod/mysql/var/lib/mysql:/var/lib/mysql
+    ports:
+      - 12113:3306
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASS}
+      MARIADB_DATABASE: db_prod
+      MARIADB_USER: ${DB_USER}
+      MARIADB_PASSWORD: ${DB_PASS}
+
+  db_test:
+    container_name: mariadb_test
+    image: mariadb:10.6.16
+    restart: always
+    volumes:
+      - ./docker/db-test/mysql/var/lib/mysql:/var/lib/mysql
+    ports:
+      - 13113:3306
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASS}
+      MARIADB_DATABASE: db_test
+      MARIADB_USER: ${DB_USER}
+      MARIADB_PASSWORD: ${DB_PASS}
+
+  phpmyadmin_dev:
+    container_name: phpmyadmin_dev
     image: phpmyadmin/phpmyadmin
     restart: always
     ports:
       - 11112:80
     environment:
-      PMA_HOST: dev-mysql
+      PMA_HOST: db_dev
+      #PMA_ARBITRARY: 1 # показывать поле "Server" для ввода хоста
+      #MAX_EXECUTION_TIME: 300
+      UPLOAD_LIMIT: 1000M
+
+  phpmyadmin_prod:
+    container_name: phpmyadmin_prod
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - 12112:80
+    environment:
+      PMA_HOST: db_prod
+      #PMA_ARBITRARY: 1 # показывать поле "Server" для ввода хоста
+      #MAX_EXECUTION_TIME: 300
+      UPLOAD_LIMIT: 1000M
+
+  phpmyadmin_test:
+    container_name: phpmyadmin_test
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - 13112:80
+    environment:
+      PMA_HOST: db_test
       #PMA_ARBITRARY: 1 # показывать поле "Server" для ввода хоста
       #MAX_EXECUTION_TIME: 300
       UPLOAD_LIMIT: 1000M

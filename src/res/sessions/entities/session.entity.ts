@@ -9,7 +9,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { UserEntity } from 'src/res/users/entities/user.entity';
 
-@Entity('DP_DOC_Sessions')
+// @Entity('dp_doc_sessions')
 export class SessionEntity {
   @ApiProperty()
   @PrimaryGeneratedColumn()

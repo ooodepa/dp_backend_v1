@@ -81,3 +81,8 @@ yarn nest g res res/manager
 yarn nest g res res/order-statuses
 yarn dev-migr-gen src/migrations/DP_DOC_OrderStatuses
 yarn dev-migr-gen src/migrations/DP_DOC_Orders
+
+
+yarn nest g res api/v2/languages --no-spec
+yarn dev-migr-gen src/migrations/dp_ctl_languages
+yarn dev-migr-run

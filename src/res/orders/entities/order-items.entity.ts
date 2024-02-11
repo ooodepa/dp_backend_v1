@@ -10,7 +10,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { OrderEntity } from './order.entity';
 import { ItemEntity } from 'src/res/items/entities/item.entity';
 
-@Entity('DP_LST_OrderItems')
+// @Entity('dp_lst_orderitems')
 export class OrderItemsEntity {
   @PrimaryGeneratedColumn()
   dp_id?: number;

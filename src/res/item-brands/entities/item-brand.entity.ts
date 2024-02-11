@@ -1,6 +1,6 @@
 import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('DP_CTL_ItemBrands')
+// @Entity('dp_ctl_itembrands')
 export class ItemBrandEntity {
   @PrimaryGeneratedColumn()
   dp_id: number;

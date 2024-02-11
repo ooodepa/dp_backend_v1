@@ -1,6 +1,6 @@
 import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('DP_CTL_Users')
+// @Entity('dp_ctl_users')
 export class UserEntity {
   @PrimaryGeneratedColumn()
   dp_id: number;

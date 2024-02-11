@@ -9,7 +9,7 @@ import {
 import { HelperEntity } from './helper.entity';
 import { ContactTypeEntity } from 'src/res/contact-types/entities/contact-type.entity';
 
-@Entity('DP_LST_HelperContactTypes')
+// @Entity('dp_lst_helpercontacttypes')
 export class LstHelperCommunicationTypeEntity {
   @PrimaryGeneratedColumn()
   dp_id: number;

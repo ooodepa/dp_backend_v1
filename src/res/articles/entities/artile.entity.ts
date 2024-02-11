@@ -9,7 +9,7 @@ import {
 
 import { LstArticleAttachedLinks } from './article-attached-links.entity';
 
-@Entity('DP_DOC_Articles')
+// @Entity('dp_doc_articles')
 export class ArticleEntity {
   @PrimaryGeneratedColumn('uuid')
   dp_id: string;

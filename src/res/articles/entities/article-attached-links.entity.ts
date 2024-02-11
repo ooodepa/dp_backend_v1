@@ -8,7 +8,7 @@ import {
 
 import { ArticleEntity } from './artile.entity';
 
-@Entity('DP_LST_ArticleAttachedLinks')
+// @Entity('dp_lst_articleattachedlinks')
 export class LstArticleAttachedLinks {
   @PrimaryGeneratedColumn()
   dp_id: number;
