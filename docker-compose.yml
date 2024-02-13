@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+
+  db:
+    container_name: mariadb
+    restart: always
+    image: mariadb:10.6.16
+    volumes:
+      - ./docker/backend/mysql/var/lib/mysql:/var/lib/mysql
+    ports:
+      - 11112:3306
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASS}
+      MARIADB_DATABASE: ${DB_NAME}
+      MARIADB_USER: ${DB_USER}
+      MARIADB_PASSWORD: ${DB_PASS}
+
+  phpmyadmin:
+    container_name: phpmyadmin
+    restart: always
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - 11113:80
+    environment:
+      PMA_HOST: db
+      #PMA_PORT: 3306
+      #PMA_ARBITRARY: 1 # показывать поле "Server" для ввода хоста
+      UPLOAD_LIMIT: 1000M
