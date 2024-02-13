@@ -12,7 +12,7 @@ async function bootstrap() {
   const PORT = process.env.APP__PORT || 3000;
   const app = await NestFactory.create(AppModule);
 
-  app.use(bodyParser.json({ limit: '10mb' }));
+  app.use(bodyParser.json({ limit: '20mb' }));
 
   app.enableCors();
 
