@@ -1925,6 +1925,38 @@
         ]
       }
     },
+    "/api/v1/items/image/model/{model}": {
+      "get": {
+        "operationId": "ItemsController_getImageByModel",
+        "summary": "Получить список записей",
+        "parameters": [
+          {
+            "name": "model",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_items",
+          "any"
+        ]
+      }
+    },
     "/api/v1/items": {
       "post": {
         "operationId": "ItemsController_create",

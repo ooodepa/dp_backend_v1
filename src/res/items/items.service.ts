@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Injectable, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 import { DataSource, In, Like, Repository } from 'typeorm';
 
 import ItemWithIdDto from './dto/item-with-id.dto';
@@ -195,6 +195,25 @@ export class ItemsService {
     });
     res.status(status).send(json);
   }
+
+  async getImageByModel(model: string, res: Response) {
+    const candidate = await this.itemEntity.findOne({where: {dp_model: model}, select: {
+     dp_photoUrl: true,
+    }});
+
+    if (!candidate) {
+     throw new HttpException({}, HttpStatus.NOT_FOUND);
+    }
+ 
+    const image_url = candidate.dp_photoUrl;
+
+    if (image_url.length === 0) {
+     throw new HttpException({}, HttpStatus.NOT_FOUND);
+    }
+
+    // res.status(302).setHeader('Location', candidate.dp_photoUrl).send();
+    res.redirect(image_url);
+   }
 
   async search(search: string, res: Response) {
     const status = HttpStatus.OK;

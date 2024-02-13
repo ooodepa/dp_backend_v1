@@ -42,6 +42,14 @@ import { VerifyAccessTokenGuard } from 'src/guards/VerifyAccessTokenGuard.guard'
 export class ItemsController {
   constructor(private readonly itemsService: ItemsService) {}
 
+  @ApiTags('any')
+  @ApiOperation(SwaggerApiOperation.Find)
+  @ApiResponse(SwaggerApiResponse.ServerError)
+  @Get('image/model/:model')
+  getImageByModel(@Param('model') model: string, @Res() res: Response) {
+    return this.itemsService.getImageByModel(model, res);
+  }
+
   @ApiTags('ADMIN')
   @ApiOperation(SwaggerApiOperation.CreateUuid)
   @ApiResponse(SwaggerApiResponse.CreatedUuid)
