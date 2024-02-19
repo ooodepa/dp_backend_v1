@@ -8,9 +8,8 @@ import {
 import { SHA256 } from 'crypto-js';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { SessionEntity } from 'src/res/sessions/entities/session.entity';
-
-import { UsersService } from 'src/res/users/users.service';
+import { UsersService } from 'src/api/v1/users/users.service';
+import { SessionEntity } from 'src/api/v1/sessions/entities/session.entity';
 
 @Injectable()
 export class VerifyRefreshTokenGuard implements CanActivate {

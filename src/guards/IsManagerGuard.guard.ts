@@ -7,10 +7,9 @@ import {
 } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-
-import { UsersService } from 'src/res/users/users.service';
-import { RoleEntity } from 'src/res/roles/entities/role.entity';
-import { UserRolesEntity } from 'src/res/roles/entities/user-role.entity';
+import { UsersService } from 'src/api/v1/users/users.service';
+import { RoleEntity } from 'src/api/v1/roles/entities/role.entity';
+import { UserRolesEntity } from 'src/api/v1/roles/entities/user-role.entity';
 
 @Injectable()
 export class IsManagerGuard implements CanActivate {
