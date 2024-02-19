@@ -47,7 +47,17 @@ export class ItemsController {
   @ApiResponse(SwaggerApiResponse.ServerError)
   @Get('image/model/:model')
   getImageByModel(@Param('model') model: string, @Res() res: Response) {
-    return this.itemsService.getImageByModel(model, res);
+    return this.itemsService.getImageByModel(res, model);
+  }
+
+  @ApiTags('any')
+  @ApiResponse(SwaggerApiResponse.ServerError)
+  @ApiBearerAuth('access-token')
+  @UseGuards(IsAdministratorGuard)
+  @UseGuards(VerifyAccessTokenGuard)
+  @Patch(':id/isHidden/:isHidden')
+  setShow(@Param('id') id: string, @Param('isHidden') isHidden: string) {
+    return this.itemsService.setShow(id, isHidden);
   }
 
   @ApiTags('ADMIN')

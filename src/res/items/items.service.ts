@@ -28,7 +28,7 @@ export class ItemsService {
     private readonly itemBrandEntity: Repository<ItemBrandEntity>,
     @InjectRepository(ItemCategoryEntity)
     private readonly itemCategoryEntity: Repository<ItemCategoryEntity>,
-  ) {}
+  ) { }
 
   async create(dto: CreateItemDto) {
     const queryRunner = this.dataSource.createQueryRunner();
@@ -196,24 +196,42 @@ export class ItemsService {
     res.status(status).send(json);
   }
 
-  async getImageByModel(model: string, res: Response) {
-    const candidate = await this.itemEntity.findOne({where: {dp_model: model}, select: {
-     dp_photoUrl: true,
-    }});
+  async getImageByModel(res: Response, model: string) {
+    const candidate = await this.itemEntity.findOne({
+      where: { dp_model: model }, select: {
+        dp_photoUrl: true,
+      }
+    });
 
     if (!candidate) {
-     throw new HttpException({}, HttpStatus.NOT_FOUND);
+      throw new HttpException({}, HttpStatus.NOT_FOUND);
     }
- 
+
     const image_url = candidate.dp_photoUrl;
 
     if (image_url.length === 0) {
-     throw new HttpException({}, HttpStatus.NOT_FOUND);
+      throw new HttpException({}, HttpStatus.NOT_FOUND);
     }
 
     // res.status(302).setHeader('Location', candidate.dp_photoUrl).send();
     res.redirect(image_url);
-   }
+  }
+
+  async setShow(id: string, isHidden: string) {
+    const candidate = await this.itemEntity.findOneOrFail({ where: { dp_id: id } });
+
+    if (!candidate) {
+      throw new HttpException({}, HttpStatus.NOT_FOUND);
+    }
+
+    if (isHidden === '1' || isHidden === 'true') {
+      await this.itemEntity.update(id, { dp_isHidden: true });
+    } else {
+      await this.itemEntity.update(id, { dp_isHidden: false });
+    }
+
+    return;
+  }
 
   async search(search: string, res: Response) {
     const status = HttpStatus.OK;

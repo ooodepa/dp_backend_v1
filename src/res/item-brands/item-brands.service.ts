@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, In, Repository } from 'typeorm';
 
@@ -21,6 +21,22 @@ export class ItemBrandsService {
     @InjectRepository(ItemBrandEntity)
     private readonly itemBrandEntity: Repository<ItemBrandEntity>,
   ) {}
+
+  async setShow(id: number, isHidden: string) {
+    const candidate = await this.itemBrandEntity.findOneOrFail({ where: { dp_id: id } });
+
+    if (!candidate) {
+      throw new HttpException({}, HttpStatus.NOT_FOUND);
+    }
+
+    if (isHidden === '1' || isHidden === 'true') {
+      await this.itemBrandEntity.update(id, { dp_isHidden: true });
+    } else {
+      await this.itemBrandEntity.update(id, { dp_isHidden: false });
+    }
+
+    return;
+  }
 
   async create(dto: CreateItemBrandDto): Promise<HttpResponseDto> {
     await this.itemBrandEntity.save(dto);

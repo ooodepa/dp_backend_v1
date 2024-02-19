@@ -38,6 +38,16 @@ import { VerifyAccessTokenGuard } from 'src/guards/VerifyAccessTokenGuard.guard'
 export class ItemCategoriesController {
   constructor(private readonly itemCategoriesService: ItemCategoriesService) {}
 
+  @ApiTags('any')
+  @ApiResponse(SwaggerApiResponse.ServerError)
+  @ApiBearerAuth('access-token')
+  @UseGuards(IsAdministratorGuard)
+  @UseGuards(VerifyAccessTokenGuard)
+  @Patch(':id/isHidden/:isHidden')
+  setShow(@Param('id') id: string, @Param('isHidden') isHidden: string) {
+    return this.itemCategoriesService.setShow(+id, isHidden);
+  }
+
   @ApiTags('ADMIN')
   @ApiOperation(SwaggerApiOperation.Create)
   @ApiResponse(SwaggerApiResponse.Created)

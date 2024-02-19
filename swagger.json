@@ -856,6 +856,50 @@
         ]
       }
     },
+    "/api/v1/item-categories/{id}/isHidden/{isHidden}": {
+      "patch": {
+        "operationId": "ItemCategoriesController_setShow",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isHidden",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_item-categories",
+          "any"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
     "/api/v1/item-categories": {
       "post": {
         "operationId": "ItemCategoriesController_create",
@@ -1954,6 +1998,50 @@
         "tags": [
           "api_v1_items",
           "any"
+        ]
+      }
+    },
+    "/api/v1/items/{id}/isHidden/{isHidden}": {
+      "patch": {
+        "operationId": "ItemsController_setShow",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isHidden",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_items",
+          "any"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
         ]
       }
     },
@@ -3952,6 +4040,50 @@
         "tags": [
           "api_v1_helpers",
           "ADMIN"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/api/v1/item-brands/{id}/isHidden/{isHidden}": {
+      "patch": {
+        "operationId": "ItemBrandsController_setShow",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isHidden",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "500": {
+            "description": "Что-то пошло не так на сервере.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api_v1_item-brands",
+          "any"
         ],
         "security": [
           {
