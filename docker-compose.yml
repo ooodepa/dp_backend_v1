@@ -9,7 +9,7 @@ services:
     volumes:
       - ./docker/backend/mysql/var/lib/mysql:/var/lib/mysql
     ports:
-      - 11112:3306
+      - ${DB_PORT}:3306
     environment:
       MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASS}
       MARIADB_DATABASE: ${DB_NAME}
@@ -21,7 +21,7 @@ services:
     restart: always
     image: phpmyadmin/phpmyadmin
     ports:
-      - 11113:80
+      - 11112:80
     environment:
       PMA_HOST: db
       #PMA_PORT: 3306
