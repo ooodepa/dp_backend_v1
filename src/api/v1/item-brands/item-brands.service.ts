@@ -23,7 +23,9 @@ export class ItemBrandsService {
   ) {}
 
   async setShow(id: number, isHidden: string) {
-    const candidate = await this.itemBrandEntity.findOneOrFail({ where: { dp_id: id } });
+    const candidate = await this.itemBrandEntity.findOneOrFail({
+      where: { dp_id: id },
+    });
 
     if (!candidate) {
       throw new HttpException({}, HttpStatus.NOT_FOUND);

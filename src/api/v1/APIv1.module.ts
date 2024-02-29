@@ -1,4 +1,3 @@
-
 import { Module } from '@nestjs/common';
 import { UsersModule } from './users/users.module';
 import { SessionsModule } from './sessions/sessions.module';
@@ -37,4 +36,4 @@ import { PortalNalogGovByModule } from './portal-nalog-gov-by/portal-nalog-gov-b
     PortalNalogGovByModule,
   ],
 })
-export class APIv1 { }
+export class APIv1 {}

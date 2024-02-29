@@ -21,7 +21,7 @@ import { APIv1 } from './api/v1/APIv1.module';
       // logger: 'file',
       synchronize: false,
     }),
-    APIv1
+    APIv1,
   ],
 })
 export class AppModule {}

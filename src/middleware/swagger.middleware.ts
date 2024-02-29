@@ -1,6 +1,7 @@
-import { DocumentBuilder } from '@nestjs/swagger';
+import { INestApplication } from '@nestjs/common';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
-const config = new DocumentBuilder()
+const SwaggerConfig = new DocumentBuilder()
   .setTitle('REST API документация')
   .setDescription(
     '' +
@@ -162,4 +163,12 @@ const config = new DocumentBuilder()
   )
   .build();
 
-export default config;
+export function setupSwagger(app: INestApplication, GLOBAL_PREFIX: string) {
+  const document = SwaggerModule.createDocument(app, SwaggerConfig);
+
+  app.use(`${GLOBAL_PREFIX}/swagger.json`, (req, res) => {
+    res.json(document);
+  });
+
+  SwaggerModule.setup(`${GLOBAL_PREFIX}/swagger`, app, document);
+}

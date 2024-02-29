@@ -28,7 +28,7 @@ export class ItemsService {
     private readonly itemBrandEntity: Repository<ItemBrandEntity>,
     @InjectRepository(ItemCategoryEntity)
     private readonly itemCategoryEntity: Repository<ItemCategoryEntity>,
-  ) { }
+  ) {}
 
   async create(dto: CreateItemDto) {
     const queryRunner = this.dataSource.createQueryRunner();
@@ -198,9 +198,10 @@ export class ItemsService {
 
   async getImageByModel(res: Response, model: string) {
     const candidate = await this.itemEntity.findOne({
-      where: { dp_model: model }, select: {
+      where: { dp_model: model },
+      select: {
         dp_photoUrl: true,
-      }
+      },
     });
 
     if (!candidate) {
@@ -218,7 +219,9 @@ export class ItemsService {
   }
 
   async setShow(id: string, isHidden: string) {
-    const candidate = await this.itemEntity.findOneOrFail({ where: { dp_id: id } });
+    const candidate = await this.itemEntity.findOneOrFail({
+      where: { dp_id: id },
+    });
 
     if (!candidate) {
       throw new HttpException({}, HttpStatus.NOT_FOUND);
