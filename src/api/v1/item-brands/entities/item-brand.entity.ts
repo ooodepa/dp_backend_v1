@@ -19,11 +19,11 @@ export class ItemBrandEntity {
   @Column({ default: 10000 })
   dp_sortingIndex: number;
 
-  @Column({ default: '' })
+  @Column({ length: 2550, default: '-' })
   dp_seoKeywords: string;
 
-  @Index('UNI_ctlItemBrands_seoDescription', { unique: true })
-  @Column({ default: '' })
+  // @Index('UNI_ctlItemBrands_seoDescription', { unique: true })
+  @Column({ length: 2550 })
   dp_seoDescription: string;
 
   @Column({ default: false })

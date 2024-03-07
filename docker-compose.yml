@@ -3,18 +3,18 @@ version: '3'
 services:
 
   db:
-    container_name: mariadb
+    container_name: mysql
     restart: always
-    image: mariadb:10.6.16
+    image: mysql:8.0
     volumes:
       - ./docker/backend/mysql/var/lib/mysql:/var/lib/mysql
     ports:
       - ${DB_PORT}:3306
     environment:
-      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASS}
-      MARIADB_DATABASE: ${DB_NAME}
-      MARIADB_USER: ${DB_USER}
-      MARIADB_PASSWORD: ${DB_PASS}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASS}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASS}
 
   phpmyadmin:
     container_name: phpmyadmin

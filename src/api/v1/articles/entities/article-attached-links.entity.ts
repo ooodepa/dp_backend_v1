@@ -26,6 +26,6 @@ export class LstArticleAttachedLinks {
   @Column()
   dp_url: string;
 
-  @Column()
+  @Column({ length: 2000 })
   dp_photoUrl: string;
 }

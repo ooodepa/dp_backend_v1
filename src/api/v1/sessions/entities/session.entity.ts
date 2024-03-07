@@ -15,7 +15,7 @@ export class SessionEntity {
   dp_id: number;
 
   @ApiProperty({ example: '2023-04-02T00:00:00.000Z' })
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP()' })
+  @Column({ type: 'timestamp', default: 'CURRENT_TIMESTAMP' })
   dp_date: Date;
 
   @ApiProperty({ example: '111.111.111.111' })

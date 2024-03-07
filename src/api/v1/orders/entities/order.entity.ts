@@ -20,13 +20,12 @@ export class OrderEntity {
   @PrimaryGeneratedColumn('uuid')
   dp_id: string;
 
-  @Column()
-  @Index({ unique: true })
-  @Generated('increment')
-  dp_number: number;
+  @Column({ default: 'X', length: 255 })
+  // @Index({ unique: true })
+  dp_number: string;
 
   @ApiProperty({ required: false, example: '0000-00-00T00:00:00.000Z' })
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP()' })
+  @Column({ type: 'timestamp', default: 'CURRENT_TIMESTAMP' })
   dp_date: Date;
 
   @ApiProperty({ example: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx' })

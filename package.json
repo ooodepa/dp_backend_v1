@@ -3,9 +3,9 @@
   "scripts": {
     "cpanel-migr-run": "npx typeorm --dataSource dist/migration.config.js migration:run",
     "cpanel-migr-rev": "npx typeorm --dataSource dist/migration.config.js migration:revert",
-    "typeorm": "typeorm --dataSource dist/migration.config.js --pretty true",
-    "migration-gen": "npm run build && npm run typeorm migration:generate",
-    "migration-gen-no-build": "npm run typeorm migration:generate",
+    "typeorm": "typeorm --dataSource dist/migration.config.js",
+    "migration-gen": "npm run build && yarn typeorm migration:generate --pretty true",
+    "migration-gen-no-build": "yarn typeorm migration:generate --pretty true",
     "migration-run": "npm run build && npm run typeorm migration:run",
     "migration-run-no-build": "npm run typeorm migration:run",
     "migration-rev": "npm run build && npm run typeorm migration:revert",

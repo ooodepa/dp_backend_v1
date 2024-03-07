@@ -15,7 +15,7 @@ export class OrderStatusEntity {
   dp_id: number;
 
   @ApiProperty({ required: false, example: '0000-00-00T00:00:00.000Z' })
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP()' })
+  @Column({ type: 'timestamp', default: 'CURRENT_TIMESTAMP' })
   dp_date: Date;
 
   @ApiProperty()

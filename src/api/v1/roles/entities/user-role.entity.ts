@@ -14,7 +14,7 @@ export class UserRolesEntity {
   @PrimaryGeneratedColumn()
   dp_id: number;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP()' })
+  @Column({ type: 'timestamp', default: 'CURRENT_TIMESTAMP' })
   dp_date: Date;
 
   @ManyToOne(() => UserEntity, (e: UserEntity) => e.dp_id, {

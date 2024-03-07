@@ -5,7 +5,7 @@ export class ApkVersionEntity {
   @PrimaryGeneratedColumn()
   dp_id: number;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP()' })
+  @Column({ type: 'timestamp', default: 'CURRENT_TIMESTAMP' })
   dp_date: Date;
 
   @Column({ length: 24 })

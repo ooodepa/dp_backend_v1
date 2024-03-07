@@ -18,7 +18,7 @@ export class ArticleEntity {
   @Column()
   dp_name: string;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP()' })
+  @Column({ type: 'timestamp', default: 'CURRENT_TIMESTAMP' })
   dp_date: Date;
 
   @Column({ default: '' })
@@ -41,11 +41,11 @@ export class ArticleEntity {
   @Column({ default: 10000 })
   dp_sortingIndex: number;
 
-  @Column({ default: '' })
+  @Column({ length: 2550, default: '-' })
   dp_seoKeywords: string;
 
-  @Index('UNI_docArticles_seoDescription', { unique: true })
-  @Column({ default: '' })
+  // @Index('UNI_docArticles_seoDescription', { unique: true })
+  @Column({ length: 2550 })
   dp_seoDescription: string;
 
   @Column({ default: false })

@@ -49,11 +49,11 @@ export class ItemEntity {
   @JoinColumn({ name: 'dp_id' })
   dp_itemGalery: LstItemGaleryEntity[];
 
-  @Column({ default: '' })
+  @Column({ length: 2550, default: '-' })
   dp_seoKeywords: string;
 
-  @Index('UNI_ctlItems_seoDescription', { unique: true })
-  @Column({ default: '' })
+  // @Index('UNI_ctlItems_seoDescription', { unique: true })
+  @Column({ length: 2550 })
   dp_seoDescription: string;
 
   @Column({ default: false })

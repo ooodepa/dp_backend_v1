@@ -9,7 +9,7 @@ export class ItemCharacteristicEntity {
   @Column()
   dp_name: string;
 
-  @Column({ default: '' })
+  @Column({ default: '-', length: 16 })
   dp_unit: string;
 
   @Column({ default: 10000 })
