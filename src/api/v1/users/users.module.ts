@@ -49,7 +49,7 @@ import { ActivationAccountEntity } from './entities/activation-account.entity';
           )}" <${configService.get<string>('APP__EMAIL_USER')}>`,
         },
         template: {
-          dir: path.join(__dirname, '../..', 'templates'),
+          dir: path.join(__dirname, '../../..', 'templates'),
           adapter: new HandlebarsAdapter(),
         },
       }),
