@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 import ItemsApiProperty from '../items.swagger';
 
@@ -33,4 +39,14 @@ export default class ItemDto {
   @IsString()
   @ApiProperty(ItemsApiProperty.dp_seoDescription)
   dp_seoDescription: string;
+
+  @IsOptional()
+  @IsBoolean()
+  @ApiProperty()
+  dp_isFolder: boolean;
+
+  @IsOptional()
+  @IsString()
+  @ApiProperty()
+  dp_parentId: string;
 }
