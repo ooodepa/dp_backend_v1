@@ -21,6 +21,24 @@ export class ItemEntity {
   @Column()
   dp_name: string;
 
+  @Column()
+  dp_vendorIds: string;
+
+  @Column({ nullable: true })
+  dp_barcodes: string;
+
+  @Column({ nullable: true })
+  dp_length: number;
+
+  @Column({ nullable: true })
+  dp_width: number;
+
+  @Column({ nullable: true })
+  dp_height: number;
+
+  @Column({ nullable: true })
+  dp_weight: number;
+
   @Index('UNI_ctlItems_model', { unique: true })
   @Column({ length: 32 })
   dp_model: string;

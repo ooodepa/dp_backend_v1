@@ -8,6 +8,12 @@ export class DPCTLItems1680469415362 implements MigrationInterface {
         CREATE TABLE \`DP_CTL_Items\` (
             \`dp_id\` varchar(36) NOT NULL,
             \`dp_name\` varchar(255) NOT NULL,
+            \`dp_vendorIds\` varchar(255) NULL,
+            \`dp_barcodes\` varchar(255) NULL,
+            \`dp_length\` int NULL,
+            \`dp_width\` int NULL,
+            \`dp_height\` int NULL,
+            \`dp_weight\` int NULL,
             \`dp_model\` varchar(32) NOT NULL,
             \`dp_cost\` float NOT NULL,
             \`dp_photoUrl\` varchar(255) NOT NULL DEFAULT '',
