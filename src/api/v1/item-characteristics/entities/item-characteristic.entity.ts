@@ -17,4 +17,10 @@ export class ItemCharacteristicEntity {
 
   @Column({ default: false })
   dp_isHidden: boolean;
+
+  @Column({ default: false })
+  dp_isFolder: boolean;
+
+  @Column({ nullable: true, default: null })
+  dp_parentId: number;
 }

@@ -13,6 +13,8 @@ export class DPCTLItemCharacteristics1680468191818
             \`dp_unit\` varchar(16) DEFAULT '',
             \`dp_sortingIndex\` int NOT NULL DEFAULT '10000',
             \`dp_isHidden\` tinyint NOT NULL DEFAULT 0,
+            \`dp_isFolder\` tinyint NOT NULL DEFAULT 0,
+            \`dp_parentId\` int NULL,
             UNIQUE INDEX \`UNI_ctlItemCharacteristics_name\` (\`dp_name\`),
             PRIMARY KEY (\`dp_id\`)
         ) ENGINE = InnoDB
