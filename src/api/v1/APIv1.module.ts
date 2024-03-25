@@ -15,6 +15,7 @@ import { FavoriteItemsModule } from './favorite-items/favorite-items.module';
 import { ManagerModule } from './manager/manager.module';
 import { OrderStatusesModule } from './order-statuses/order-statuses.module';
 import { PortalNalogGovByModule } from './portal-nalog-gov-by/portal-nalog-gov-by.module';
+import { InvoiceModule } from './invoice/invoice.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { PortalNalogGovByModule } from './portal-nalog-gov-by/portal-nalog-gov-b
     ManagerModule,
     OrderStatusesModule,
     PortalNalogGovByModule,
+    InvoiceModule,
   ],
 })
 export class APIv1 {}

@@ -38,7 +38,7 @@ import { VerifyAccessTokenGuard } from 'src/guards/VerifyAccessTokenGuard.guard'
 export class ItemBrandsController {
   constructor(private readonly itemBrandsService: ItemBrandsService) {}
 
-  @ApiTags('any')
+  @ApiTags('ADMIN')
   @ApiResponse(SwaggerApiResponse.ServerError)
   @ApiBearerAuth('access-token')
   @UseGuards(IsAdministratorGuard)

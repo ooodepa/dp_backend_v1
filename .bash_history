@@ -34,50 +34,52 @@ yarn add axios
 yarn add js2xmlparser
 
 
-yarn nest g res res/users
+yarn nest g res api/v1/users
 yarn dev-migr-gen src/migrations/DP_CTL_Users
 yarn dev-migr-run
 yarn dev-migr-gen src/migrations/DP_DOC_ActivationAccount
 yarn dev-migr-run
 
-yarn nest g res res/sessions
+yarn nest g res api/v1/sessions
 yarn dev-migr-gen src/migrations/DP_DOC_Sessions
 yarn dev-migr-run
 yarn dev-migr-gen src/migrations/DP_DOC_ChangeEmail
 yarn dev-migr-run
 
-yarn nest g res res/item-categories
+yarn nest g res api/v1/item-categories
 yarn dev-migr-gen src/migrations/DP_CTL_ItemCategories
 
-yarn nest g res res/item-characteristics
+yarn nest g res api/v1/item-characteristics
 yarn dev-migr-gen src/migrations/DP_CTL_ItemCharacteristics
 
-yarn nest g res res/items
+yarn nest g res api/v1/items
 yarn dev-migr-gen src/migrations/DP_CTL_Items
 
-yarn nest g res res/articles
+yarn nest g res api/v1/articles
 yarn dev-migr-gen src/migrations/DP_DOC_Articles
 
-yarn nest g res res/comminucation-types
+yarn nest g res api/v1/comminucation-types
 yarn dev-migr-gen src/migrations/DP_CTL_CommunicationTypes
 
-yarn nest g res res/helpers
+yarn nest g res api/v1/helpers
 yarn dev-migr-gen src/migrations/DP_CTL_Helpers
 
-yarn nest g res res/item-brands
+yarn nest g res api/v1/item-brands
 yarn dev-migr-gen src/migrations/DP_CTL_ItemBrands
 
-yarn nest g res res/roles
+yarn nest g res api/v1/roles
 yarn dev-migr-gen src/migrations/DP_CTL_Roles
 
-yarn nest g res res/orders
+yarn nest g res api/v1/orders
 yarn dev-migr-gen src/migrations/DP_DOC_Orders
 
-yarn nest g res res/apk-versions
+yarn nest g res api/v1/apk-versions
 yarn dev-migr-gen src/migrations/DP_DOC_ApkVersions
 
-yarn nest g res res/manager
+yarn nest g res api/v1/manager
 
-yarn nest g res res/order-statuses
+yarn nest g res api/v1/order-statuses
 yarn dev-migr-gen src/migrations/DP_DOC_OrderStatuses
 yarn dev-migr-gen src/migrations/DP_DOC_Orders
+
+yarn nest g res api/v1/invoice

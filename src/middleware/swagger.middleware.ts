@@ -23,9 +23,11 @@ const SwaggerConfig = new DocumentBuilder()
       '- [/api/v1/orders](#/api_v1_orders) - заказы \n\n' +
       '- [/api/v1/articles](#/api_v1_articles) - новости (статьи) \n\n' +
       '- [/api/v1/contact-types](#/api_v1_contact-types) - типы контактов \n\n' +
+      '- [/api/v1/invoice](#/api_v1_invoice) - остатки \n\n' +
       '- [/api/v1/helpers](#/api_v1_helpers) - контакты юр. лица для клиентов \n\n' +
       '- [/api/v1/manager](#/api_v1_manager) - эндпоинты для менеджера \n\n' +
       '' +
+      /*
       '**Таблица - Роли и их доступные эндпоинты** \n\n' +
       '|Роль|Метод|Эндпоинт| \n' +
       '|---|---|---| \n' +
@@ -113,6 +115,7 @@ const SwaggerConfig = new DocumentBuilder()
       '|any|GET|/api/v1/helpers/{id}| \n' +
       '|ADMIN|PATCH|/api/v1/helpers/{id}| \n' +
       '|ADMIN|DELETE|/api/v1/helpers/{id}| \n' +
+      */
       '',
   )
   .setVersion('1.0.0')
