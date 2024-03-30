@@ -72,7 +72,7 @@ export class ItemBrandsService {
 
   async findOneByUrl(url: string): Promise<ItemBrandWithIdDto> {
     return await this.itemBrandEntity.findOneOrFail({
-      where: { dp_urlSegment: url },
+      where: { dp_seoUrlSegment: url },
     });
   }
 

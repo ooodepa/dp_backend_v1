@@ -110,7 +110,7 @@ export class ItemsService {
   async findAll(filter: FilterItemDto, res: Response) {
     if (filter.category) {
       const candidate = await this.itemCategoryEntity.findOne({
-        where: { dp_urlSegment: filter.category },
+        where: { dp_seoUrlSegment: filter.category },
       });
 
       if (!candidate) {
@@ -130,7 +130,7 @@ export class ItemsService {
     if (filter.brand) {
       const brand = await this.itemBrandEntity.findOne({
         where: {
-          dp_urlSegment: filter.brand,
+          dp_seoUrlSegment: filter.brand,
         },
       });
       const brandId = brand.dp_id;
@@ -152,11 +152,11 @@ export class ItemsService {
 
     const jsObject = await this.itemEntity.find({
       where: {
-        dp_model: filter.dp_model,
+        dp_seoUrlSegment: filter.dp_model,
         dp_itemCategoryId: categoriesId.length ? In(categoriesId) : undefined,
       },
       relations: ['dp_itemCharacteristics', 'dp_itemGalery'],
-      order: { dp_model: 'ASC', dp_itemCategoryId: 'ASC' },
+      order: { dp_seoUrlSegment: 'ASC', dp_itemCategoryId: 'ASC' },
     });
 
     if (filter.format === 'xml') {
@@ -169,9 +169,9 @@ export class ItemsService {
   }
 
   async findOneByModel(model: string) {
-    await this.itemEntity.findOneOrFail({ where: { dp_model: model } });
+    await this.itemEntity.findOneOrFail({ where: { dp_seoUrlSegment: model } });
     return await this.itemEntity.findOne({
-      where: { dp_model: model },
+      where: { dp_seoUrlSegment: model },
       relations: ['dp_itemCharacteristics', 'dp_itemGalery'],
     });
   }
@@ -179,9 +179,9 @@ export class ItemsService {
   async findModels(dto: FindItemModelsDto, res: Response) {
     const status = HttpStatus.OK;
     const json = await this.itemEntity.find({
-      where: { dp_model: In(dto.models) },
+      where: { dp_seoUrlSegment: In(dto.models) },
       relations: ['dp_itemCharacteristics', 'dp_itemGalery'],
-      order: { dp_model: 'DESC' },
+      order: { dp_seoUrlSegment: 'DESC' },
     });
     res.status(status).send(json);
   }
@@ -191,14 +191,14 @@ export class ItemsService {
     const json = await this.itemEntity.find({
       where: { dp_id: In(dto.ids) },
       relations: ['dp_itemCharacteristics', 'dp_itemGalery'],
-      order: { dp_model: 'DESC' },
+      order: { dp_seoUrlSegment: 'DESC' },
     });
     res.status(status).send(json);
   }
 
   async getImageByModel(res: Response, model: string) {
     const candidate = await this.itemEntity.findOne({
-      where: { dp_model: model },
+      where: { dp_seoUrlSegment: model },
       select: {
         dp_photoUrl: true,
       },
@@ -240,8 +240,8 @@ export class ItemsService {
     const status = HttpStatus.OK;
     const json = await this.itemEntity.find({
       where: [
-        { dp_model: Like(`%${search}%`) },
-        { dp_name: Like(`%${search}%`) },
+        { dp_seoUrlSegment: Like(`%${search}%`) },
+        { dp_seoTitle: Like(`%${search}%`) },
         { dp_seoKeywords: Like(`%${search}%`) },
         {
           dp_itemCharacteristics: {
@@ -258,8 +258,8 @@ export class ItemsService {
     const status = HttpStatus.OK;
     const json = await this.itemEntity.find({
       where: [
-        { dp_model: Like(`%${search}%`) },
-        { dp_name: Like(`%${search}%`) },
+        { dp_seoUrlSegment: Like(`%${search}%`) },
+        { dp_seoTitle: Like(`%${search}%`) },
       ],
       relations: ['dp_itemCharacteristics', 'dp_itemGalery'],
     });

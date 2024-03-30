@@ -17,37 +17,85 @@ export class ItemEntity {
   @PrimaryGeneratedColumn('uuid')
   dp_id: string;
 
-  @Index('UNI_ctlItems_name', { unique: true })
+  @Column({ length: 50 })
+  dp_1cCode: string;
+
+  @Column({ length: 150 })
+  dp_1cDescription: string;
+
+  @Column({ default: false })
+  dp_1cIsFolder: boolean;
+
   @Column()
-  dp_name: string;
+  dp_1cParentId: string;
+
+  @Column()
+  dp_seoTitle: string;
+
+  // @Index('UNI_ctlItems_seoDescription', { unique: true })
+  @Column({ type: 'text' })
+  dp_seoDescription: string;
+
+  @Column({ type: 'text' })
+  dp_seoKeywords: string;
+
+  @Index('UNI_ctlItems_model', { unique: true })
+  @Column({ length: 50 })
+  dp_seoUrlSegment: string;
+
+  @Column({ type: 'text' })
+  dp_textCharacteristics: string;
+
+  @Column({ type: 'text' })
+  dp_photos: string;
+
+  @Column({ type: 'text' })
+  dp_photos360: string;
+
+  @Column()
+  dp_photoUrl: string;
+
+  @Column()
+  dp_wholesaleQuantity: number;
+
+  @Column({ length: 255 })
+  dp_brand: string;
+
+  @Column({ length: 255 })
+  dp_combinedName: string;
 
   @Column()
   dp_vendorIds: string;
 
-  @Column({ nullable: true })
+  @Column({ default: 10000 })
+  dp_sortingIndex: number;
+
+  @Column({ type: 'text' })
+  dp_youtubeIds: string;
+
+  @Column()
   dp_barcodes: string;
 
-  @Column({ nullable: true })
+  @Column()
   dp_length: number;
 
-  @Column({ nullable: true })
+  @Column()
   dp_width: number;
 
-  @Column({ nullable: true })
+  @Column()
   dp_height: number;
 
-  @Column({ nullable: true })
+  @Column()
   dp_weight: number;
-
-  @Index('UNI_ctlItems_model', { unique: true })
-  @Column({ length: 32 })
-  dp_model: string;
 
   @Column({ type: 'float' })
   dp_cost: number;
 
-  @Column({ default: '' })
-  dp_photoUrl: string;
+  @Column({ length: '3' })
+  dp_currancy: string;
+
+  @Column({ default: false })
+  dp_isHidden: boolean;
 
   @ManyToOne(() => ItemCategoryEntity, (e: ItemCategoryEntity) => e.dp_id, {
     onDelete: 'CASCADE',
@@ -66,20 +114,4 @@ export class ItemEntity {
   @OneToMany(() => LstItemGaleryEntity, (e: LstItemGaleryEntity) => e.dp_itemId)
   @JoinColumn({ name: 'dp_id' })
   dp_itemGalery: LstItemGaleryEntity[];
-
-  @Column({ length: 2550, default: '-' })
-  dp_seoKeywords: string;
-
-  // @Index('UNI_ctlItems_seoDescription', { unique: true })
-  @Column({ length: 2550 })
-  dp_seoDescription: string;
-
-  @Column({ default: false })
-  dp_isHidden: boolean;
-
-  @Column({ default: false })
-  dp_isFolder: boolean;
-
-  @Column({ nullable: true, default: null })
-  dp_parentId: string;
 }

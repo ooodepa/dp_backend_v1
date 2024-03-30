@@ -7,24 +7,33 @@ export class ItemBrandEntity {
 
   @Index('UNI_ctlItemBrands_name', { unique: true })
   @Column()
-  dp_name: string;
+  dp_seoTitle: string;
+
+  // @Index('UNI_ctlItemBrands_seoDescription', { unique: true })
+  @Column({ type: 'text' })
+  dp_seoDescription: string;
+
+  @Column({ type: 'text' })
+  dp_seoKeywords: string;
+
+  @Index('UNI_ctlItemBrands_urlSegment', { unique: true })
+  @Column()
+  dp_seoUrlSegment: string;
+
+  @Column({ type: 'text' })
+  dp_photos: string;
+
+  @Column({ type: 'text' })
+  dp_photos360: string;
 
   @Column({ default: '' })
   dp_photoUrl: string;
 
-  @Index('UNI_ctlItemBrands_urlSegment', { unique: true })
-  @Column()
-  dp_urlSegment: string;
-
   @Column({ default: 10000 })
   dp_sortingIndex: number;
 
-  @Column({ length: 2550, default: '-' })
-  dp_seoKeywords: string;
-
-  // @Index('UNI_ctlItemBrands_seoDescription', { unique: true })
-  @Column({ length: 2550 })
-  dp_seoDescription: string;
+  @Column({ type: 'text' })
+  dp_youtubeIds: string;
 
   @Column({ default: false })
   dp_isHidden: boolean;

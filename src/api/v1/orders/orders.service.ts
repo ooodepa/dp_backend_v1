@@ -106,8 +106,8 @@ export class OrdersService {
 
             emailOrderItems.push({
               index: length,
-              dp_name: item.dp_name,
-              dp_model: item.dp_model,
+              dp_name: item.dp_seoTitle,
+              dp_model: item.dp_seoUrlSegment,
               dp_photoUrl: item.dp_photoUrl,
               dp_cost: costStr,
               dp_count: orderItem.dp_count,
@@ -239,8 +239,8 @@ export class OrdersService {
 
             emailOrderItems.push({
               index: length,
-              dp_name: item.dp_name,
-              dp_model: item.dp_model,
+              dp_name: item.dp_seoTitle,
+              dp_model: item.dp_seoUrlSegment,
               dp_photoUrl: item.dp_photoUrl,
               dp_cost: costStr,
               dp_count: orderItem.dp_count,
@@ -503,7 +503,7 @@ export class OrdersService {
 
             array.push([
               `${i + 1}`,
-              `${item.dp_model} \n${item.dp_name}`,
+              `${item.dp_seoUrlSegment} \n${item.dp_seoTitle}`,
               'шт.',
               `${costStr}`,
               `${count}`,
@@ -516,8 +516,8 @@ export class OrdersService {
 
             emailOrderItems.push({
               index: length,
-              dp_name: item.dp_name,
-              dp_model: item.dp_model,
+              dp_name: item.dp_seoTitle,
+              dp_model: item.dp_seoUrlSegment,
               dp_photoUrl: item.dp_photoUrl,
               dp_cost: costStr,
               dp_count: orderItem.dp_count,

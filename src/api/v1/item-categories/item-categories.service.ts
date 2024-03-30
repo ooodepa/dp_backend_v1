@@ -55,7 +55,7 @@ export class ItemCategoriesService {
   async findAll(res: Response, filter: FilterItemCategoryDto) {
     if (filter.brand) {
       const candidate = await this.itemBrandEntity.findOne({
-        where: { dp_urlSegment: filter.brand },
+        where: { dp_seoUrlSegment: filter.brand },
       });
 
       if (!candidate) {
@@ -96,7 +96,7 @@ export class ItemCategoriesService {
 
   async findOneByUrl(url: string) {
     return await this.itemCategoryEntity.findOneOrFail({
-      where: { dp_urlSegment: url },
+      where: { dp_seoUrlSegment: url },
     });
   }
 
