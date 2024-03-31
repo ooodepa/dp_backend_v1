@@ -1,15 +1,21 @@
-import { ApiProperty } from '@nestjs/swagger';
 import {
   IsBoolean,
   IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
+  IsUUID,
 } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
+import { Exclude } from 'class-transformer';
 import ItemsApiProperty from '../items.swagger';
+import LstItemGaleryApiProperty from '../lst-item-galery.swagger';
+import LstItemCharacteristicsApiProperty from '../lst-item-characteristics.swagger';
 
 export default class ItemDto {
+  dp_id: string;
+
   @IsString()
   @IsOptional()
   @ApiProperty()
@@ -146,4 +152,42 @@ export default class ItemDto {
   @IsOptional()
   @ApiProperty(ItemsApiProperty.dp_itemCategoryId)
   dp_itemCategoryId: number;
+
+  dp_itemCharacteristics: LstItemCharacteristicDto[];
+  dp_itemGalery: LstItemGaleryDto[]
+}
+
+class LstItemCharacteristicDto {
+  @Exclude()
+  dp_id: number;
+
+  @IsUUID()
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty(LstItemCharacteristicsApiProperty.dp_itemId)
+  dp_itemId: string;
+
+  @IsNumber()
+  @ApiProperty(LstItemCharacteristicsApiProperty.dp_characteristicId)
+  dp_characteristicId: number;
+
+  @IsString()
+  @ApiProperty(LstItemCharacteristicsApiProperty.dp_value)
+  dp_value: string;
+}
+
+class LstItemGaleryDto {
+  @Exclude()
+  dp_id: number;
+
+  @IsNotEmpty()
+  @IsUUID()
+  @IsString()
+  @ApiProperty(LstItemGaleryApiProperty.dp_itemId)
+  dp_itemId: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty(LstItemGaleryApiProperty.dp_photoUrl)
+  dp_photoUrl: string;
 }
