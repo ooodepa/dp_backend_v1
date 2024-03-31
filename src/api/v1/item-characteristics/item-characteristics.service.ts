@@ -1,9 +1,8 @@
 import { Response } from 'express';
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, In, Repository } from 'typeorm';
 
-import XmlController from 'src/packages/XmlController';
 import HttpResponse from 'src/utils/HttpResponseDto/HttpResponse';
 import HttpExceptions from 'src/utils/HttpResponseDto/HttpException';
 import ItemCharacteristicWithIdDto from './dto/item-characteristic-with-id.dto';
@@ -36,13 +35,7 @@ export class ItemCharacteristicsService {
       order: { dp_name: 'ASC' },
     });
 
-    if (params.format === 'xml') {
-      res.set('Content-Type', 'application/xml');
-      res.send(XmlController.JSObject2XmlString(jsObject));
-    } else {
-      res.set('Content-Type', 'application/json');
-      res.send(jsObject);
-    }
+    res.status(HttpStatus.OK).send(jsObject);
   }
 
   async findOne(id: number) {

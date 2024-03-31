@@ -61,7 +61,7 @@ export class ItemsController {
   }
 
   @ApiTags('ADMIN')
-  @ApiOperation(SwaggerApiOperation.CreateUuid)
+  @ApiOperation(SwaggerApiOperation.CreateBulkUuid)
   @ApiResponse(SwaggerApiResponse.CreatedUuid)
   @ApiResponse(SwaggerApiResponse.ValidationError)
   @ApiResponse(SwaggerApiResponse.UnauthorizedAdmin)
@@ -70,13 +70,13 @@ export class ItemsController {
   @ApiBearerAuth('access-token')
   @UseGuards(IsAdministratorGuard)
   @UseGuards(VerifyAccessTokenGuard)
-  @Post()
-  create(@Body() dto: CreateItemDto) {
+  @Post('one')
+  createOne(@Body() dto: CreateItemDto) {
     return this.itemsService.create(dto);
   }
 
   @ApiTags('ADMIN')
-  @ApiOperation(SwaggerApiOperation.CreateBulkUuid)
+  @ApiOperation(SwaggerApiOperation.CreateUuid)
   @ApiResponse(SwaggerApiResponse.CreatedBulkUuid)
   @ApiResponse(SwaggerApiResponse.ValidationError)
   @ApiResponse(SwaggerApiResponse.UnauthorizedAdmin)
@@ -85,7 +85,7 @@ export class ItemsController {
   @ApiBearerAuth('access-token')
   @UseGuards(IsAdministratorGuard)
   @UseGuards(VerifyAccessTokenGuard)
-  @Post('bulk')
+  @Post()
   createBulk(@Body() dto: CreateBulkItemDto) {
     return this.itemsService.createBulk(dto.bulk);
   }
@@ -94,43 +94,6 @@ export class ItemsController {
   @ApiOperation(SwaggerApiOperation.Find)
   @ApiResponse({
     status: HttpStatus.OK,
-    description: `Получили список записей\n\n
-Пример XML:\n\n
-- \`<?xml version="1.0" encoding="UTF-8"?>\`
-- \`<ARRAY>\`
-  - \`<OBJECT>\`
-    - \`<dp_id>${ItemsApiProperty.dp_id.example}</dp_id>\`
-    - \`<dp_itemCategoryId>${ItemsApiProperty.dp_itemCategoryId.example}</dp_itemCategoryId>\`
-    - \`<dp_name>${ItemsApiProperty.dp_name.example}</dp_name>\`
-    - \`<dp_photoUrl>${ItemsApiProperty.dp_photoUrl.example}</dp_photoUrl>\`
-    - \`<dp_model>${ItemsApiProperty.dp_model.example}</dp_model>\`
-    - \`<dp_seoKeywords>${ItemsApiProperty.dp_seoKeywords.example}</dp_seoKeywords>\`
-    - \`<dp_seoDescription>${ItemsApiProperty.dp_seoDescription.example}</dp_seoDescription>\`
-    - \`<dp_isHidden>${ItemsApiProperty.dp_isHidden.example}</dp_isHidden>\`
-    - Массив характеристик:
-      - \`<dp_itemCharacteristics>\`
-        - \`<dp_id></dp_id>\`
-        - \`<dp_itemId></dp_itemId>\`
-        - \`<dp_characteristicId></dp_characteristicId>\`
-        - \`<dp_value></dp_value>\`
-      - \`</dp_itemCharacteristics>\`
-      - \`<dp_itemCharacteristics>\`
-        - \`<!-- Второй элемент массива по аналогии -->\`
-      - \`</dp_itemCharacteristics>\`
-    - Галерея картинок:
-      - \`<dp_itemGalery>\`
-        - \`<dp_id></dp_id>\`
-        - \`<dp_itemId></dp_itemId>\`
-        - \`<dp_photoUrl></dp_photoUrl>\`
-      - \`</dp_itemGalery>\`
-      - \`<dp_itemGalery>\`
-        - \`<!-- Второй элемент массива по аналогии -->\`
-      - \`</dp_itemGalery>\`
-  - \`</OBJECT>\`
-  - \`<OBJECT>\`
-    - \`<!-- Аналогично как и первый элемент массива -->\`
-  - \`</OBJECT>\`
-- \`</ARRAY>\``,
     type: [GetItemDto],
   })
   @ApiResponse(SwaggerApiResponse.ServerErrorAndTransaction)
@@ -207,12 +170,12 @@ export class ItemsController {
   @UseGuards(IsAdministratorGuard)
   @UseGuards(VerifyAccessTokenGuard)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() dto: UpdateItemDto) {
+  updateOne(@Param('id') id: string, @Body() dto: UpdateItemDto) {
     return this.itemsService.update(id, dto);
   }
 
   @ApiTags('ADMIN')
-  @ApiOperation(SwaggerApiOperation.UpdateByUuid)
+  @ApiOperation(SwaggerApiOperation.UpdateBulk)
   @ApiResponse(SwaggerApiResponse.UpdatedByUuid)
   @ApiResponse(SwaggerApiResponse.ValidationError)
   @ApiResponse(SwaggerApiResponse.UnauthorizedAdmin)
@@ -222,7 +185,7 @@ export class ItemsController {
   @ApiBearerAuth('access-token')
   @UseGuards(IsAdministratorGuard)
   @UseGuards(VerifyAccessTokenGuard)
-  @Put('bulk')
+  @Put()
   updateBulk(@Body() dto: UpdateBulkItemDto) {
     return this.itemsService.updateBulk(dto.bulk);
   }
@@ -237,7 +200,7 @@ export class ItemsController {
   @UseGuards(IsAdministratorGuard)
   @UseGuards(VerifyAccessTokenGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  removeOne(@Param('id') id: string) {
     return this.itemsService.remove(id);
   }
 }

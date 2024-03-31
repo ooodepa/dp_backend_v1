@@ -8,12 +8,13 @@ import { ItemEntity } from './entities/item.entity';
 import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
 import { FilterItemDto } from './dto/filter-item.dto';
-import XmlController from 'src/packages/XmlController';
+import getStatusByCode from 'src/utils/getStatusByCode';
 import { FindItemIdsDto } from './dto/find-item-ids.dto';
 import { FindItemModelsDto } from './dto/find-item-models.dto';
 import HttpResponse from 'src/utils/HttpResponseDto/HttpResponse';
 import { LstItemGaleryEntity } from './entities/item-galery.entity';
 import HttpExceptions from 'src/utils/HttpResponseDto/HttpException';
+import HttpResponsePagination from 'src/dto/HttpResponsePagination.dto';
 import { ItemBrandEntity } from '../item-brands/entities/item-brand.entity';
 import { LstItemCharacteristicEntity } from './entities/item-characteristics.entity';
 import { ItemCategoryEntity } from '../item-categories/entities/item-category.entity';
@@ -107,65 +108,85 @@ export class ItemsService {
     return HttpResponse.successTransactionCreate();
   }
 
-  async findAll(filter: FilterItemDto, res: Response) {
-    if (filter.category) {
-      const candidate = await this.itemCategoryEntity.findOne({
-        where: { dp_seoUrlSegment: filter.category },
-      });
+  async findAll(query: FilterItemDto, res: Response) {
+    const keys = query.fields.split(',');
+    const availableFields = this.getAvailableFields();
 
-      if (!candidate) {
-        if (filter.format === 'xml') {
-          res.set('Content-Type', 'application/xml');
-          res.send(XmlController.JSObject2XmlString([]));
-        } else {
-          res.set('Content-Type', 'application/json');
-          res.send([]);
-        }
+    const select: Record<string, boolean> = {};
+    keys.forEach((key) => {
+      if (availableFields.includes(key)) {
+        select[key] = true;
       }
-
-      filter.dp_itemCategoryId = `${candidate.dp_id}`;
-    }
-
-    const categoriesId: number[] = [];
-    if (filter.brand) {
-      const brand = await this.itemBrandEntity.findOne({
-        where: {
-          dp_seoUrlSegment: filter.brand,
-        },
-      });
-      const brandId = brand.dp_id;
-
-      const categories = await this.itemCategoryEntity.find({
-        where: {
-          dp_itemBrandId: brandId,
-        },
-      });
-
-      for (let i = 0; i < categories.length; ++i) {
-        categoriesId.push(categories[i].dp_id);
-      }
-    }
-
-    if (filter.dp_itemCategoryId) {
-      categoriesId.push(Number(filter.dp_itemCategoryId));
-    }
-
-    const jsObject = await this.itemEntity.find({
-      where: {
-        dp_seoUrlSegment: filter.dp_model,
-        dp_itemCategoryId: categoriesId.length ? In(categoriesId) : undefined,
-      },
-      relations: ['dp_itemCharacteristics', 'dp_itemGalery'],
-      order: { dp_seoUrlSegment: 'ASC', dp_itemCategoryId: 'ASC' },
     });
 
-    if (filter.format === 'xml') {
-      res.set('Content-Type', 'application/xml');
-      res.send(XmlController.JSObject2XmlString(jsObject));
-    } else {
-      res.set('Content-Type', 'application/json');
-      res.send(jsObject);
-    }
+    const CURRENT_PAGE = Number(query.page) || 1;
+    const LIMIT_ENTITIES = Number(query.limit) || 100;
+    const SKIP_ENTITIES = (CURRENT_PAGE - 1) * LIMIT_ENTITIES;
+
+    const [ENTITIES, TOTAL_ENTITIES] = keys.includes('all')
+      ? await this.itemEntity.findAndCount({
+          skip: SKIP_ENTITIES,
+          take: LIMIT_ENTITIES,
+          order: { dp_seoUrlSegment: 'ASC' },
+        })
+      : await this.itemEntity.findAndCount({
+          select,
+          skip: SKIP_ENTITIES,
+          take: LIMIT_ENTITIES,
+          order: { dp_seoUrlSegment: 'ASC' },
+        });
+
+    const LAST_PAGE = Math.ceil(TOTAL_ENTITIES / LIMIT_ENTITIES);
+
+    const CODE = HttpStatus.OK;
+    const HTTP_RESPONSE: HttpResponsePagination = {
+      code: CODE,
+      status: getStatusByCode(CODE),
+      message: 'Получили несколько сущностей',
+      pagination: {
+        current_page: CURRENT_PAGE,
+        last_page: LAST_PAGE,
+        total_entities: TOTAL_ENTITIES,
+        limit_entities: LIMIT_ENTITIES,
+        skip_entities: SKIP_ENTITIES,
+      },
+      response: ENTITIES,
+    };
+
+    res.status(CODE).send(HTTP_RESPONSE);
+  }
+
+  private getAvailableFields(): string[] {
+    return [
+      'dp_id',
+      'dp_1cCode',
+      'dp_1cDescription',
+      'dp_1cIsFolder',
+      'dp_1cParentId',
+      'dp_barcodes',
+      'dp_brand',
+      'dp_combinedName',
+      'dp_cost',
+      'dp_currancy',
+      'dp_height',
+      'dp_isHidden',
+      'dp_itemCategoryId',
+      'dp_length',
+      'dp_photos',
+      'dp_photos360',
+      'dp_photoUrl',
+      'dp_seoDescription',
+      'dp_seoKeywords',
+      'dp_seoTitle',
+      'dp_seoUrlSegment',
+      'dp_sortingIndex',
+      'dp_textCharacteristics',
+      'dp_vendorIds',
+      'dp_weight',
+      'dp_wholesaleQuantity',
+      'dp_width',
+      'dp_youtubeIds',
+    ];
   }
 
   async findOneByModel(model: string) {

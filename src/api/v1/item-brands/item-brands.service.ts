@@ -3,7 +3,6 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, In, Repository } from 'typeorm';
 
-import XmlController from 'src/packages/XmlController';
 import CreateItemBrandDto from './dto/create-item-brand.dto';
 import ItemBrandWithIdDto from './dto/item-brand-with-id.dto';
 import { ItemBrandEntity } from './entities/item-brand.entity';
@@ -57,13 +56,8 @@ export class ItemBrandsService {
       },
     });
 
-    if (filter.format === 'xml') {
-      res.set('Content-Type', 'application/xml');
-      res.send(XmlController.JSObject2XmlString(jsObject));
-    } else {
-      res.set('Content-Type', 'application/json');
-      res.send(jsObject);
-    }
+
+      return res.status(HttpStatus.OK).send(jsObject);
   }
 
   async findOne(id: number): Promise<ItemBrandWithIdDto> {
