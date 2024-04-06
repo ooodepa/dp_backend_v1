@@ -154,7 +154,7 @@ export default class ItemDto {
   dp_itemCategoryId: number;
 
   dp_itemCharacteristics: LstItemCharacteristicDto[];
-  dp_itemGalery: LstItemGaleryDto[]
+  dp_itemGalery: LstItemGaleryDto[];
 }
 
 class LstItemCharacteristicDto {

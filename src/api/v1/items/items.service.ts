@@ -76,7 +76,36 @@ export class ItemsService {
       for (let i = 0; i < bulk.length; ++i) {
         const savedItem = await queryRunner.manager
           .getRepository(ItemEntity)
-          .save(bulk[i]);
+          .save({
+            dp_1cCode: bulk[i].dp_1cCode,
+            dp_1cDescription: bulk[i].dp_1cDescription,
+            dp_1cIsFolder: bulk[i].dp_1cIsFolder,
+            dp_1cParentId: bulk[i].dp_1cParentId,
+            dp_barcodes: bulk[i].dp_barcodes,
+            dp_brand: bulk[i].dp_brand,
+            dp_combinedName: bulk[i].dp_combinedName,
+            dp_cost: bulk[i].dp_cost,
+            dp_currancy: bulk[i].dp_currancy,
+            dp_height: bulk[i].dp_height,
+            dp_isHidden: bulk[i].dp_isHidden,
+            dp_itemCategoryId: bulk[i].dp_itemCategoryId,
+            dp_itemCharacteristics: bulk[i].dp_itemCharacteristics,
+            dp_length: bulk[i].dp_length,
+            dp_photos: bulk[i].dp_photos,
+            dp_photos360: bulk[i].dp_photos360,
+            dp_photoUrl: bulk[i].dp_photoUrl,
+            dp_seoDescription: bulk[i].dp_seoDescription,
+            dp_seoKeywords: bulk[i].dp_seoKeywords,
+            dp_seoTitle: bulk[i].dp_seoTitle,
+            dp_seoUrlSegment: bulk[i].dp_seoUrlSegment,
+            dp_sortingIndex: bulk[i].dp_sortingIndex,
+            dp_textCharacteristics: bulk[i].dp_textCharacteristics,
+            dp_vendorIds: bulk[i].dp_vendorIds,
+            dp_weight: bulk[i].dp_weight,
+            dp_wholesaleQuantity: bulk[i].dp_wholesaleQuantity,
+            dp_width: bulk[i].dp_weight,
+            dp_youtubeIds: bulk[i].dp_youtubeIds,
+          });
 
         const uuid = savedItem.dp_id;
 
