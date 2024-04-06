@@ -1,15 +1,13 @@
 import { Response } from 'express';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, In, Repository } from 'typeorm';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
-import XmlController from 'src/packages/XmlController';
 import CreateItemBrandDto from './dto/create-item-brand.dto';
 import ItemBrandWithIdDto from './dto/item-brand-with-id.dto';
 import { ItemBrandEntity } from './entities/item-brand.entity';
 import { UpdateItemBrandDto } from './dto/update-item-brand.dto';
 import HttpResponse from 'src/utils/HttpResponseDto/HttpResponse';
-import { FilterItemBrandDto } from './dto/filter-item-category.dto';
 import ItemBrandExcludeIdDto from './dto/item-brand-exclude-id.dto';
 import HttpExceptions from 'src/utils/HttpResponseDto/HttpException';
 import HttpResponseDto from 'src/utils/HttpResponseDto/HttpResponseDto.dto';
@@ -50,20 +48,14 @@ export class ItemBrandsService {
     return HttpResponse.successBulkCreate();
   }
 
-  async findAll(res: Response, filter: FilterItemBrandDto) {
+  async findAll(res: Response) {
     const jsObject = await this.itemBrandEntity.find({
       order: {
         dp_sortingIndex: 'ASC',
       },
     });
 
-    if (filter.format === 'xml') {
-      res.set('Content-Type', 'application/xml');
-      res.send(XmlController.JSObject2XmlString(jsObject));
-    } else {
-      res.set('Content-Type', 'application/json');
-      res.send(jsObject);
-    }
+    return res.status(HttpStatus.OK).send(jsObject);
   }
 
   async findOne(id: number): Promise<ItemBrandWithIdDto> {

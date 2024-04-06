@@ -10,7 +10,6 @@ import {
   Query,
   UseGuards,
   Res,
-  HttpStatus,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -21,7 +20,6 @@ import {
 import { Response } from 'express';
 
 import GetItemDto from './dto/get-item.dto';
-import ItemsApiProperty from './items.swagger';
 import { ItemsService } from './items.service';
 import SearchItemsDto from './dto/search-items.dto';
 import { CreateItemDto } from './dto/create-item.dto';
@@ -92,47 +90,7 @@ export class ItemsController {
 
   @ApiTags('any')
   @ApiOperation(SwaggerApiOperation.Find)
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: `Получили список записей\n\n
-Пример XML:\n\n
-- \`<?xml version="1.0" encoding="UTF-8"?>\`
-- \`<ARRAY>\`
-  - \`<OBJECT>\`
-    - \`<dp_id>${ItemsApiProperty.dp_id.example}</dp_id>\`
-    - \`<dp_itemCategoryId>${ItemsApiProperty.dp_itemCategoryId.example}</dp_itemCategoryId>\`
-    - \`<dp_name>${ItemsApiProperty.dp_name.example}</dp_name>\`
-    - \`<dp_photoUrl>${ItemsApiProperty.dp_photoUrl.example}</dp_photoUrl>\`
-    - \`<dp_model>${ItemsApiProperty.dp_model.example}</dp_model>\`
-    - \`<dp_seoKeywords>${ItemsApiProperty.dp_seoKeywords.example}</dp_seoKeywords>\`
-    - \`<dp_seoDescription>${ItemsApiProperty.dp_seoDescription.example}</dp_seoDescription>\`
-    - \`<dp_isHidden>${ItemsApiProperty.dp_isHidden.example}</dp_isHidden>\`
-    - Массив характеристик:
-      - \`<dp_itemCharacteristics>\`
-        - \`<dp_id></dp_id>\`
-        - \`<dp_itemId></dp_itemId>\`
-        - \`<dp_characteristicId></dp_characteristicId>\`
-        - \`<dp_value></dp_value>\`
-      - \`</dp_itemCharacteristics>\`
-      - \`<dp_itemCharacteristics>\`
-        - \`<!-- Второй элемент массива по аналогии -->\`
-      - \`</dp_itemCharacteristics>\`
-    - Галерея картинок:
-      - \`<dp_itemGalery>\`
-        - \`<dp_id></dp_id>\`
-        - \`<dp_itemId></dp_itemId>\`
-        - \`<dp_photoUrl></dp_photoUrl>\`
-      - \`</dp_itemGalery>\`
-      - \`<dp_itemGalery>\`
-        - \`<!-- Второй элемент массива по аналогии -->\`
-      - \`</dp_itemGalery>\`
-  - \`</OBJECT>\`
-  - \`<OBJECT>\`
-    - \`<!-- Аналогично как и первый элемент массива -->\`
-  - \`</OBJECT>\`
-- \`</ARRAY>\``,
-    type: [GetItemDto],
-  })
+  @ApiResponse({ ...SwaggerApiResponse.Finded, type: [GetItemDto] })
   @ApiResponse(SwaggerApiResponse.ServerErrorAndTransaction)
   @Get()
   findAll(@Query() filter: FilterItemDto, @Res() res: Response) {

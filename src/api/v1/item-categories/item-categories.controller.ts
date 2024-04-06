@@ -10,7 +10,6 @@ import {
   Query,
   UseGuards,
   Res,
-  HttpStatus,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -22,7 +21,6 @@ import { Response } from 'express';
 
 import { GetItemCategoryDto } from './dto/get-item-category.dto';
 import { ItemCategoriesService } from './item-categories.service';
-import ItemCategoriesApiProperty from './item-categories.swagger';
 import SwaggerApiResponse from 'src/utils/Swagger/SwaggerApiResponse';
 import { CreateItemCategoryDto } from './dto/create-item-category.dto';
 import { UpdateItemCategoryDto } from './dto/update-item-category.dto';
@@ -80,29 +78,7 @@ export class ItemCategoriesController {
 
   @ApiTags('any')
   @ApiOperation(SwaggerApiOperation.Find)
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: `Получили список записей\n\n
-Пример XML:\n\n
-- \`<?xml version="1.0" encoding="UTF-8"?>\`
-- \`<ARRAY>\`
-  - \`<OBJECT>\`
-    - \`<dp_id>${ItemCategoriesApiProperty.dp_id.example}</dp_id>\`
-    - \`<dp_itemBrandId>${ItemCategoriesApiProperty.dp_itemBrandId.example}</dp_itemBrandId>\`
-    - \`<dp_name>${ItemCategoriesApiProperty.dp_name.example}</dp_name>\`
-    - \`<dp_photoUrl>${ItemCategoriesApiProperty.dp_photoUrl.example}</dp_photoUrl>\`
-    - \`<dp_urlSegment>${ItemCategoriesApiProperty.dp_urlSegment.example}</dp_urlSegment>\`
-    - \`<dp_sortingIndex>${ItemCategoriesApiProperty.dp_sortingIndex.example}</dp_sortingIndex>\`
-    - \`<dp_seoKeywords>${ItemCategoriesApiProperty.dp_seoKeywords.example}</dp_seoKeywords>\`
-    - \`<dp_seoDescription>${ItemCategoriesApiProperty.dp_seoDescription.example}</dp_seoDescription>\`
-    - \`<dp_isHidden>${ItemCategoriesApiProperty.dp_isHidden.example}</dp_isHidden>\`
-  - \`</OBJECT>\`
-  - \`<OBJECT>\`
-    - \`<!-- Аналогично как и первый элемент массива -->\`
-  - \`</OBJECT>\`
-- \`</ARRAY>\``,
-    type: [GetItemCategoryDto],
-  })
+  @ApiResponse({ ...SwaggerApiResponse.Finded, type: [GetItemCategoryDto] })
   @ApiResponse(SwaggerApiResponse.ServerError)
   @Get()
   findAll(@Res() res: Response, @Query() filter: FilterItemCategoryDto) {

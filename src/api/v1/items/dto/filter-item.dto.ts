@@ -34,13 +34,4 @@ export class FilterItemDto {
   @IsOptional()
   @IsString()
   brand: string;
-
-  @ApiProperty({
-    required: false,
-    example: 'xml',
-    description: 'Например: `xml`, `json`.',
-  })
-  @IsOptional()
-  @IsString()
-  format: 'json' | 'xml' | string;
 }

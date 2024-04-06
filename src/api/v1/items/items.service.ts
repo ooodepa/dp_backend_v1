@@ -1,14 +1,13 @@
 import { Response } from 'express';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 import { DataSource, In, Like, Repository } from 'typeorm';
+import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 
 import ItemWithIdDto from './dto/item-with-id.dto';
 import { ItemEntity } from './entities/item.entity';
 import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
 import { FilterItemDto } from './dto/filter-item.dto';
-import XmlController from 'src/packages/XmlController';
 import { FindItemIdsDto } from './dto/find-item-ids.dto';
 import { FindItemModelsDto } from './dto/find-item-models.dto';
 import HttpResponse from 'src/utils/HttpResponseDto/HttpResponse';
@@ -143,13 +142,8 @@ export class ItemsService {
       });
 
       if (!candidate) {
-        if (filter.format === 'xml') {
-          res.set('Content-Type', 'application/xml');
-          res.send(XmlController.JSObject2XmlString([]));
-        } else {
-          res.set('Content-Type', 'application/json');
-          res.send([]);
-        }
+        res.status(HttpStatus.OK).send([]);
+        return;
       }
 
       filter.dp_itemCategoryId = `${candidate.dp_id}`;
@@ -188,13 +182,7 @@ export class ItemsService {
       order: { dp_seoUrlSegment: 'ASC', dp_itemCategoryId: 'ASC' },
     });
 
-    if (filter.format === 'xml') {
-      res.set('Content-Type', 'application/xml');
-      res.send(XmlController.JSObject2XmlString(jsObject));
-    } else {
-      res.set('Content-Type', 'application/json');
-      res.send(jsObject);
-    }
+    res.status(HttpStatus.OK).send(jsObject);
   }
 
   async findOneByModel(model: string) {

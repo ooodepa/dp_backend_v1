@@ -40,7 +40,6 @@
     "cross-env": "^7.0.3",
     "crypto-js": "^4.1.1",
     "exceljs": "^4.3.0",
-    "js2xmlparser": "^5.0.0",
     "mysql2": "^3.2.4",
     "nodemailer": "^6.9.1",
     "number-to-words-ru": "^2.3.6",

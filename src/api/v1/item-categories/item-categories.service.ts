@@ -1,9 +1,8 @@
 import { Response } from 'express';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, In, Repository } from 'typeorm';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
-import XmlController from 'src/packages/XmlController';
 import HttpResponse from 'src/utils/HttpResponseDto/HttpResponse';
 import ItemCategoryWithIdDto from './dto/item-category-with-id.dto';
 import HttpExceptions from 'src/utils/HttpResponseDto/HttpException';
@@ -59,13 +58,8 @@ export class ItemCategoriesService {
       });
 
       if (!candidate) {
-        if (filter.format === 'xml') {
-          res.set('Content-Type', 'application/xml');
-          res.send(XmlController.JSObject2XmlString([]));
-        } else {
-          res.set('Content-Type', 'application/json');
-          res.send([]);
-        }
+        res.status(HttpStatus.OK).send([]);
+        return;
       }
 
       filter.dp_itemBrandId = `${candidate.dp_id}`;
@@ -79,13 +73,7 @@ export class ItemCategoriesService {
       },
     });
 
-    if (filter.format === 'xml') {
-      res.set('Content-Type', 'application/xml');
-      res.send(XmlController.JSObject2XmlString(jsObject));
-    } else {
-      res.set('Content-Type', 'application/json');
-      res.send(jsObject);
-    }
+    res.status(HttpStatus.OK).send(jsObject);
   }
 
   async findOne(id: number) {

@@ -1,14 +1,12 @@
 import { Response } from 'express';
-import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, In, Repository } from 'typeorm';
+import { HttpStatus, Injectable } from '@nestjs/common';
 
-import XmlController from 'src/packages/XmlController';
 import HttpResponse from 'src/utils/HttpResponseDto/HttpResponse';
 import HttpExceptions from 'src/utils/HttpResponseDto/HttpException';
 import ItemCharacteristicWithIdDto from './dto/item-characteristic-with-id.dto';
 import { ItemCharacteristicEntity } from './entities/item-characteristic.entity';
-import { ParamsItemCharacteristics } from './dto/params-item-characteristics.dto';
 import { CreateItemCharacteristicDto } from './dto/create-item-characteristic.dto';
 import { UpdateItemCharacteristicDto } from './dto/update-item-characteristic.dto';
 import ItemCharacteristicExcludeIdDto from './dto/item-characteristic-exclude-id.dto';
@@ -31,18 +29,13 @@ export class ItemCharacteristicsService {
     return HttpResponse.successBulkCreate();
   }
 
-  async findAll(res: Response, params: ParamsItemCharacteristics) {
+  async findAll(res: Response) {
     const jsObject = await this.itemCharacteristicEntity.find({
       order: { dp_name: 'ASC' },
     });
 
-    if (params.format === 'xml') {
-      res.set('Content-Type', 'application/xml');
-      res.send(XmlController.JSObject2XmlString(jsObject));
-    } else {
-      res.set('Content-Type', 'application/json');
-      res.send(jsObject);
-    }
+    res.status(HttpStatus.OK).send(jsObject);
+    return;
   }
 
   async findOne(id: number) {
