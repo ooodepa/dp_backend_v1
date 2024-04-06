@@ -67,6 +67,9 @@ export class ItemEntity {
   @Column()
   dp_vendorIds: string;
 
+  @Column({ length: 255 })
+  dp_ozonIds: string;
+
   @Column({ default: 10000 })
   dp_sortingIndex: number;
 

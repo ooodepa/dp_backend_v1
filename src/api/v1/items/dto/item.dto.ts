@@ -101,6 +101,11 @@ export default class ItemDto {
   @IsString()
   @IsOptional()
   @ApiProperty()
+  dp_ozonIds: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty()
   dp_barcodes: string;
 
   @IsNumber()
