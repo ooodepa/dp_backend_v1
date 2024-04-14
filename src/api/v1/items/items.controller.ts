@@ -34,6 +34,8 @@ import SwaggerApiResponse from 'src/utils/Swagger/SwaggerApiResponse';
 import SwaggerApiOperation from 'src/utils/Swagger/SwaggerApiOperation';
 import { IsAdministratorGuard } from 'src/guards/IsAdministratorGuard.guard';
 import { VerifyAccessTokenGuard } from 'src/guards/VerifyAccessTokenGuard.guard';
+import FindAllPaginationResponseDto from './dto/find-all-pagination-response.dto';
+import FindAllPaginationDto from './dto/find-all-pagination.dto';
 
 @ApiTags('api_v1_items')
 @Controller('/api/v1/items')
@@ -95,6 +97,21 @@ export class ItemsController {
   @Get()
   findAll(@Query() filter: FilterItemDto, @Res() res: Response) {
     return this.itemsService.findAll(filter, res);
+  }
+
+  @ApiTags('any')
+  @ApiOperation(SwaggerApiOperation.Find)
+  @ApiResponse({
+    ...SwaggerApiResponse.Finded,
+    type: FindAllPaginationResponseDto,
+  })
+  @ApiResponse(SwaggerApiResponse.ServerError)
+  @Get('pagination')
+  findAllPagination(
+    @Query() query: FindAllPaginationDto,
+    @Res() res: Response,
+  ) {
+    return this.itemsService.findAllPagination(query, res);
   }
 
   @ApiTags('any')

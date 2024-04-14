@@ -16,6 +16,9 @@ import HttpExceptions from 'src/utils/HttpResponseDto/HttpException';
 import { ItemBrandEntity } from '../item-brands/entities/item-brand.entity';
 import { LstItemCharacteristicEntity } from './entities/item-characteristics.entity';
 import { ItemCategoryEntity } from '../item-categories/entities/item-category.entity';
+import FindAllPaginationDto from './dto/find-all-pagination.dto';
+import PaginationDto from 'src/types/ApiResponse/Pagination.dto';
+import FindAllPaginationResponseDto from './dto/find-all-pagination-response.dto';
 
 @Injectable()
 export class ItemsService {
@@ -176,7 +179,12 @@ export class ItemsService {
     const jsObject = await this.itemEntity.find({
       where: {
         dp_1cParentId: filter.dp_1cParentId,
-        dp_1cIsFolder: Number(filter.dp_1cIsFolder) === 1 ? true : false,
+        dp_1cIsFolder:
+          Number(filter.dp_1cIsFolder) === 1
+            ? true
+            : Number(filter.dp_1cIsFolder) === 0
+            ? false
+            : undefined,
         dp_seoTitle: filter.dp_seoTitle
           ? Like(`%${filter.dp_seoTitle}%`)
           : undefined,
@@ -188,6 +196,43 @@ export class ItemsService {
     });
 
     res.status(HttpStatus.OK).send(jsObject);
+  }
+
+  async findAllPagination(query: FindAllPaginationDto, res: Response) {
+    const PAGE = Number(query.page) || 1;
+    const LIMIT = Number(query.limit) || 20;
+    const SKIP = LIMIT * (PAGE - 1);
+
+    const [ITEMS, TOTAL] = await this.itemEntity.findAndCount({
+      skip: SKIP,
+      take: LIMIT,
+      where: {
+        dp_1cParentId: query.dp_1cParentId,
+      },
+      order: {
+        dp_seoUrlSegment: 'ASC',
+      },
+    });
+
+    const LAST_PAGE = Math.ceil(TOTAL / LIMIT);
+
+    const pagination: PaginationDto = {
+      current_page: PAGE,
+      last_page: LAST_PAGE,
+      limit_items: TOTAL,
+      skip_items: SKIP,
+      total_items: TOTAL,
+    };
+
+    const ApiResponse: FindAllPaginationResponseDto = {
+      code: 200,
+      status: '200 OK',
+      message: '',
+      pagination,
+      data: ITEMS,
+    };
+
+    return res.status(ApiResponse.code).send(ApiResponse);
   }
 
   async findOneByModel(model: string) {
