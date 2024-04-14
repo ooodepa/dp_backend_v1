@@ -1,10 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumberString, IsOptional, IsString } from 'class-validator';
 
+enum FolderValue {
+  Folder = 1,
+  NotFolder = 0,
+}
+
 export class FilterItemDto {
   @ApiProperty({
     required: false,
-    description: 'Например: `1`, `2`, `3`...',
+    description: 'Например: `1`',
   })
   @IsOptional()
   @IsNumberString()
@@ -12,7 +17,7 @@ export class FilterItemDto {
 
   @ApiProperty({
     required: false,
-    description: 'Например: `10012`...',
+    description: 'Например: `10012`',
   })
   @IsOptional()
   @IsString()
@@ -28,10 +33,21 @@ export class FilterItemDto {
 
   @ApiProperty({
     required: false,
-    example: 'de-pa-electric',
-    description: 'Например: `de-pa-electric`, `mono-electric`, `mega`...',
+    description: 'Например: `de-pa-electric`',
   })
   @IsOptional()
   @IsString()
   brand: string;
+
+  @ApiProperty({ required: false })
+  dp_1cParentId: string;
+
+  @ApiProperty({ required: false })
+  dp_seoTitle: string;
+
+  @ApiProperty({ required: false })
+  dp_seoUrlSegment: string;
+
+  @ApiProperty({ required: false, enum: FolderValue })
+  dp_1cIsFolder: number;
 }

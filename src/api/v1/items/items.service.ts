@@ -175,7 +175,12 @@ export class ItemsService {
 
     const jsObject = await this.itemEntity.find({
       where: {
-        dp_seoUrlSegment: filter.dp_model,
+        dp_1cParentId: filter.dp_1cParentId,
+        dp_1cIsFolder: Number(filter.dp_1cIsFolder) === 1 ? true : false,
+        dp_seoTitle: filter.dp_seoTitle
+          ? Like(`%${filter.dp_seoTitle}%`)
+          : undefined,
+        dp_seoUrlSegment: filter.dp_seoUrlSegment || filter.dp_model,
         dp_itemCategoryId: categoriesId.length ? In(categoriesId) : undefined,
       },
       relations: ['dp_itemCharacteristics', 'dp_itemGalery'],
