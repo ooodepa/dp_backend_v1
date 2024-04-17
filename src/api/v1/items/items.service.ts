@@ -19,6 +19,7 @@ import { ItemCategoryEntity } from '../item-categories/entities/item-category.en
 import FindAllPaginationDto from './dto/find-all-pagination.dto';
 import PaginationDto from 'src/types/ApiResponse/Pagination.dto';
 import FindAllPaginationResponseDto from './dto/find-all-pagination-response.dto';
+import GetItemDto from './dto/get-item.dto';
 
 @Injectable()
 export class ItemsService {
@@ -261,6 +262,50 @@ export class ItemsService {
       order: { dp_seoUrlSegment: 'DESC' },
     });
     res.status(status).send(json);
+  }
+
+  async findBreadCrumbs(model: string, res: Response) {
+    const arr: GetItemDto[] = [];
+    const status = HttpStatus.OK;
+
+    const FisrtCandidate = await this.itemEntity.findOneOrFail({
+      select: {
+        dp_id: true,
+          dp_1cParentId: true,
+          dp_seoUrlSegment: true,
+      },
+      where: {
+      dp_seoUrlSegment: model,
+    },});
+
+    arr.push(FisrtCandidate);
+
+    let parentId = FisrtCandidate.dp_1cParentId;
+    for (let i = 0; i < 10; ++i) {
+      const candidate = await this.itemEntity.findOne({
+        select: {
+          dp_id: true,
+          dp_1cParentId: true,
+          dp_seoUrlSegment: true,
+        },
+        where: {
+          dp_id: parentId,
+        }
+      });
+
+      if (!candidate) {
+        break;
+      }
+
+      arr.push(candidate);
+      parentId = candidate.dp_1cParentId;
+
+      if (candidate.dp_1cParentId === "") {
+        break;
+      }
+    }
+
+    res.status(status).send(arr.reverse());
   }
 
   async getImageByModel(res: Response, model: string) {

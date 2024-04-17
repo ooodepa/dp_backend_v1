@@ -30,12 +30,12 @@ import SearchAllItemsDto from './dto/search-all-items.dto';
 import { CreateBulkItemDto } from './dto/create-bulk-item.dto';
 import { UpdateBulkItemDto } from './dto/update-bulk-item.dto';
 import { FindItemModelsDto } from './dto/find-item-models.dto';
+import FindAllPaginationDto from './dto/find-all-pagination.dto';
 import SwaggerApiResponse from 'src/utils/Swagger/SwaggerApiResponse';
 import SwaggerApiOperation from 'src/utils/Swagger/SwaggerApiOperation';
 import { IsAdministratorGuard } from 'src/guards/IsAdministratorGuard.guard';
 import { VerifyAccessTokenGuard } from 'src/guards/VerifyAccessTokenGuard.guard';
 import FindAllPaginationResponseDto from './dto/find-all-pagination-response.dto';
-import FindAllPaginationDto from './dto/find-all-pagination.dto';
 
 @ApiTags('api_v1_items')
 @Controller('/api/v1/items')
@@ -131,6 +131,15 @@ export class ItemsController {
   @Post('filter/models')
   findModels(@Body() dto: FindItemModelsDto, @Res() res: Response) {
     return this.itemsService.findModels(dto, res);
+  }
+
+  @ApiTags('any')
+  @ApiOperation(SwaggerApiOperation.Find)
+  @ApiResponse({ ...SwaggerApiResponse.Finded, type: [GetItemDto] })
+  @ApiResponse(SwaggerApiResponse.ServerError)
+  @Get('filter/breadcrumbs/model/:model')
+  findBreadcrumbs(@Param('model') model: string, @Res() res: Response) {
+    return this.itemsService.findBreadCrumbs(model, res);
   }
 
   @ApiTags('any')
