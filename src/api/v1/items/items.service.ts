@@ -11,6 +11,7 @@ import { UpdateItemDto } from './dto/update-item.dto';
 import { FilterItemDto } from './dto/filter-item.dto';
 import { FindItemIdsDto } from './dto/find-item-ids.dto';
 import { FindItemModelsDto } from './dto/find-item-models.dto';
+import FindAllByVendorsDto from './dto/find-all-by-vendors.dto';
 import FindAllPaginationDto from './dto/find-all-pagination.dto';
 import PaginationDto from 'src/types/ApiResponse/Pagination.dto';
 import HttpResponse from 'src/utils/HttpResponseDto/HttpResponse';
@@ -367,6 +368,34 @@ export class ItemsService {
       where: { dp_seoUrlSegment: model },
       relations: ['dp_itemCharacteristics', 'dp_itemGalery'],
     });
+  }
+
+  async findOneByVendor(vendorId: string) {
+    const candidate = await this.itemEntity.query(`
+      SELECT *
+      FROM DP_CTL_Items
+      WHERE FIND_IN_SET("${vendorId}", REPLACE(dp_vendorIds, "\\n", ",")) > 0
+      LIMIT 1
+    `);
+    return candidate;
+  }
+
+  async findByVendors(body: FindAllByVendorsDto, res: Response) {
+    const vendors = body.vendors;
+    const likes = vendors.map((e) => {
+      return `A.vendors LIKE '%\n${e}\n%'`;
+    });
+    const candidate = await this.itemEntity.query(`
+      SELECT * 
+      FROM (
+          SELECT *, CONCAT(CONCAT("\n", dp_vendorIds), "\n") AS "vendors" 
+          FROM DP_CTL_Items
+      ) AS A 
+      WHERE
+      ${likes.join(' OR ')}
+      ;
+    `);
+    return res.status(200).send(candidate);
   }
 
   async findModels(dto: FindItemModelsDto, res: Response) {

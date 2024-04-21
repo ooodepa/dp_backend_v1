@@ -30,6 +30,7 @@ import SearchAllItemsDto from './dto/search-all-items.dto';
 import { CreateBulkItemDto } from './dto/create-bulk-item.dto';
 import { UpdateBulkItemDto } from './dto/update-bulk-item.dto';
 import { FindItemModelsDto } from './dto/find-item-models.dto';
+import FindAllByVendorsDto from './dto/find-all-by-vendors.dto';
 import FindAllPaginationDto from './dto/find-all-pagination.dto';
 import CreateItemFolderBodyDto from './dto/create-folder-query.dto';
 import SwaggerApiResponse from 'src/utils/Swagger/SwaggerApiResponse';
@@ -141,6 +142,26 @@ export class ItemsController {
   @Get('filter-one/model/:model')
   findOneByModel(@Param('model') model: string) {
     return this.itemsService.findOneByModel(model);
+  }
+
+  @ApiTags('any')
+  @ApiOperation(SwaggerApiOperation.FindById)
+  @ApiResponse({ ...SwaggerApiResponse.FindedById, type: [GetItemDto] })
+  @ApiResponse(SwaggerApiResponse.NotFound)
+  @ApiResponse(SwaggerApiResponse.ServerError)
+  @Get('filter-one/vendor/:vendor')
+  findOneByVendor(@Param('vendor') vendor: string) {
+    return this.itemsService.findOneByVendor(vendor);
+  }
+
+  @ApiTags('any')
+  @ApiOperation(SwaggerApiOperation.FindById)
+  @ApiResponse({ ...SwaggerApiResponse.FindedById, type: [GetItemDto] })
+  @ApiResponse(SwaggerApiResponse.NotFound)
+  @ApiResponse(SwaggerApiResponse.ServerError)
+  @Post('filter/vendor')
+  findByVendors(@Body() body: FindAllByVendorsDto, @Res() res) {
+    return this.itemsService.findByVendors(body, res);
   }
 
   @ApiTags('any')
