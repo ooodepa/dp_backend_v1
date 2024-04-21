@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, In, Like, Repository } from 'typeorm';
 import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 
+import GetItemDto from './dto/get-item.dto';
 import ItemWithIdDto from './dto/item-with-id.dto';
 import { ItemEntity } from './entities/item.entity';
 import { CreateItemDto } from './dto/create-item.dto';
@@ -10,16 +11,16 @@ import { UpdateItemDto } from './dto/update-item.dto';
 import { FilterItemDto } from './dto/filter-item.dto';
 import { FindItemIdsDto } from './dto/find-item-ids.dto';
 import { FindItemModelsDto } from './dto/find-item-models.dto';
+import FindAllPaginationDto from './dto/find-all-pagination.dto';
+import PaginationDto from 'src/types/ApiResponse/Pagination.dto';
 import HttpResponse from 'src/utils/HttpResponseDto/HttpResponse';
+import CreateItemFolderBodyDto from './dto/create-folder-query.dto';
 import { LstItemGaleryEntity } from './entities/item-galery.entity';
 import HttpExceptions from 'src/utils/HttpResponseDto/HttpException';
 import { ItemBrandEntity } from '../item-brands/entities/item-brand.entity';
+import FindAllPaginationResponseDto from './dto/find-all-pagination-response.dto';
 import { LstItemCharacteristicEntity } from './entities/item-characteristics.entity';
 import { ItemCategoryEntity } from '../item-categories/entities/item-category.entity';
-import FindAllPaginationDto from './dto/find-all-pagination.dto';
-import PaginationDto from 'src/types/ApiResponse/Pagination.dto';
-import FindAllPaginationResponseDto from './dto/find-all-pagination-response.dto';
-import GetItemDto from './dto/get-item.dto';
 
 @Injectable()
 export class ItemsService {
@@ -71,6 +72,128 @@ export class ItemsService {
     return HttpResponse.successTransactionCreate();
   }
 
+  async createFolder(body: CreateItemFolderBodyDto) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const models = body.dp_urlSegments.split('\n');
+      const model = body.dp_urlSegment;
+      const title = body.dp_seoTitle || model;
+
+      const folderCandidate = await queryRunner.manager
+        .getRepository(ItemEntity)
+        .save({
+          dp_1cParentId: body.dp_1cParentId,
+          dp_seoTitle: title,
+          dp_seoDescription: title,
+          dp_seoKeywords: title,
+          dp_seoUrlSegment: model,
+          dp_1cDescription: '',
+          dp_itemCategoryId: 1,
+          dp_1cCode: '',
+          dp_1cIsFolder: true,
+          dp_barcodes: '',
+          dp_brand: '',
+          dp_combinedName: '',
+          dp_cost: 0,
+          dp_currancy: '',
+          dp_height: 0,
+          dp_isHidden: false,
+          dp_length: 0,
+          dp_ozonIds: '',
+          dp_photos: '',
+          dp_photos360: '',
+          dp_photoUrl: '',
+          dp_sortingIndex: 0,
+          dp_textCharacteristics: '',
+          dp_vendorIds: '',
+          dp_weight: 0,
+          dp_wholesaleQuantity: 0,
+          dp_width: 0,
+          dp_youtubeIds: '',
+          dp_markdown: '',
+        });
+
+      const parentId = folderCandidate.dp_id;
+
+      const childrenCandidates = await queryRunner.manager
+        .getRepository(ItemEntity)
+        .find({
+          where: {
+            dp_seoUrlSegment: In(models),
+          },
+        });
+
+      for (let i = 0; i < childrenCandidates.length; ++i) {
+        const current = childrenCandidates[i];
+        await queryRunner.manager
+          .getRepository(ItemEntity)
+          .update(current.dp_id, { ...current, dp_1cParentId: parentId });
+      }
+
+      await queryRunner.commitTransaction();
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      HttpExceptions.exceptionTransaction(err);
+    } finally {
+      await queryRunner.release();
+    }
+
+    return HttpResponse.successTransactionCreate();
+  }
+
+  async updateFolder(body: CreateItemFolderBodyDto) {
+    const candidate = await this.itemEntity.findOneOrFail({
+      where: {
+        dp_seoUrlSegment: body.dp_urlSegment,
+      },
+    });
+
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const models = body.dp_urlSegments.split('\n');
+      const model = body.dp_urlSegment;
+      const title = body.dp_seoTitle || model;
+      const id = candidate.dp_id;
+
+      await queryRunner.manager.getRepository(ItemEntity).update(id, {
+        dp_1cParentId: body.dp_1cParentId,
+        dp_seoTitle: title,
+        dp_seoUrlSegment: model,
+        dp_1cIsFolder: true,
+      });
+
+      const parentId = id;
+
+      const childrenCandidates = await queryRunner.manager
+        .getRepository(ItemEntity)
+        .find({
+          where: {
+            dp_seoUrlSegment: In(models),
+          },
+        });
+
+      for (let i = 0; i < childrenCandidates.length; ++i) {
+        const current = childrenCandidates[i];
+        await queryRunner.manager
+          .getRepository(ItemEntity)
+          .update(current.dp_id, { ...current, dp_1cParentId: parentId });
+      }
+
+      await queryRunner.commitTransaction();
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      HttpExceptions.exceptionTransaction(err);
+    } finally {
+      await queryRunner.release();
+    }
+
+    return HttpResponse.successTransactionCreate();
+  }
+
   async createBulk(bulk: CreateItemDto[]) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
@@ -94,6 +217,7 @@ export class ItemsService {
             dp_itemCategoryId: bulk[i].dp_itemCategoryId,
             dp_itemCharacteristics: bulk[i].dp_itemCharacteristics,
             dp_length: bulk[i].dp_length,
+            dp_ozonIds: bulk[i].dp_ozonIds,
             dp_photos: bulk[i].dp_photos,
             dp_photos360: bulk[i].dp_photos360,
             dp_photoUrl: bulk[i].dp_photoUrl,
@@ -108,6 +232,7 @@ export class ItemsService {
             dp_wholesaleQuantity: bulk[i].dp_wholesaleQuantity,
             dp_width: bulk[i].dp_weight,
             dp_youtubeIds: bulk[i].dp_youtubeIds,
+            dp_markdown: bulk[i].dp_markdown,
           });
 
         const uuid = savedItem.dp_id;
@@ -271,12 +396,13 @@ export class ItemsService {
     const FisrtCandidate = await this.itemEntity.findOneOrFail({
       select: {
         dp_id: true,
-          dp_1cParentId: true,
-          dp_seoUrlSegment: true,
+        dp_1cParentId: true,
+        dp_seoUrlSegment: true,
       },
       where: {
-      dp_seoUrlSegment: model,
-    },});
+        dp_seoUrlSegment: model,
+      },
+    });
 
     arr.push(FisrtCandidate);
 
@@ -290,7 +416,7 @@ export class ItemsService {
         },
         where: {
           dp_id: parentId,
-        }
+        },
       });
 
       if (!candidate) {
@@ -300,7 +426,7 @@ export class ItemsService {
       arr.push(candidate);
       parentId = candidate.dp_1cParentId;
 
-      if (candidate.dp_1cParentId === "") {
+      if (candidate.dp_1cParentId === '') {
         break;
       }
     }
@@ -459,21 +585,25 @@ export class ItemsService {
 
         await queryRunner.manager.getRepository(ItemEntity).save(bulk[i]);
 
-        bulk[i].dp_itemCharacteristics.forEach((e) => {
-          e.dp_itemId = uuid;
-        });
+        if (bulk[i].dp_itemCharacteristics) {
+          bulk[i].dp_itemCharacteristics.forEach((e) => {
+            e.dp_itemId = uuid;
+          });
 
-        await queryRunner.manager
-          .getRepository(LstItemCharacteristicEntity)
-          .insert(bulk[i].dp_itemCharacteristics);
+          await queryRunner.manager
+            .getRepository(LstItemCharacteristicEntity)
+            .insert(bulk[i].dp_itemCharacteristics);
+        }
 
-        bulk[i].dp_itemGalery.forEach((e) => {
-          e.dp_itemId = uuid;
-        });
+        if (bulk[i].dp_itemGalery) {
+          bulk[i].dp_itemGalery.forEach((e) => {
+            e.dp_itemId = uuid;
+          });
 
-        await queryRunner.manager
-          .getRepository(LstItemGaleryEntity)
-          .insert(bulk[i].dp_itemGalery);
+          await queryRunner.manager
+            .getRepository(LstItemGaleryEntity)
+            .insert(bulk[i].dp_itemGalery);
+        }
       }
 
       await queryRunner.commitTransaction();

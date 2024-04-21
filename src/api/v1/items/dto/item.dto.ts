@@ -66,6 +66,11 @@ export default class ItemDto {
   @IsString()
   @IsOptional()
   @ApiProperty()
+  dp_markdown: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty()
   dp_photos: string;
 
   @IsString()

@@ -31,6 +31,7 @@ import { CreateBulkItemDto } from './dto/create-bulk-item.dto';
 import { UpdateBulkItemDto } from './dto/update-bulk-item.dto';
 import { FindItemModelsDto } from './dto/find-item-models.dto';
 import FindAllPaginationDto from './dto/find-all-pagination.dto';
+import CreateItemFolderBodyDto from './dto/create-folder-query.dto';
 import SwaggerApiResponse from 'src/utils/Swagger/SwaggerApiResponse';
 import SwaggerApiOperation from 'src/utils/Swagger/SwaggerApiOperation';
 import { IsAdministratorGuard } from 'src/guards/IsAdministratorGuard.guard';
@@ -73,6 +74,24 @@ export class ItemsController {
   @Post()
   create(@Body() dto: CreateItemDto) {
     return this.itemsService.create(dto);
+  }
+
+  @ApiTags('ADMIN')
+  @ApiBearerAuth('access-token')
+  @UseGuards(IsAdministratorGuard)
+  @UseGuards(VerifyAccessTokenGuard)
+  @Post('folder')
+  createFolder(@Body() dto: CreateItemFolderBodyDto) {
+    return this.itemsService.createFolder(dto);
+  }
+
+  @ApiTags('ADMIN')
+  @ApiBearerAuth('access-token')
+  @UseGuards(IsAdministratorGuard)
+  @UseGuards(VerifyAccessTokenGuard)
+  @Put('folder')
+  updateFolder(@Body() dto: CreateItemFolderBodyDto) {
+    return this.itemsService.updateFolder(dto);
   }
 
   @ApiTags('ADMIN')

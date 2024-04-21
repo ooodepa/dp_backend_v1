@@ -46,6 +46,9 @@ export class ItemEntity {
   @Column({ type: 'text' })
   dp_textCharacteristics: string;
 
+  @Column({ type: 'text', default: '' })
+  dp_markdown: string;
+
   @Column({ type: 'text' })
   dp_photos: string;
 
