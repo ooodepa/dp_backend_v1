@@ -450,7 +450,7 @@ export class OrdersService {
         `  ${process.env.APP__MY_ORGANIZATION}\n` +
         `  ${process.env.APP__MY_ADDRESS}\n` +
         `  УНП: ${process.env.APP__MY_UNP}\n` +
-        `  Р/сч: ${process.env.APP__MY_CHECKING_ACCOUNT} в ${process.env.APP__MY_BANK} код БИК ${process.env.APP__MY_BIK}`;
+        `  Р/сч: ${process.env.APP__MY_CHECKING_ACCOUNT} в ${process.env.APP__MY_BANK}, код БИК ${process.env.APP__MY_BIK}`;
       worksheet.addRow([POSTAVSHIK]);
       ['A','B','C','D','E','F','J','H','I'].forEach(e => {
         worksheet.getCell(`${e}${row}`).alignment = {
@@ -485,13 +485,13 @@ export class OrdersService {
         `  ${user.dp_nameLegalEntity}\n` +
         `  ${user.dp_address}\n` +
         `  УНП: ${user.dp_unp}\n` +
-        `  Р/сч: ${dto.dp_checkingAccount} в ${dto.dp_bank} код ${dto.dp_bik}` +
+        `  Р/сч: ${dto.dp_checkingAccount} в ${dto.dp_bank}, код БИК ${dto.dp_bik}` +
         '\n\n' +
         'Плательщик и его адрес:\n' +
         `  ${user.dp_nameLegalEntity}\n` +
         `  ${user.dp_address}\n` +
         `  УНП: ${user.dp_unp}\n` +
-        `  Р/сч: ${dto.dp_checkingAccount} в ${dto.dp_bank} код ${dto.dp_bik}`;
+        `  Р/сч: ${dto.dp_checkingAccount} в ${dto.dp_bank}, код БИК ${dto.dp_bik}`;
       worksheet.addRow([ZAKAZCHIK]);
       ['A','B','C','D','E','F','J','H','I'].forEach(e => {
         worksheet.getCell(`${e}${row}`).alignment = {
