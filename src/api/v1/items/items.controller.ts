@@ -53,6 +53,14 @@ export class ItemsController {
   }
 
   @ApiTags('any')
+  @ApiOperation(SwaggerApiOperation.Find)
+  @ApiResponse(SwaggerApiResponse.ServerError)
+  @Get('image/id/:id')
+  getImageByid(@Param('id') id: string, @Res() res: Response) {
+    return this.itemsService.getImageById(res, id);
+  }
+
+  @ApiTags('any')
   @ApiResponse(SwaggerApiResponse.ServerError)
   @ApiBearerAuth('access-token')
   @UseGuards(IsAdministratorGuard)

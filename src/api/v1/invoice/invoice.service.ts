@@ -1,22 +1,25 @@
-import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
+import { Response } from 'express';
 import { Injectable } from '@nestjs/common';
-import { TtnEntity } from './entities/DP_DOC_TTN.entity';
-import { InventoryItemsEntity } from './entities/DP_LST_InventoryItems.entity';
+import { DataSource, Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 import {
   getConflictResponse,
   getNotFoundResponse,
   getOkResponse,
 } from 'src/utils/getResponse/getResponse';
-import { Response } from 'express';
-import { BodyCreateInventoryDto } from './dto/inventory.dto';
 import { BodyCreateTtnDto } from './dto/ttn.dto';
+import { TtnEntity } from './entities/DP_DOC_TTN.entity';
+import { ItemEntity } from '../items/entities/item.entity';
+import { BodyCreateInventoryDto } from './dto/inventory.dto';
 import { LstTtnItemsEntity } from './entities/DP_LST_TtnItems.entity';
+import { InventoryItemsEntity } from './entities/DP_LST_InventoryItems.entity';
 
 @Injectable()
 export class InvoiceService {
   constructor(
     private readonly dataSource: DataSource,
+    @InjectRepository(ItemEntity)
+    private readonly itemEntity: Repository<ItemEntity>,
     @InjectRepository(TtnEntity)
     private readonly ttnEntity: Repository<TtnEntity>,
     @InjectRepository(InventoryItemsEntity)
@@ -25,10 +28,9 @@ export class InvoiceService {
 
   async getInventory(res: Response) {
     const array = await this.inventoryItemsEntity.find();
-
     const json = getOkResponse({
       message: 'Получили список остатков',
-      data: array,
+      data: array
     });
     return res.status(json.statusCode).send(json);
   }

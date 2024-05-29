@@ -27,19 +27,21 @@
   }
 </style>
 
+<p><b>УНП</b>: {{DP_UNP}}</p>
+
+<p><b>Краткое наименование</b>: {{DP_ORG_SHORT_NAME}}</p>
+
+<p><b>Полное наименование</b>: {{DP_ORG_NAME}}</p>
+
+<p><b>E-mail</b>: {{DP_EMAIL}}</p>
+
+<p><b>Телефон</b>: {{DP_PHONE}}</p>
+
 <p><b>Фамилия</b>: {{DP_LAST_NAME}}</p>
 
 <p><b>Имя</b>: {{DP_FIRST_NAME}}</p>
 
 <p><b>Отчество</b>: {{DP_MIDDLE_NAME}}</p>
-
-<p><b>Полное наименование юр. лица</b>: {{DP_ORG_NAME}}</p>
-
-<p><b>Краткое наименование юр. лица</b>: {{DP_ORG_SHORT_NAME}}</p>
-
-<p><b>E-mail</b>: {{DP_EMAIL}}</p>
-
-<p><b>Телефон</b>: {{DP_PHONE}}</p>
 
 <table class='items__table'>
   <thead>
@@ -59,7 +61,7 @@
     <tr>
       <td class='items__td' style="text-align:right;">{{this.index}}</td>
       <td class='items__td' style="text-align:center;"><img width='64' src='{{this.dp_photoUrl}}' class="img" /></td>
-      <td class='items__td'>{{this.dp_model}}, {{this.dp_name}}</td>
+      <td class='items__td'>{{this.dp_name}}</td>
       <td class='items__td' style="text-align:right;">{{this.dp_cost}}</td>
       <td class='items__td' style="text-align:right;">{{this.dp_count}}</td>
       <td class='items__td' style="text-align:right;">{{this.dp_sum}}</td>

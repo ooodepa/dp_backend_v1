@@ -53,11 +53,11 @@
       <td>{{dp_candidate_unp}}</td>
     </tr>
     <tr>
-      <td class='candidate__key'>Краткое наименование юридического лица:</td>
+      <td class='candidate__key'>Краткое наименование:</td>
       <td>{{dp_candidate_shortNameLegalEntity}}</td>
     </tr>
     <tr>
-      <td class='candidate__key'>Наименование юридического лица:</td>
+      <td class='candidate__key'>Полное наименование:</td>
       <td>{{dp_candidate_nameLegalEntity}}</td>
     </tr>
     <tr>
@@ -87,7 +87,7 @@
     <thead>
       <tr>
         <th class='items__td'>Картинка</th>
-        <th class='items__td'>Наименование | модель</th>
+        <th class='items__td'>Наименование</th>
         <th class='items__td'>Количество</th>
         <th class='items__td'>Цена, BYN <br/> (без НДС)</th>
         <th class='items__td'>Цена, BYN <br/> (с НДС)</th>
@@ -98,7 +98,7 @@
       {{#each dp_items_orderItems}}
       <tr>
         <td class='items__td'><img width='48' src='{{this.dp_photoUrl}}' /></td>
-        <td class='items__td'>{{this.dp_name}} | {{this.dp_model}}</td>
+        <td class='items__td'>{{this.dp_name}}</td>
         <td class='items__td items__cost'>{{this.dp_count}}</td>
         <td class='items__td items__cost'>{{this.dp_costNoNds}}</td>
         <td class='items__td items__cost'>{{this.dp_costNds}}</td>

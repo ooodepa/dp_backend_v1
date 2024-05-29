@@ -9,12 +9,12 @@ import {
   UseGuards,
   Res,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { BodyCreateTtnDto } from './dto/ttn.dto';
 import { InvoiceService } from './invoice.service';
 import { IsAdministratorGuard } from 'src/guards/IsAdministratorGuard.guard';
 import { VerifyAccessTokenGuard } from 'src/guards/VerifyAccessTokenGuard.guard';
-import { BodyCreateInventoryDto } from './dto/inventory.dto';
-import { BodyCreateTtnDto } from './dto/ttn.dto';
+import { BodyCreateInventoryDto, ResponseGetInventoryDto } from './dto/inventory.dto';
 
 @ApiTags('api_v1_invoice')
 @Controller('/api/v1/invoice')
@@ -22,6 +22,7 @@ export class InvoiceController {
   constructor(private readonly invoiceService: InvoiceService) {}
 
   @ApiTags('any')
+  @ApiResponse({status: 200, type: ResponseGetInventoryDto})
   @Get('x/warehouses/x/inventory-items')
   getInventoryItems(@Res() res) {
     return this.invoiceService.getInventory(res);

@@ -10,13 +10,13 @@ import SendCheckDto from './dto/sendCheckDto';
 import { OrderEntity } from './entities/order.entity';
 import { UsersService } from '../users/users.service';
 import { CreateOrderDto } from './dto/create-order.dto';
-import DateController from 'src/package/DateController';
 import EmailOrderItemDto from './dto/email-order-item.dto';
 import { ItemEntity } from '../items/entities/item.entity';
 import { UserEntity } from '../users/entities/user.entity';
 import { OrderItemsEntity } from './entities/order-items.entity';
 import HttpResponse from 'src/utils/HttpResponseDto/HttpResponse';
 import HttpExceptions from 'src/utils/HttpResponseDto/HttpException';
+import { date2string_DD_sMM_YYYY } from 'src/package/DateController';
 import { CreateNoAuthOrderDto } from './dto/create-no-auth-order.dto';
 
 @Injectable()
@@ -107,8 +107,7 @@ export class OrdersService {
             emailOrderItems.push({
               index: length,
               dp_name: item.dp_seoTitle,
-              dp_model: item.dp_seoUrlSegment,
-              dp_photoUrl: item.dp_photoUrl,
+              dp_photoUrl: `https://de-pa.by/api/v1/items/image/id/${item.dp_id}`,
               dp_cost: costStr,
               dp_count: orderItem.dp_count,
               dp_sum: sumStr,
@@ -134,13 +133,14 @@ export class OrdersService {
         subject: `Заявка | ${process.env.APP__MY_ORGANIZATION}`,
         template: 'order',
         context: {
+          DP_UNP: user.dp_unp,
+          DP_ORG_SHORT_NAME: user.dp_shortNameLegalEntity,
+          DP_ORG_NAME: user.dp_nameLegalEntity,
+          DP_EMAIL: user.dp_email,
+          DP_PHONE: user.dp_receptionPhone,
           DP_FIRST_NAME: user.dp_firstName,
           DP_LAST_NAME: user.dp_lastName,
           DP_MIDDLE_NAME: user.dp_middleName,
-          DP_ORG_NAME: user.dp_nameLegalEntity,
-          DP_ORG_SHORT_NAME: user.dp_shortNameLegalEntity,
-          DP_EMAIL: user.dp_email,
-          DP_PHONE: user.dp_receptionPhone,
           emailOrderItems,
           countSum: Number(countSum).toFixed(2),
           countSumNds: Number(countSumNds).toFixed(2),
@@ -240,8 +240,7 @@ export class OrdersService {
             emailOrderItems.push({
               index: length,
               dp_name: item.dp_seoTitle,
-              dp_model: item.dp_seoUrlSegment,
-              dp_photoUrl: item.dp_photoUrl,
+              dp_photoUrl: `https://de-pa.by/api/v1/items/image/id/${item.dp_id}`,
               dp_cost: costStr,
               dp_count: orderItem.dp_count,
               dp_sum: sumStr,
@@ -438,38 +437,96 @@ export class OrdersService {
 
     try {
       const d = new Date(order.dp_date);
-      const stringDate = DateController.getDate__DD_MMMMMM_YYYY(d);
-      const array = [
-        [`${process.env.APP__MY_ORGANIZATION}`],
-        [
-          `Р/сч: ${process.env.APP__MY_CHECKING_ACCOUNT} в ${process.env.APP__MY_BANK} код ${process.env.APP__MY_BIK}, УНП: ${process.env.APP__MY_UNP}`,
-        ],
-        [`Адрес: ${process.env.APP__MY_ADDRESS}`],
-        [],
-        [],
-        [`Счет №${order.dp_number} от ${stringDate}`],
-        [],
-        [],
-        [`Закачик: ${user.dp_shortNameLegalEntity}`],
-        [
-          `Плательщик ${user.dp_shortNameLegalEntity}, адрес: ${user.dp_address}`,
-        ],
-        [
-          `Р/сч: ${dto.dp_checkingAccount} в ${dto.dp_bank} код ${dto.dp_bik}, УНП: ${user.dp_unp}`,
-        ],
-        [],
-        [
-          '№ \nп/п',
-          'Товары (работы, услуги)',
-          'Единица изме- \nрения',
-          'Цена, \nруб. коп.',
-          'Коли- \nчество',
-          'Сумма, \nруб. коп.',
-          'Ставка НДС, \n%',
-          'Сумма НДС, \nруб. коп.',
-          'Всего с НДС, \nруб. коп.',
-        ],
+      const stringDate = date2string_DD_sMM_YYYY(d);
+
+      let row = 0;
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet('Лист 1');
+
+      // < < < < < < < < 1
+      row += 1;
+      const POSTAVSHIK =
+        'Поставщик и его адрес:\n' +
+        `  ${process.env.APP__MY_ORGANIZATION}\n` +
+        `  ${process.env.APP__MY_ADDRESS}\n` +
+        `  УНП: ${process.env.APP__MY_UNP}\n` +
+        `  Р/сч: ${process.env.APP__MY_CHECKING_ACCOUNT} в ${process.env.APP__MY_BANK} код БИК ${process.env.APP__MY_BIK}`;
+      worksheet.addRow([POSTAVSHIK]);
+      ['A','B','C','D','E','F','J','H','I'].forEach(e => {
+        worksheet.getCell(`${e}${row}`).alignment = {
+          wrapText: true,
+          vertical: 'middle'
+        };
+      });
+
+      worksheet.mergeCells(`A${row}:I${row}`);
+      worksheet.getRow(row).height = 15 * POSTAVSHIK.split('\n').length;
+      // > > > > > > > >
+
+      // < < < < < < < < 2
+      row += 1;
+      const TITLE = `\nСчет-фактура № ____ от ${stringDate}\n`;
+      worksheet.addRow([TITLE]);
+      ['A','B','C','D','E','F','J','H','I'].forEach(e => {
+        worksheet.getCell(`${e}${row}`).alignment = {
+          wrapText: true,
+          horizontal: 'center',
+          vertical: 'middle'
+        };
+      });
+      worksheet.mergeCells(`A${row}:I${row}`);
+      worksheet.getRow(row).height = 15 * TITLE.split('\n').length;
+      // > > > > > > > >
+
+      // < < < < < < < < 3
+      row += 1;
+      const ZAKAZCHIK =
+        'Закачик и его адрес:\n' +
+        `  ${user.dp_nameLegalEntity}\n` +
+        `  ${user.dp_address}\n` +
+        `  УНП: ${user.dp_unp}\n` +
+        `  Р/сч: ${dto.dp_checkingAccount} в ${dto.dp_bank} код ${dto.dp_bik}` +
+        '\n\n' +
+        'Плательщик и его адрес:\n' +
+        `  ${user.dp_nameLegalEntity}\n` +
+        `  ${user.dp_address}\n` +
+        `  УНП: ${user.dp_unp}\n` +
+        `  Р/сч: ${dto.dp_checkingAccount} в ${dto.dp_bank} код ${dto.dp_bik}`;
+      worksheet.addRow([ZAKAZCHIK]);
+      ['A','B','C','D','E','F','J','H','I'].forEach(e => {
+        worksheet.getCell(`${e}${row}`).alignment = {
+          wrapText: true,
+          vertical: 'middle'
+        };
+      });
+      worksheet.getRow(row).height = 15 * ZAKAZCHIK.split('\n').length;
+      worksheet.mergeCells(`A${row}:I${row}`);
+      // > > > > > > > >
+
+      // < < < < < < < < 3
+      row += 1;
+      const HEAD_TABLE_ITEMS = [
+        '№\nп/п',
+        'Товары (работы, услуги)',
+        'Единица изме-\nрения',
+        'Цена\nруб. коп.',
+        'Коли\nчество',
+        'Сумма\nруб. коп.',
+        'Ставка НДС\n%',
+        'Сумма НДС\nруб. коп.',
+        'Всего с НДС\nруб. коп.',
       ];
+      worksheet.addRow(HEAD_TABLE_ITEMS);
+      worksheet.getRow(row).height = 15 * 2;
+      ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'].forEach((e) => {
+        worksheet.getCell(`${e}${row}`).border = {
+          top: { style: 'thin' },
+          bottom: { style: 'thin' },
+          left: { style: 'thin' },
+          right: { style: 'thin' },
+        };
+      });
+      // > > > > > > > >
 
       let length = 0;
       let quantity = 0;
@@ -501,23 +558,36 @@ export class OrdersService {
             countSumNds += Number(sumNdsStr);
             countSumTotal += Number(totalSumNdsStr);
 
-            array.push([
+            // < < < < < < < < 3
+            row += 1;
+            const TABLE_ITEM_ELEMENT = [
               `${i + 1}`,
-              `${item.dp_seoUrlSegment} \n${item.dp_seoTitle}`,
-              'шт.',
+              `${item.dp_seoTitle}`,
+              `шт.`,
               `${costStr}`,
               `${count}`,
               `${sumStr}`,
               '20%',
               `${sumNdsStr}`,
               `${totalSumNdsStr}`,
-            ]);
+            ];
+            worksheet.addRow(TABLE_ITEM_ELEMENT);
+            worksheet.getRow(row).height = 15 * 2;
+            ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'].forEach((e) => {
+              worksheet.getCell(`${e}${row}`).border = {
+                top: { style: 'thin' },
+                bottom: { style: 'thin' },
+                left: { style: 'thin' },
+                right: { style: 'thin' },
+              };
+            });
+            // > > > > > > > >
+
             length += 1;
 
             emailOrderItems.push({
               index: length,
               dp_name: item.dp_seoTitle,
-              dp_model: item.dp_seoUrlSegment,
               dp_photoUrl: item.dp_photoUrl,
               dp_cost: costStr,
               dp_count: orderItem.dp_count,
@@ -530,7 +600,10 @@ export class OrdersService {
           }
         }
       }
-      array.push([
+
+      // < < < < < < < < 3
+      row += 1;
+      worksheet.addRow([
         '',
         '',
         '',
@@ -541,39 +614,52 @@ export class OrdersService {
         `${Number(countSumNds).toFixed(2)}`,
         `${Number(countSumTotal).toFixed(2)}`,
       ]);
-      array.push(['']);
+      ['D', 'E', 'F', 'G', 'H', 'I'].forEach((e) => {
+        worksheet.getCell(`${e}${row}`).border = {
+          top: { style: 'thin' },
+          bottom: { style: 'thin' },
+          left: { style: 'thin' },
+          right: { style: 'thin' },
+        };
+      });
+      // > > > > > > > >
 
+      // < < < < < < < < 3
+      row += 1;
       const sumNdsText = numberToWordsRu(Number(countSumNds).toFixed(2));
       const sumTotalText = numberToWordsRu(Number(countSumTotal).toFixed(2));
-      array.push([`Сумма НДС: ${sumNdsText}`]);
-      array.push([`Всего к оплате на сумму с НДС: ${sumTotalText}`]);
+      const RESULT = `Сумма НДС: ${sumNdsText}\n` + `Всего к оплате на сумму с НДС: ${sumTotalText}`;
+      worksheet.addRow([RESULT]);
+      worksheet.mergeCells(`A${row}:I${row}`);
+      ['A','B','C','D','E','F','J','H','I'].forEach(e => {
+        worksheet.getCell(`${e}${row}`).alignment = {
+          wrapText: true,
+          vertical: 'middle'
+        };
+      });
+      worksheet.getRow(row).height = 15 * 3;
+      
+    // > > > > > > > >
 
-      array.push(['']);
-      array.push([
+    // < < < < < < < < 3
+    row += 1;
+      worksheet.addRow([
         `${process.env.APP__MY_CHECK_POSITION} `,
         '',
         '',
         '',
         ` ${process.env.APP__MY_CHECK_INITIALS} ${process.env.APP__MY_CHECK_SURNAME}`,
       ]);
-      const directorLine = array.length;
-
-      const workbook = new ExcelJS.Workbook();
-      const worksheet = workbook.addWorksheet('Лист 1');
-
-      // Заполнение ячеек данными
-      worksheet.addRows(array);
-
-      // Объединение ячеек
-      for (let i = 1; i <= 11; i++) {
-        worksheet.mergeCells(`A${i}:I${i}`);
-      }
-
-      // Установка высоты строки
-      worksheet.getRow(13).height = 40;
-
-      // Выравнивание текста в ячейке по центру
-      worksheet.getCell('A6').alignment = { horizontal: 'center' };
+      worksheet.mergeCells(`A${row}:B${row}`);
+      worksheet.mergeCells(`C${row}:D${row}`);
+      worksheet.mergeCells(`E${row}:I${row}`);
+      worksheet.getCell(`A${row}`).alignment = {
+        horizontal: 'right',
+      };
+      worksheet.getCell(`C${row}`).border = {
+        bottom: { style: 'thin' },
+      };
+// > > > > > > > >
 
       // Установка ширины столбцов
       worksheet.getColumn('A').width = 5;
@@ -586,109 +672,15 @@ export class OrdersService {
       worksheet.getColumn('H').width = 9;
       worksheet.getColumn('I').width = 9;
 
-      for (let i = 1; i <= 12; ++i) {
-        worksheet.getRow(i).eachCell((cell) => {
-          cell.font = {
-            size: 8,
-          };
-        });
-      }
-
-      worksheet.getRow(13).eachCell((cell) => {
-        cell.border = {
-          top: { style: 'thin' },
-          bottom: { style: 'thin' },
-          left: { style: 'thin' },
-          right: { style: 'thin' },
-        };
-        cell.alignment = {
-          wrapText: true,
-          horizontal: 'center',
-          vertical: 'middle',
-        };
-      });
-      for (let i = 1; i <= length; ++i) {
-        worksheet.getRow(13 + i).eachCell((cell) => {
-          cell.border = {
-            top: { style: 'thin' },
-            bottom: { style: 'thin' },
-            left: { style: 'thin' },
-            right: { style: 'thin' },
-          };
-          cell.alignment = {
-            wrapText: true,
-            // vertical: 'top',
-            // horizontal: 'left',
-          };
-        });
-
-        ['C', 'G'].forEach((e) => {
-          worksheet.getCell(`${e}${13 + i}`).alignment = {
-            horizontal: 'center',
-          };
-        });
-
-        ['A', 'D', 'E', 'F', 'H', 'I'].forEach((e) => {
-          worksheet.getCell(`${e}${13 + i}`).alignment = {
-            horizontal: 'right',
-          };
-        });
-      }
-
-      ['D', 'E', 'F', 'G', 'H', 'I'].forEach((e) => {
-        worksheet.getCell(`${e}${13 + length + 1}`).border = {
-          top: { style: 'thin' },
-          bottom: { style: 'thin' },
-          left: { style: 'thin' },
-          right: { style: 'thin' },
-        };
-      });
-
-      ['D', 'E', 'F', 'H', 'I'].forEach((e) => {
-        worksheet.getCell(`${e}${13 + length + 1}`).alignment = {
-          horizontal: 'right',
-        };
-      });
-
-      worksheet.getCell(`G${13 + length + 1}`).alignment = {
-        horizontal: 'center',
-      };
-
-      // Строка с должностью, подписью, инициалами и фамилией
-      worksheet.mergeCells(`A${directorLine}:B${directorLine}`);
-      worksheet.mergeCells(`C${directorLine}:D${directorLine}`);
-      worksheet.mergeCells(`E${directorLine}:I${directorLine}`);
-      worksheet.getCell(`A${directorLine}`).alignment = {
-        horizontal: 'right',
-      };
-      worksheet.getCell(`C${directorLine}`).border = {
-        bottom: { style: 'thin' },
-      };
-
-      // Установка размера шрифта для всего документа
-      for (let i = 0; i < array.length; ++i) {
-        worksheet.getRow(13 + i).eachCell((cell) => {
-          cell.font = {
-            size: 8,
-          };
-        });
-      }
-
       const buffer = await workbook.xlsx.writeBuffer();
 
-      const unpName = user.dp_shortNameLegalEntity.replace(/\s/g, '-');
-      const unp = user.dp_unp;
-      const filename =
-        `Счёт-№${order.dp_number}-от-${stringDate}-${unpName}-${unp}.xlsx`.replace(
-          /\s/g,
-          '-',
-        );
+      const filename = `Счет-фактура_от_${stringDate}.xlsx`.replace(/\s/g, '-');
       const emails = [user.dp_email, process.env.APP__MY_MANAGER_EMAIL];
 
       try {
         await this.mailerService.sendMail({
           to: emails.join(),
-          subject: `Счёт-фактура №${order.dp_number} от ${stringDate} | ${process.env.APP__MY_ORGANIZATION}`,
+          subject: `Счет-фактура от ${stringDate} | ${process.env.APP__MY_ORGANIZATION}`,
           template: 'check',
           context: {
             order,

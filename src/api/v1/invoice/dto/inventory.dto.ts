@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsString, IsUUID } from 'class-validator';
+import { AppResponse } from 'src/utils/getResponse/getResponse';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateInventoryDto {
   @IsNotEmpty()
@@ -19,4 +20,26 @@ export class CreateInventoryDto {
 export class BodyCreateInventoryDto {
   @ApiProperty({ type: [CreateInventoryDto] })
   bulk: CreateInventoryDto[];
+}
+
+export class GetInventoryDto {
+  @ApiProperty()
+  dp_id: number;
+
+  @ApiProperty()
+  dp_warehouseId: number;
+
+  @ApiProperty()
+  dp_vendorId: string;
+
+  @ApiProperty()
+  dp_count: number;
+
+  @ApiProperty()
+  dp_note: string;
+}
+
+export class ResponseGetInventoryDto extends AppResponse {
+  @ApiProperty({ type: [GetInventoryDto] })
+  data: GetInventoryDto[];
 }

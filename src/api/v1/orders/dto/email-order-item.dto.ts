@@ -1,7 +1,6 @@
 export default class EmailOrderItemDto {
   index: number;
   dp_name: string;
-  dp_model: string;
   dp_photoUrl: string;
   dp_count: number;
   dp_edIzm: string;

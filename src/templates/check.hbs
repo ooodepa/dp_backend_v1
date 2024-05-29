@@ -3,6 +3,10 @@
     width: 100%;
   }
 
+  .p {
+    font-weight: normal;
+  }
+
   .items__table {
     border: 1px solid black;
     border-collapse: collapse;
@@ -27,19 +31,28 @@
   }
 </style>
 
-<p>{{APP__MY_ORGANIZATION}}</p>
+<p class="p">Поставщик и его адрес:<br />
+  <span style="margin-left: 1em"></span>{{APP__MY_ORGANIZATION}}<br />
+  <span style="margin-left: 1em"></span>{{APP__MY_ADDRESS}}<br />
+  <span style="margin-left: 1em"></span>УНП: {{APP__MY_UNP}}<br />
+  <span style="margin-left: 1em"></span>Р/сч: {{APP__MY_CHECKING_ACCOUNT}} в {{APP__MY_BANK}} код {{APP__MY_BIK}}
+</p>
 
-<p>Р/сч: {{APP__MY_CHECKING_ACCOUNT}} в {{APP__MY_BANK}} код {{APP__MY_BIK}}, УНП: {{APP__MY_UNP}}</p>
+<p class="p" style="text-align: center;">Счет от {{stringDate}}</p>
 
-<p>Адрес: {{APP__MY_ADDRESS}}</p>
+<p class="p">Закачик и его адрес:<br />
+  <span style="margin-left: 1em"></span>{{user.dp_shortNameLegalEntity}}<br />
+  <span style="margin-left: 1em"></span>{{user.dp_address}}<br />
+  <span style="margin-left: 1em"></span>УНП: {{user.dp_unp}}<br />
+  <span style="margin-left: 1em"></span>Р/сч: {{checkingAccount}} в {{bank}} код {{bik}}
+</p>
 
-<p style="text-align: center;">Счет №{{order.dp_number}} от {{stringDate}}</p>
-
-<p>Закачик: {{user.dp_shortNameLegalEntity}}</p>
-
-<p>Плательщик: {{user.dp_shortNameLegalEntity}}, адрес: {{user.dp_address}}</p>
-
-<p>Р/сч: {{checkingAccount}} в {{bank}} код {{bik}}, УНП: {{user.dp_unp}}</p>
+<p class="p">Плательщик и его адрес:<br />
+  <span style="margin-left: 1em"></span>{{user.dp_shortNameLegalEntity}}<br />
+  <span style="margin-left: 1em"></span>{{user.dp_address}}<br />
+  <span style="margin-left: 1em"></span>УНП: {{user.dp_unp}}<br />
+  <span style="margin-left: 1em"></span>Р/сч: {{checkingAccount}} в {{bank}} код {{bik}}
+</p>
 
 <table class='items__table'>
   <thead>
@@ -47,13 +60,13 @@
       <th class='items__td'>№ <br /> п/п</th>
       <th class='items__td'>Картинка</th>
       <th class='items__td'>Товары (работы, услуги)</th>
-      <th class='items__td'>Ед. <br /> изм.</th>
-      <th class='items__td'>Цена, <br /> руб. коп.</th>
-      <th class='items__td'>Коли- <br /> чество</th>
-      <th class='items__td'>Сумма, <br /> руб. коп.</th>
-      <th class='items__td'>Ставка НДС, <br /> %</th>
-      <th class='items__td'>Сумма НДС, <br /> руб. коп.</th>
-      <th class='items__td'>Всего с НДС, <br /> руб. коп.</th>
+      <th class='items__td'>Ед.<br /> изм.</th>
+      <th class='items__td'>Цена,<br /> руб. коп.</th>
+      <th class='items__td'>Коли-<br /> чество</th>
+      <th class='items__td'>Сумма,<br /> руб. коп.</th>
+      <th class='items__td'>Ставка НДС,<br /> %</th>
+      <th class='items__td'>Сумма НДС,<br /> руб. коп.</th>
+      <th class='items__td'>Всего с НДС,<br /> руб. коп.</th>
     </tr>
   </thead>
   <tbody>
@@ -72,7 +85,7 @@
     </tr>
     {{/each}}
     <tr>
-      <td class='items__td' style="text-align:right;" colspan="5">Итого</td>
+      <td class='items__td' style="text-align:right; border-bottom: none!important; border-left: none!important; border: none!important;" colspan="5">Итого</td>
       <td class='items__td' style="text-align:right;">{{quantity}}</td>
       <td class='items__td' style="text-align:right;">{{countSum}}</td>
       <td class='items__td' style="text-align:center;">x</td>
@@ -82,9 +95,9 @@
   </tbody>
 </table>
 
-<p>Сумма НДС: {{sumNdsText}}</p>
+<p class="p">Сумма НДС: {{sumNdsText}}</p>
 
-<p>Всего к оплате на сумму с НДС: {{sumTotalText}}</p>
+<p class="p">Всего к оплате на сумму с НДС: {{sumTotalText}}</p>
 
 <table>
   <tbody>

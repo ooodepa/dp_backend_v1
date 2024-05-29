@@ -495,6 +495,32 @@ export class ItemsService {
     res.redirect(mainPhoto);
   }
 
+  async getImageById(res: Response, id: string) {
+    const candidate = await this.itemEntity.findOne({
+      where: {
+        dp_id: id
+      }
+    })
+
+    if (!candidate) {
+      throw new HttpException({}, HttpStatus.NOT_FOUND);
+    }
+
+    // return res.status(200).send(candidate);
+
+    const images = candidate.dp_photos
+      .split('\n')
+      .filter((e) => e.length > 0);
+    const mainPhoto = images[0] || '';
+
+    if (mainPhoto.length === 0) {
+      throw new HttpException({}, HttpStatus.NOT_FOUND);
+    }
+
+    // res.status(302).setHeader('Location', candidate.dp_photoUrl).send();
+    res.redirect(mainPhoto);
+  }
+
   async setShow(id: string, isHidden: string) {
     const candidate = await this.itemEntity.findOneOrFail({
       where: { dp_id: id },
