@@ -29,6 +29,7 @@ export class ItemEntity {
   @Column()
   dp_1cParentId: string;
 
+  @Index('UNI_ctlItems_name', { unique: true })
   @Column()
   dp_seoTitle: string;
 
@@ -46,7 +47,7 @@ export class ItemEntity {
   @Column({ type: 'text' })
   dp_textCharacteristics: string;
 
-  @Column({ type: 'text', default: '' })
+  @Column({ type: 'text' })
   dp_markdown: string;
 
   @Column({ type: 'text' })
@@ -79,7 +80,7 @@ export class ItemEntity {
   @Column({ type: 'text' })
   dp_youtubeIds: string;
 
-  @Column()
+  @Column({ type: 'text' })
   dp_barcodes: string;
 
   @Column()

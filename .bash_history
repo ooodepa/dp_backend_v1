@@ -83,3 +83,8 @@ yarn dev-migr-gen src/migrations/DP_DOC_OrderStatuses
 yarn dev-migr-gen src/migrations/DP_DOC_Orders
 
 yarn nest g res api/v1/invoice
+yarn migration-gen src/migrations/DP_CTL_Warehouses
+yarn migration-gen src/migrations/DP_CTL_Сounterparties
+yarn migration-gen src/migrations/DP_LST_InventoryItems
+yarn migration-gen src/migrations/DP_DOC_TTN
+yarn migration-gen src/migrations/DP_LST_TtnItems

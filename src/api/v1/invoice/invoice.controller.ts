@@ -7,87 +7,72 @@ import {
   Param,
   Delete,
   UseGuards,
+  Res,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { InvoiceService } from './invoice.service';
-import { CreateInvoicePlusDto } from './dto/invoice-plus.dto';
-import { CreateInvoiceMinusDto } from './dto/invoice-minus.dto';
 import { IsAdministratorGuard } from 'src/guards/IsAdministratorGuard.guard';
 import { VerifyAccessTokenGuard } from 'src/guards/VerifyAccessTokenGuard.guard';
+import { BodyCreateInventoryDto } from './dto/inventory.dto';
+import { BodyCreateTtnDto } from './dto/ttn.dto';
 
 @ApiTags('api_v1_invoice')
 @Controller('/api/v1/invoice')
 export class InvoiceController {
   constructor(private readonly invoiceService: InvoiceService) {}
 
-  @ApiTags('ADMIN')
-  @ApiBearerAuth('access-token')
-  @UseGuards(IsAdministratorGuard)
-  @UseGuards(VerifyAccessTokenGuard)
-  @Post('plus')
-  createPlus(@Body() createInvoiceDto: CreateInvoicePlusDto) {
-    return this.invoiceService.createPlus(createInvoiceDto);
-  }
-
-  @ApiTags('ADMIN')
-  @ApiBearerAuth('access-token')
-  @UseGuards(IsAdministratorGuard)
-  @UseGuards(VerifyAccessTokenGuard)
-  @Post('minus')
-  createMinus(@Body() createInvoiceDto: CreateInvoiceMinusDto) {
-    return this.invoiceService.createMinus(createInvoiceDto);
-  }
-
   @ApiTags('any')
-  @Get('plus')
-  findAllPlus() {
-    return this.invoiceService.findAllPlus();
-  }
-
-  @ApiTags('any')
-  @Get('minus')
-  findAllMinus() {
-    return this.invoiceService.findAllMinus();
-  }
-
-  @ApiTags('any')
-  @Get('report/stock')
-  getStock() {
-    return this.invoiceService.getStock();
-  }
-
-  @ApiTags('any')
-  @Get('plus/:id')
-  findOnePlus(@Param('id') id: string) {
-    return this.invoiceService.findOnePlus(id);
-  }
-
-  @ApiTags('any')
-  @Get('minus/:id')
-  findOneMinus(@Param('id') id: string) {
-    return this.invoiceService.findOneMinus(id);
-  }
-
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateInvoiceDto: UpdateInvoiceDto) {
-  //   return this.invoiceService.update(+id, updateInvoiceDto);
-  // }
-
-  @ApiTags('ADMIN')
-  @ApiBearerAuth('access-token')
-  @UseGuards(IsAdministratorGuard)
-  @UseGuards(VerifyAccessTokenGuard)
-  @Delete('plus/:id')
-  removePlus(@Param('id') id: string) {
-    return this.invoiceService.removePlus(id);
+  @Get('x/warehouses/x/inventory-items')
+  getInventoryItems(@Res() res) {
+    return this.invoiceService.getInventory(res);
   }
 
   @ApiTags('ADMIN')
   @ApiBearerAuth('access-token')
   @UseGuards(IsAdministratorGuard)
   @UseGuards(VerifyAccessTokenGuard)
-  @Delete('minus/:id')
-  removeMinus(@Param('id') id: string) {
-    return this.invoiceService.removeMinus(id);
+  @Post('x/warehouses/:warehouse/inventory-items')
+  createInventoryItems(
+    @Res() res,
+    @Param('warehouse') warehouseId: string,
+    @Body() body: BodyCreateInventoryDto,
+  ) {
+    return this.invoiceService.createBulkInventory(res, body, +warehouseId);
+  }
+
+  @ApiTags('ADMIN')
+  @ApiBearerAuth('access-token')
+  @UseGuards(IsAdministratorGuard)
+  @UseGuards(VerifyAccessTokenGuard)
+  @Post('x/ttn/new')
+  createTtn(@Res() res, @Body() body: BodyCreateTtnDto) {
+    return this.invoiceService.createTtn(res, body);
+  }
+
+  @ApiTags('ADMIN')
+  @ApiBearerAuth('access-token')
+  @UseGuards(IsAdministratorGuard)
+  @UseGuards(VerifyAccessTokenGuard)
+  @Get('x/warehouses/x/ttn')
+  getTTN(@Res() res) {
+    return this.invoiceService.getTTN(res);
+  }
+
+  @ApiTags('ADMIN')
+  @ApiBearerAuth('access-token')
+  @UseGuards(IsAdministratorGuard)
+  @UseGuards(VerifyAccessTokenGuard)
+  @Get('x/warehouses/x/ttn/:id')
+  getTTNbyId(@Res() res, @Param('id') ttnId: string) {
+    return this.invoiceService.getTTNbyId(res, ttnId);
+  }
+
+  @ApiTags('ADMIN')
+  @ApiBearerAuth('access-token')
+  @UseGuards(IsAdministratorGuard)
+  @UseGuards(VerifyAccessTokenGuard)
+  @Delete('x/warehouses/x/ttn/:id')
+  deleteTTNbyId(@Res() res, @Param('id') ttnId: string) {
+    return this.invoiceService.getTTNbyId(res, ttnId);
   }
 }

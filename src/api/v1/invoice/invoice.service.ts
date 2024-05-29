@@ -1,181 +1,159 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, In, Repository } from 'typeorm';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreateInvoicePlusDto } from './dto/invoice-plus.dto';
-import { CreateInvoiceMinusDto } from './dto/invoice-minus.dto';
-import { InvoicePlusEntity } from './entities/invoice-plus.entity';
-import { InvoiceMinusEntity } from './entities/invoice-minus.entity';
-import { LstInvoicePlusItemsEntity } from './entities/lst-invoice-plus-items.entity';
-import { LstInvoiceMinusItemsEntity } from './entities/lst-invoice-minus-items.entity';
+import { DataSource, Repository } from 'typeorm';
+import { Injectable } from '@nestjs/common';
+import { TtnEntity } from './entities/DP_DOC_TTN.entity';
+import { InventoryItemsEntity } from './entities/DP_LST_InventoryItems.entity';
+import {
+  getConflictResponse,
+  getNotFoundResponse,
+  getOkResponse,
+} from 'src/utils/getResponse/getResponse';
+import { Response } from 'express';
+import { BodyCreateInventoryDto } from './dto/inventory.dto';
+import { BodyCreateTtnDto } from './dto/ttn.dto';
+import { LstTtnItemsEntity } from './entities/DP_LST_TtnItems.entity';
 
 @Injectable()
 export class InvoiceService {
   constructor(
     private readonly dataSource: DataSource,
-    @InjectRepository(InvoicePlusEntity)
-    private readonly invoicePlusEntity: Repository<InvoicePlusEntity>,
-    @InjectRepository(InvoiceMinusEntity)
-    private readonly invoiceMinusEntity: Repository<InvoiceMinusEntity>,
+    @InjectRepository(TtnEntity)
+    private readonly ttnEntity: Repository<TtnEntity>,
+    @InjectRepository(InventoryItemsEntity)
+    private readonly inventoryItemsEntity: Repository<InventoryItemsEntity>,
   ) {}
 
-  async createPlus(dto: CreateInvoicePlusDto) {
-    const bulk = dto.bulk;
+  async getInventory(res: Response) {
+    const array = await this.inventoryItemsEntity.find();
 
+    const json = getOkResponse({
+      message: 'Получили список остатков',
+      data: array,
+    });
+    return res.status(json.statusCode).send(json);
+  }
+
+  async createBulkInventory(
+    res: Response,
+    dto: BodyCreateInventoryDto,
+    warehouseId: number,
+  ) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      let d = new Date(dto.date);
-      if (d.toString() === 'Invalid Date') {
-        d = new Date();
-      }
-      const savedInvoice = await queryRunner.manager
-        .getRepository(InvoicePlusEntity)
-        .save({
-          dp_date: d.toJSON(),
-        });
-
-      const uuid = savedInvoice.dp_id;
-      const lst = bulk.map((e) => {
-        return { ...e, dp_invoicePlusId: uuid };
+      await queryRunner.manager.getRepository(InventoryItemsEntity).delete({
+        dp_warehouseId: warehouseId,
       });
 
-      await queryRunner.manager
-        .getRepository(LstInvoicePlusItemsEntity)
-        .insert(lst);
+      await queryRunner.manager.getRepository(InventoryItemsEntity).insert(
+        dto.bulk.map((e) => {
+          return {
+            dp_warehouseId: warehouseId,
+            dp_count: e.dp_count,
+            dp_note: e.dp_note,
+            dp_vendorId: e.dp_vendorId,
+          };
+        }),
+      );
 
       await queryRunner.commitTransaction();
+
+      const json = getOkResponse({ message: 'Вы обновили остатки на складе' });
+      return res.status(json.statusCode).send(json);
     } catch (err) {
       await queryRunner.rollbackTransaction();
-      throw new HttpException(
-        'Транзакция не выполнена ' + err,
-        HttpStatus.CONFLICT,
-      );
-    } finally {
-      await queryRunner.release();
+      const json = getConflictResponse({
+        message: `Транзакция не выполнена: ${err}`,
+        data: {
+          exception: `${err}`,
+        },
+      });
+      return res.status(json.statusCode).send(json);
     }
-
-    return 'OK';
   }
 
-  async createMinus(dto: CreateInvoiceMinusDto) {
-    const bulk = dto.bulk;
-
+  async createTtn(res: Response, dto: BodyCreateTtnDto) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      let d = new Date(dto.date);
-      if (d.toString() === 'Invalid Date') {
-        d = new Date();
-      }
-      const savedInvoice = await queryRunner.manager
-        .getRepository(InvoiceMinusEntity)
-        .save({
-          dp_date: d.toJSON(),
-        });
+      const ttn = await queryRunner.manager.getRepository(TtnEntity).save(dto);
 
-      const uuid = savedInvoice.dp_id;
-      const lst = bulk.map((e) => {
-        return { ...e, dp_invoiceMinusId: uuid };
-      });
-
-      await queryRunner.manager
-        .getRepository(LstInvoiceMinusItemsEntity)
-        .insert(lst);
+      await queryRunner.manager.getRepository(LstTtnItemsEntity).insert(
+        dto.dp_lstTtnItems.map((e) => {
+          return {
+            ...e,
+            dp_ttnId: ttn.dp_id,
+          };
+        }),
+      );
 
       await queryRunner.commitTransaction();
+
+      const json = getOkResponse({
+        message: `Вы состали ТТН на складе ${dto.dp_warehouseId}`,
+      });
+      return res.status(json.statusCode).send(json);
     } catch (err) {
       await queryRunner.rollbackTransaction();
-      throw new HttpException(
-        'Транзакция не выполнена ' + err,
-        HttpStatus.CONFLICT,
-      );
-    } finally {
-      await queryRunner.release();
+      const json = getConflictResponse({
+        message: `Транзакция не выполнена: ${err}`,
+        data: {
+          exception: `${err}`,
+        },
+      });
+      return res.status(json.statusCode).send(json);
+    }
+  }
+
+  async getTTN(res: Response) {
+    const array = await this.ttnEntity.find();
+
+    const json = getOkResponse({
+      message: 'Получили список ТТН без списка товаров',
+      data: array,
+    });
+    return res.status(json.statusCode).send(json);
+  }
+
+  async getTTNbyId(res: Response, ttnId: string) {
+    const candidate = await this.ttnEntity.findOne({
+      where: {
+        dp_id: ttnId,
+      },
+      relations: ['dp_lstTtnItems'],
+    });
+
+    if (!candidate) {
+      const json = getNotFoundResponse({
+        message: `Не найдена ТТН по id = ${ttnId}`,
+      });
+      return res.status(json.statusCode).send(json);
     }
 
-    return 'OK';
+    const json = getOkResponse({
+      message: 'Получили ТТН со списком товаров',
+      data: candidate,
+    });
+    return res.status(json.statusCode).send(json);
   }
 
-  async findAllPlus() {
-    return await this.invoicePlusEntity.find({
-      // relations: ['dp_invoicePlusItems'],
+  async deleteTTNbyId(res: Response, ttnId: string) {
+    const candidate = await this.ttnEntity.findOne({ where: { dp_id: ttnId } });
+
+    if (!candidate) {
+      const json = getNotFoundResponse({
+        message: `Не найдена ТТН по id = ${ttnId}`,
+      });
+      return res.status(json.statusCode).send(json);
+    }
+
+    await this.ttnEntity.delete(ttnId);
+
+    const json = getOkResponse({
+      message: `Вы удалили ТТН по id = ${ttnId}`,
     });
-  }
-
-  async findAllMinus() {
-    return await this.invoiceMinusEntity.find({
-      // relations: ['dp_invoiceMinusItems'],
-    });
-  }
-
-  async getStock() {
-    const resultPlus = await this.dataSource
-      .getRepository(LstInvoicePlusItemsEntity)
-      .createQueryBuilder('dp')
-      .select('dp.dp_vendorId', 'Артикул')
-      .addSelect('SUM(dp.dp_count)', 'Количество')
-      .groupBy('dp.dp_vendorId')
-      .getRawMany();
-    const resultMinus = await this.dataSource
-      .getRepository(LstInvoiceMinusItemsEntity)
-      .createQueryBuilder('dp')
-      .select('dp.dp_vendorId', 'Артикул')
-      .addSelect('SUM(dp.dp_count)', 'Количество')
-      .groupBy('dp.dp_vendorId')
-      .getRawMany();
-    const vendorIdsSet = new Set<string>();
-
-    resultPlus.forEach((e) => {
-      vendorIdsSet.add(e.Артикул);
-    });
-
-    resultMinus.forEach((e) => {
-      vendorIdsSet.add(e.Артикул);
-    });
-
-    const vendorIdArray = Array.from(vendorIdsSet);
-    let dict: Record<string, number> = {};
-    vendorIdArray.forEach((e) => {
-      dict[e] = 0;
-    });
-
-    resultPlus.forEach((e) => {
-      dict[e.Артикул] += Number(e.Количество);
-    });
-
-    resultMinus.forEach((e) => {
-      dict[e.Артикул] -= Number(e.Количество);
-    });
-    return dict;
-  }
-
-  async findOnePlus(id: string) {
-    return await this.invoicePlusEntity.findOneOrFail({
-      where: {
-        dp_id: id,
-      },
-      relations: ['dp_invoicePlusItems'],
-    });
-  }
-
-  async findOneMinus(id: string) {
-    return await this.invoiceMinusEntity.findOneOrFail({
-      where: {
-        dp_id: id,
-      },
-      relations: ['dp_invoiceMinusItems'],
-    });
-  }
-
-  async removePlus(id: string) {
-    await this.invoicePlusEntity.findOneOrFail({ where: { dp_id: id } });
-    await this.invoicePlusEntity.delete({ dp_id: id });
-  }
-
-  async removeMinus(id: string) {
-    await this.invoiceMinusEntity.findOneOrFail({ where: { dp_id: id } });
-    await this.invoiceMinusEntity.delete({ dp_id: id });
+    return res.status(json.statusCode).send(json);
   }
 }

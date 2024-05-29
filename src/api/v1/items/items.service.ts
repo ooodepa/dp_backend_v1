@@ -464,25 +464,35 @@ export class ItemsService {
   }
 
   async getImageByModel(res: Response, model: string) {
-    const candidate = await this.itemEntity.findOne({
-      where: { dp_seoUrlSegment: model },
-      select: {
-        dp_photoUrl: true,
-      },
-    });
+    const candidate = await this.itemEntity.query(`
+      SELECT * 
+      FROM (
+          SELECT *, CONCAT(CONCAT("\n", dp_vendorIds), "\n") AS "vendors" 
+          FROM DP_CTL_Items
+      ) AS A 
+      WHERE A.vendors LIKE '%\n${model}\n%'
+      LIMIT 1
+      ;
+    `);
 
     if (!candidate) {
       throw new HttpException({}, HttpStatus.NOT_FOUND);
     }
 
-    const image_url = candidate.dp_photoUrl;
+    // return res.status(200).send(candidate);
 
-    if (image_url.length === 0) {
+    const firstCandidate = candidate[0];
+    const images = firstCandidate.dp_photos
+      .split('\n')
+      .filter((e) => e.length > 0);
+    const mainPhoto = images[0] || '';
+
+    if (mainPhoto.length === 0) {
       throw new HttpException({}, HttpStatus.NOT_FOUND);
     }
 
     // res.status(302).setHeader('Location', candidate.dp_photoUrl).send();
-    res.redirect(image_url);
+    res.redirect(mainPhoto);
   }
 
   async setShow(id: string, isHidden: string) {
