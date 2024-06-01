@@ -8,13 +8,19 @@ import {
   Delete,
   UseGuards,
   Res,
+  Query,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { BodyCreateTtnDto } from './dto/ttn.dto';
 import { InvoiceService } from './invoice.service';
 import { IsAdministratorGuard } from 'src/guards/IsAdministratorGuard.guard';
 import { VerifyAccessTokenGuard } from 'src/guards/VerifyAccessTokenGuard.guard';
-import { BodyCreateInventoryDto, ResponseGetInventoryDto } from './dto/inventory.dto';
+import {
+  BodyCreateInventoryDto,
+  QueryGetInventoryDto,
+  ResponseGetInventoryDto,
+} from './dto/inventory.dto';
+import { ResponseGetWarehouseDto } from './dto/warehouse.dto';
 
 @ApiTags('api_v1_invoice')
 @Controller('/api/v1/invoice')
@@ -22,10 +28,17 @@ export class InvoiceController {
   constructor(private readonly invoiceService: InvoiceService) {}
 
   @ApiTags('any')
-  @ApiResponse({status: 200, type: ResponseGetInventoryDto})
+  @ApiResponse({ status: 200, type: ResponseGetWarehouseDto })
+  @Get('x/warehouses')
+  getWarehouses(@Res() res) {
+    return this.invoiceService.getWarehouses(res);
+  }
+
+  @ApiTags('any')
+  @ApiResponse({ status: 200, type: ResponseGetInventoryDto })
   @Get('x/warehouses/x/inventory-items')
-  getInventoryItems(@Res() res) {
-    return this.invoiceService.getInventory(res);
+  getInventoryItems(@Res() res, @Query() query: QueryGetInventoryDto) {
+    return this.invoiceService.getInventory(res, query);
   }
 
   @ApiTags('ADMIN')

@@ -22,6 +22,13 @@ export class BodyCreateInventoryDto {
   bulk: CreateInventoryDto[];
 }
 
+export class QueryGetInventoryDto {
+  @ApiProperty({
+    required: false,
+  })
+  dp_warehouseId: number;
+}
+
 export class GetInventoryDto {
   @ApiProperty()
   dp_id: number;

@@ -452,10 +452,10 @@ export class OrdersService {
         `  УНП: ${process.env.APP__MY_UNP}\n` +
         `  Р/сч: ${process.env.APP__MY_CHECKING_ACCOUNT} в ${process.env.APP__MY_BANK}, код БИК ${process.env.APP__MY_BIK}`;
       worksheet.addRow([POSTAVSHIK]);
-      ['A','B','C','D','E','F','J','H','I'].forEach(e => {
+      ['A', 'B', 'C', 'D', 'E', 'F', 'J', 'H', 'I'].forEach((e) => {
         worksheet.getCell(`${e}${row}`).alignment = {
           wrapText: true,
-          vertical: 'middle'
+          vertical: 'middle',
         };
       });
 
@@ -467,11 +467,11 @@ export class OrdersService {
       row += 1;
       const TITLE = `\nСчет-фактура № ____ от ${stringDate}\n`;
       worksheet.addRow([TITLE]);
-      ['A','B','C','D','E','F','J','H','I'].forEach(e => {
+      ['A', 'B', 'C', 'D', 'E', 'F', 'J', 'H', 'I'].forEach((e) => {
         worksheet.getCell(`${e}${row}`).alignment = {
           wrapText: true,
           horizontal: 'center',
-          vertical: 'middle'
+          vertical: 'middle',
         };
       });
       worksheet.mergeCells(`A${row}:I${row}`);
@@ -493,10 +493,10 @@ export class OrdersService {
         `  УНП: ${user.dp_unp}\n` +
         `  Р/сч: ${dto.dp_checkingAccount} в ${dto.dp_bank}, код БИК ${dto.dp_bik}`;
       worksheet.addRow([ZAKAZCHIK]);
-      ['A','B','C','D','E','F','J','H','I'].forEach(e => {
+      ['A', 'B', 'C', 'D', 'E', 'F', 'J', 'H', 'I'].forEach((e) => {
         worksheet.getCell(`${e}${row}`).alignment = {
           wrapText: true,
-          vertical: 'middle'
+          vertical: 'middle',
         };
       });
       worksheet.getRow(row).height = 15 * ZAKAZCHIK.split('\n').length;
@@ -628,21 +628,23 @@ export class OrdersService {
       row += 1;
       const sumNdsText = numberToWordsRu(Number(countSumNds).toFixed(2));
       const sumTotalText = numberToWordsRu(Number(countSumTotal).toFixed(2));
-      const RESULT = `Сумма НДС: ${sumNdsText}\n` + `Всего к оплате на сумму с НДС: ${sumTotalText}`;
+      const RESULT =
+        `Сумма НДС: ${sumNdsText}\n` +
+        `Всего к оплате на сумму с НДС: ${sumTotalText}`;
       worksheet.addRow([RESULT]);
       worksheet.mergeCells(`A${row}:I${row}`);
-      ['A','B','C','D','E','F','J','H','I'].forEach(e => {
+      ['A', 'B', 'C', 'D', 'E', 'F', 'J', 'H', 'I'].forEach((e) => {
         worksheet.getCell(`${e}${row}`).alignment = {
           wrapText: true,
-          vertical: 'middle'
+          vertical: 'middle',
         };
       });
       worksheet.getRow(row).height = 15 * 3;
-      
-    // > > > > > > > >
 
-    // < < < < < < < < 3
-    row += 1;
+      // > > > > > > > >
+
+      // < < < < < < < < 3
+      row += 1;
       worksheet.addRow([
         `${process.env.APP__MY_CHECK_POSITION} `,
         '',
@@ -659,7 +661,7 @@ export class OrdersService {
       worksheet.getCell(`C${row}`).border = {
         bottom: { style: 'thin' },
       };
-// > > > > > > > >
+      // > > > > > > > >
 
       // Установка ширины столбцов
       worksheet.getColumn('A').width = 5;

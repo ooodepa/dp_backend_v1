@@ -498,9 +498,9 @@ export class ItemsService {
   async getImageById(res: Response, id: string) {
     const candidate = await this.itemEntity.findOne({
       where: {
-        dp_id: id
-      }
-    })
+        dp_id: id,
+      },
+    });
 
     if (!candidate) {
       throw new HttpException({}, HttpStatus.NOT_FOUND);
@@ -508,9 +508,7 @@ export class ItemsService {
 
     // return res.status(200).send(candidate);
 
-    const images = candidate.dp_photos
-      .split('\n')
-      .filter((e) => e.length > 0);
+    const images = candidate.dp_photos.split('\n').filter((e) => e.length > 0);
     const mainPhoto = images[0] || '';
 
     if (mainPhoto.length === 0) {

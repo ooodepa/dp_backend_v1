@@ -10,9 +10,13 @@ import {
 import { BodyCreateTtnDto } from './dto/ttn.dto';
 import { TtnEntity } from './entities/DP_DOC_TTN.entity';
 import { ItemEntity } from '../items/entities/item.entity';
-import { BodyCreateInventoryDto } from './dto/inventory.dto';
+import {
+  BodyCreateInventoryDto,
+  QueryGetInventoryDto,
+} from './dto/inventory.dto';
 import { LstTtnItemsEntity } from './entities/DP_LST_TtnItems.entity';
 import { InventoryItemsEntity } from './entities/DP_LST_InventoryItems.entity';
+import { WarehousesEntity } from './entities/DP_CTL_Warehouses.entity';
 
 @Injectable()
 export class InvoiceService {
@@ -22,15 +26,30 @@ export class InvoiceService {
     private readonly itemEntity: Repository<ItemEntity>,
     @InjectRepository(TtnEntity)
     private readonly ttnEntity: Repository<TtnEntity>,
+    @InjectRepository(WarehousesEntity)
+    private readonly warehouseEntity: Repository<WarehousesEntity>,
     @InjectRepository(InventoryItemsEntity)
     private readonly inventoryItemsEntity: Repository<InventoryItemsEntity>,
   ) {}
 
-  async getInventory(res: Response) {
-    const array = await this.inventoryItemsEntity.find();
+  async getWarehouses(res: Response) {
+    const array = await this.warehouseEntity.find();
+    const json = getOkResponse({
+      message: 'Получили список складов',
+      data: array,
+    });
+    return res.status(json.statusCode).send(json);
+  }
+
+  async getInventory(res: Response, query: QueryGetInventoryDto) {
+    const array = await this.inventoryItemsEntity.find({
+      where: {
+        dp_warehouseId: query.dp_warehouseId,
+      },
+    });
     const json = getOkResponse({
       message: 'Получили список остатков',
-      data: array
+      data: array,
     });
     return res.status(json.statusCode).send(json);
   }
