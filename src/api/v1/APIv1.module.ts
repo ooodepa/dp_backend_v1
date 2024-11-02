@@ -16,6 +16,7 @@ import { ManagerModule } from './manager/manager.module';
 import { OrderStatusesModule } from './order-statuses/order-statuses.module';
 import { PortalNalogGovByModule } from './portal-nalog-gov-by/portal-nalog-gov-by.module';
 import { InvoiceModule } from './invoice/invoice.module';
+import { OzonSellerProductListModule } from './ozon-seller-product-list/ozon-seller-product-list.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { InvoiceModule } from './invoice/invoice.module';
     OrderStatusesModule,
     PortalNalogGovByModule,
     InvoiceModule,
+    OzonSellerProductListModule,
   ],
 })
 export class APIv1 {}
