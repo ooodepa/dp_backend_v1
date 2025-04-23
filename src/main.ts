@@ -2,6 +2,7 @@ import { AppModule } from './app.module';
 import { NestFactory } from '@nestjs/core';
 import setupJSON from './middleware/json.middleware';
 import setupPipe from './middleware/pipe.middleware';
+import { LogApiGuard } from './guards/LogApiGuard.guard';
 import setupFilter from './middleware/filter.middleware';
 import { setupSwagger } from './middleware/swagger.middleware';
 
@@ -13,6 +14,9 @@ async function bootstrap() {
   setupPipe(app);
   setupFilter(app);
   setupSwagger(app, GLOBAL_PREFIX);
+
+  app.useGlobalGuards(new LogApiGuard());
+
   await app.listen(PORT, () => {
     console.log(
       '' +
