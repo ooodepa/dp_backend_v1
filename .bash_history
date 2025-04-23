@@ -88,7 +88,3 @@ yarn migration-gen src/migrations/DP_CTL_Сounterparties
 yarn migration-gen src/migrations/DP_LST_InventoryItems
 yarn migration-gen src/migrations/DP_DOC_TTN
 yarn migration-gen src/migrations/DP_LST_TtnItems
-
-yarn nest g res api/v1/ozon-seller-product-list
-yarn migration-gen src/migrations/OZON_CTL_ProductList
-yarn migration-gen src/migrations/OZON_CTL_ProductInfo
